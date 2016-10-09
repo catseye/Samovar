@@ -32,7 +32,7 @@ As an example,
     [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
 
 Which can be read "If A is an actor and B is an item and A is not holding B, then
-one possible action is to say 'A picked up B' and assert that A is now holding B.
+one possible action is to say 'A picks up the B' and assert that A is now holding B."
 
 We can add a complementary rule:
 

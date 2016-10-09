@@ -2,10 +2,14 @@
 
 from itertools import permutations
 import random
+import re
 
 from samovar.ast import Assert, Retract
 from samovar.terms import Term
 
+
+def word_count(s):
+    return len(re.split(r'\s+', s))
 
 def all_assignments(vars_, things):
     assignments = []
@@ -16,12 +20,11 @@ def all_assignments(vars_, things):
 
 
 class Generator(object):
-    def __init__(self, world, debug=False, length=5):
+    def __init__(self, world, debug=False):
         self.world = world
         self.debug = debug
         self.state = set()  # set of things currently true about the world
         self.things = set()
-        self.length = length
         for e in self.world.situations[0].cond.exprs:
             if isinstance(e, Assert):
                 self.state.add(e.term)
@@ -29,17 +32,31 @@ class Generator(object):
                 e.term.collect_atoms(atoms)
                 self.things |= atoms
 
-    def generate(self):
+    def generate_events(self, count):
         if self.debug:
             self.debug_state()
-        for i in xrange(0, self.length):
-            self.generate_move()
+        moves = []
+        for i in xrange(0, count):
+            moves.append(self.generate_move())
+        return moves
+
+    def generate_words(self, target):
+        if self.debug:
+            self.debug_state()
+        moves = []
+        count = 0
+        while count < target:
+            move = self.generate_move()
+            count += word_count(move)
+            moves.append(move)
+        return moves
 
     def generate_move(self):
         candidates = self.get_candidate_rules()
         rule, unifier = random.choice(candidates)
-        print rule.format(unifier)
+        move = rule.format(unifier)
         self.update_state(unifier, rule)
+        return move
 
     def get_candidate_rules(self):
         candidates = []
