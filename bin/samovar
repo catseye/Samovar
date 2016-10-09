@@ -25,6 +25,9 @@ if __name__ == '__main__':
     optparser.add_option("--debug",
                          action="store_true",
                          help="Show state before and after each move")
+    optparser.add_option("--dump-ast",
+                         action="store_true",
+                         help="Just show the AST and stop")
     optparser.add_option("--length",
                          type=int, default=0,
                          help="If given, generate this many events for each situation")
@@ -33,13 +36,16 @@ if __name__ == '__main__':
                          help="If given, generate each situation til this many words")
     (options, args) = optparser.parse_args(sys.argv[1:])
 
-    with codecs.open(args[0], 'r', encoding='UTF-8') as f:
-        text = f.read()
+    text = ''
+    for arg in args:
+        with codecs.open(arg, 'r', encoding='UTF-8') as f:
+            text += f.read()
 
     p = Parser(text)
     ast = p.world()
-    if options.debug:
+    if options.dump_ast:
         print ast
+        sys.exit(0)
     g = Generator(ast, debug=options.debug)
     if options.length > 0:
         events = g.generate_events(options.length)
@@ -47,3 +53,4 @@ if __name__ == '__main__':
         events = g.generate_words(options.words)
     for e in events:
         sys.stdout.write("%s  " % e)
+    sys.stdout.write("\n")

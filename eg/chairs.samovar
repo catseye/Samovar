@@ -1,9 +1,5 @@
 rules
 
-[actor(ρ)]
-ρ rubs his chin.
-[]
-
 [actor(ρ),~sitting(ρ)]
 ρ walks around the room.
 []
@@ -19,6 +15,8 @@ rules
 [actor(ρ),sitting(ρ),in(ρ,κ)]
 ρ gets up and stretches.
 [~sitting(ρ),~in(ρ,κ),empty(κ)]
+
+end
 
 situations
 

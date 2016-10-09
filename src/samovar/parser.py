@@ -5,7 +5,9 @@ from samovar.terms import Term, Var
 from samovar.scanner import Scanner
 
 
-# World         ::= "rules" {Rule} "situations" {Situation} "end".
+# World         ::= {Rules | Situations}.
+# Rules         ::= "rules" {Rule} "end".
+# Situations    ::= "situations" {Situation} "end".
 # Rule          ::= Cond {Term | Punct} Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Scene         ::= Cond.
@@ -22,14 +24,28 @@ class Parser(object):
     def world(self):
         rules = []
         situations = []
+        while self.scanner.on('rules', 'situations'):
+            if self.scanner.on('rules'):
+                rules.extend(self.rules())
+            if self.scanner.on('situations'):
+                situations.extend(self.situations())
+        return World(rules=rules, situations=situations)
+
+    def rules(self):
+        rules = []
         self.scanner.expect('rules')
-        while not self.scanner.on('situations'):
+        while not self.scanner.on('end'):
             rules.append(self.rule())
+        self.scanner.expect('end')
+        return rules
+
+    def situations(self):
+        situations = []
         self.scanner.expect('situations')
         while not self.scanner.on('end'):
             situations.append(self.situation())
         self.scanner.expect('end')
-        return World(rules=rules, situations=situations)
+        return situations
 
     def rule(self):
         terms = []

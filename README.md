@@ -43,6 +43,7 @@ And we can package this all into a world-description:
     rules
       [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
       [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+    end
     situations
       [actor(Ignatz),item(brick)]
     end

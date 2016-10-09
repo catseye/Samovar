@@ -11,6 +11,7 @@ from samovar.terms import Term
 def word_count(s):
     return len(re.split(r'\s+', s))
 
+
 def all_assignments(vars_, things):
     assignments = []
     var_names = [v.name for v in vars_]
