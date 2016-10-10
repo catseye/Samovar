@@ -1,16 +1,18 @@
 # encoding: UTF-8
 
-from samovar.ast import World, Rule, Cond, Situation, Assert, Retract
+from samovar.ast import World, Rule, Function, Situation, Cond, Assert, Retract
 from samovar.terms import Term, Var
 from samovar.scanner import Scanner
 
 
-# World         ::= {Rules | Situations}.
+# World         ::= {Rules | Functions | Situations}.
 # Rules         ::= "rules" {Rule} "end".
+# Functions     ::= "functions" {Function} "end".
 # Situations    ::= "situations" {Situation} "end".
 # Rule          ::= Cond {Term | Punct} Cond.
+# Function      ::= Term "→" Term.
+# Situation     ::= Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
-# Scene         ::= Cond.
 # Expr          ::= Term | "~" Term.
 # Term          ::= Var | Word ["(" Term {"," Term} ")"].
 # Var           ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>
@@ -23,29 +25,24 @@ class Parser(object):
 
     def world(self):
         rules = []
+        functions = []
         situations = []
-        while self.scanner.on('rules', 'situations'):
+        while self.scanner.on('rules', 'functions', 'situations'):
             if self.scanner.on('rules'):
-                rules.extend(self.rules())
+                rules.extend(self._section('rules', self.rule))
+            if self.scanner.on('functions'):
+                functions.extend(self._section('functions', self.function))
             if self.scanner.on('situations'):
-                situations.extend(self.situations())
-        return World(rules=rules, situations=situations)
+                situations.extend(self._section('situations', self.situation))
+        return World(rules=rules, functions=functions, situations=situations)
 
-    def rules(self):
-        rules = []
-        self.scanner.expect('rules')
+    def _section(self, heading, method):
+        items = []
+        self.scanner.expect(heading)
         while not self.scanner.on('end'):
-            rules.append(self.rule())
+            items.append(method())
         self.scanner.expect('end')
-        return rules
-
-    def situations(self):
-        situations = []
-        self.scanner.expect('situations')
-        while not self.scanner.on('end'):
-            situations.append(self.situation())
-        self.scanner.expect('end')
-        return situations
+        return items
 
     def rule(self):
         terms = []
@@ -54,6 +51,16 @@ class Parser(object):
             terms.append(self.term())
         post = self.cond()
         return Rule(pre=pre, terms=terms, post=post)
+
+    def function(self):
+        sign = self.term()
+        self.scanner.expect(u'→')
+        result = self.term()
+        return Function(sign=sign, result=result)
+
+    def situation(self):
+        cond = self.cond()
+        return Situation(cond=cond)
 
     def cond(self):
         exprs = []
@@ -64,10 +71,6 @@ class Parser(object):
                 exprs.append(self.expr())
         self.scanner.expect(']')
         return Cond(exprs=exprs)
-
-    def situation(self):
-        cond = self.cond()
-        return Situation(cond=cond)
 
     def expr(self):
         if self.scanner.consume('~'):

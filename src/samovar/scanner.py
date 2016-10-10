@@ -34,7 +34,7 @@ class Scanner(object):
             self.token = None
             self.type = 'EOF'
             return
-        if self.scan_pattern(r'\~', 'operator'):
+        if self.scan_pattern(ur'\~|→', 'operator'):
             return
         if self.scan_pattern(r'\,|\.|\?|\!|\"' + r"|\'", 'punct'):
             return

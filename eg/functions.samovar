@@ -1,0 +1,23 @@
+rules
+
+  [actor(ρ)]
+    ρ scratches their(ρ) head.
+  []
+
+end
+
+functions
+
+  their(Alice) → her
+  their(Bob) → his
+
+end
+
+situations
+
+[
+    actor(Alice),
+    actor(Bob)
+]
+
+end

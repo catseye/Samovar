@@ -55,7 +55,7 @@ class Generator(object):
     def generate_move(self):
         candidates = self.get_candidate_rules()
         rule, unifier = random.choice(candidates)
-        move = rule.format(unifier)
+        move = rule.format(unifier, self.world.functions)
         self.update_state(unifier, rule)
         return move
 

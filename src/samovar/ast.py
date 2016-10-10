@@ -29,15 +29,32 @@ class Rule(AST):
     def nu_format(self):
         return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.terms]) + u" " + self.post.format()
 
-    def format(self, unifier):
+    def format(self, unifier, functions):
         acc = u''
         for t in self.terms:
-            s = unicode(t.subst(unifier))
+
+            t = t.subst(unifier)
+
+            # now resolve functions.  NOTE: this is a terrible hacky just-for-now implementation.  TODO: better it.
+            for f in functions:
+                if t == f.sign:
+                    t = f.result
+                    break
+
+            s = unicode(t)
             if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
                 acc += s
             else:
                 acc += u' ' + s
         return acc
+
+
+class Function(AST):
+    pass
+
+
+class Situation(AST):
+    pass
 
 
 class Cond(AST):
@@ -67,7 +84,3 @@ class Assert(AST):
 class Retract(AST):
     def format(self):
         return u'~%s' % self.term
-
-
-class Situation(AST):
-    pass
