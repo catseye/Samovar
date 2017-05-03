@@ -1,7 +1,7 @@
 Samovar
 =======
 
-*Work-in-progress.  Subject to change in backwards-incompatible ways.*
+*Version 0.1.  Subject to change in backwards-incompatible ways.*
 
 Samovar is a DSL for world-modeling using predicates rather than explicit objects.
 
