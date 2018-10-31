@@ -68,8 +68,10 @@ does, and use the conditions to chain actions together in a sensible order.
 *   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
 *   Should probably also allow ASCII tokens for those who don't want to type Greek
     letters and weird logical connectives.
-*   Allow actions to define sentence trees.
+*   Allow sentence trees to be given for actions.
 *   Give the implementation some mode where it deterministically processes rules.
 *   Given the above, write a Falderal test document for Samovar.
 *   Allow situations to define a termination condition, so that the implementation
     can generate a scenario where the condition is met (by whatever method).
+*   Consider what it would take to add a predicate that evaluates to whether
+    a given action has been taken previously or not.
