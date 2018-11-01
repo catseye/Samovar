@@ -11,10 +11,14 @@ from samovar.scanner import Scanner
 # Rule          ::= Cond {Term | Punct} Cond.
 # Situation     ::= Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
-# Expr          ::= Term | "~" Term.
-# Term          ::= Var | Word ["(" Term {"," Term} ")"].
-# Var           ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>
-# Atom          ::= <<A-Za-z possibly with punctuation on either end>>
+# Expr          ::= Term | NotSym Term.
+# Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
+# Var           ::= Qmark | Greek.
+# Qmark         ::= '?' <<A-Za-z>>.
+# Greek         ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>.
+# Atom          ::= <<A-Za-z possibly with punctuation on either end>>.
+# NotSym        ::= '~' | '¬'.
+# AndSym        ::= ',' | '∧'.
 
 
 class Parser(object):
@@ -56,13 +60,13 @@ class Parser(object):
         self.scanner.expect('[')
         if not self.scanner.on(']'):
             exprs.append(self.expr())
-            while self.scanner.consume(','):        
+            while self.scanner.consume(',', u'∧'):
                 exprs.append(self.expr())
         self.scanner.expect(']')
         return Cond(exprs=exprs)
 
     def expr(self):
-        if self.scanner.consume('~'):
+        if self.scanner.consume('~', u'¬'):
             return Retract(term=self.term())
         else:
             return Assert(term=self.term())
