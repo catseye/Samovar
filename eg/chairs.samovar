@@ -23,4 +23,5 @@ scenario Chairs {
   nearby(recliner), empty(recliner).
   nearby(sofa), empty(sofa).
 
+  goal [].
 }

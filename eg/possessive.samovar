@@ -9,4 +9,5 @@ scenario HeadScratching {
   actor(Bob).
   possessive(Bob, his).
 
+  goal [].
 }

@@ -68,7 +68,6 @@ does, and use the conditions to chain actions together in a sensible order.
 *   Allow sentence trees to be given for actions.
 *   Allow scenarios to define a termination condition, so that the implementation
     can generate a scene where the condition is met (by whatever method).
-*   Have the generator generate scenes for all scenarios with goals.
 *   Allow scenarios to specify a minimum number of events to generate (maybe?)
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.

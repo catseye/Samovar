@@ -16,7 +16,7 @@ Scenarios
 ---------
 
 The basic unit of a Samovar world is a scenario.  A scenario may contain
-any number of propositions and event rules, in any order.
+any number of propositions and event rules, and an optional goal, in any order.
 
     scenario IgnatzWithBrick {
     
@@ -26,15 +26,16 @@ any number of propositions and event rules, in any order.
       actor(Ignatz).
       item(brick).
     
+      goal [].
     }
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
 
-A source file may contain more than one scenario.
-The implementation runs a simulation on one of the scenarios (TODO:
-make this specific.  Currently it's just the last scenario.)
+A source file may contain more than one scenario.  By default, our
+implementation of Samovar runs a simulation on each of the scenarios
+that has a goal defined, even if that goal is empty.
 
     scenario MollyWithBrick {
     
@@ -53,7 +54,8 @@ make this specific.  Currently it's just the last scenario.)
       
       actor(Ignatz).
       item(brick).
-    
+        
+      goal [].
     }
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
@@ -62,7 +64,8 @@ make this specific.  Currently it's just the last scenario.)
 
 Scenarios can import the event rules and propositions from other scenarios.
 This makes a scenario a good place to collect a setting, or a group of
-characters who will appear together in scenes.
+characters who will appear together in scenes.  These "library" scenarios
+should have no goal, as we don't want to generate simulations for them.
 
     scenario ItemRules {
       [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
@@ -78,11 +81,17 @@ characters who will appear together in scenes.
       import ItemRules.
       import Actors.
       import Brickyard.
+      goal [].
     }
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
+
+There is nothing stopping an implementation from allowing a Samovar
+description to be spread over multiple source files, but there is no
+facility to reference one source file from another in Samovar, so how
+they are located and collected is up to the implementation.
 
 chairs
 ------
@@ -114,6 +123,7 @@ chairs
       nearby(sofa).
       empty(sofa).
     
+      goal [].
     }
     ===> Hastings sits down in the chair.
     ===> Hastings leans back in the chair.
@@ -144,6 +154,7 @@ but we can just say
       actor(Bob).
       possessive(Bob, his).
     
+      goal [].
     }
     ===> Alice scratches her head.
     ===> Alice scratches her head.
@@ -166,6 +177,7 @@ instead:
       actor(Bob).
       possessive(Bob, his).
     
+      goal [].
     }
     ===> Alice scratches her head.
     ===> Alice scratches her head.

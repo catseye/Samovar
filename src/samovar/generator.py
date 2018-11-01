@@ -21,12 +21,12 @@ def all_assignments(vars_, things):
 
 
 class Generator(object):
-    def __init__(self, world, debug=False):
+    def __init__(self, world, scenario, debug=False):
         self.world = world
         self.debug = debug
         self.state = set()  # set of things currently true about the world
         self.things = set()
-        self.scenario = self.world.scenarios[-1]
+        self.scenario = scenario
         for term in self.scenario.propositions:
             assert isinstance(term, Term)
             self.state.add(term)

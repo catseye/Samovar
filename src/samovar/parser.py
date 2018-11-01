@@ -6,9 +6,10 @@ from samovar.scanner import Scanner
 
 
 # World         ::= {Scenario}.
-# Scenario      ::= "scenario" Atom "{" {Import | Proposition | Rule} "}".
-# Import        ::= "import" Atom ["." | ","].
-# Proposition   ::= Term ["." | ","].
+# Scenario      ::= "scenario" Atom "{" {Import | Proposition | Rule | Goal} ["." | ","] "}".
+# Import        ::= "import" Atom.
+# Goal          ::= "goal" Cond.
+# Proposition   ::= Term.
 # Rule          ::= Cond {Term | Punct} Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Expr          ::= Term | NotSym Term.
@@ -37,6 +38,7 @@ class Parser(object):
     def scenario(self):
         propositions = []
         rules = []
+        goal = None
         self.scanner.expect('scenario')
         self.scanner.check_type('word')
         name = self.scanner.token
@@ -50,20 +52,20 @@ class Parser(object):
                 from_scenario = self.scenario_map[from_name]
                 rules.extend(from_scenario.rules)
                 propositions.extend(from_scenario.propositions)
-                self.scanner.consume('.')
-                self.scanner.consume(',')
+            elif self.scanner.consume('goal'):
+                assert goal is None
+                goal = self.cond()
             elif self.scanner.on('['):
                 rules.append(self.rule())
             else:
                 propositions.append(self.proposition())
+            self.scanner.consume('.')
+            self.scanner.consume(',')
         self.scanner.expect('}')
-        return Scenario(name=name, propositions=propositions, rules=rules)
+        return Scenario(name=name, propositions=propositions, rules=rules, goal=goal)
 
     def proposition(self):
-        term = self.term()
-        self.scanner.consume('.')
-        self.scanner.consume(',')
-        return term
+        return self.term()
 
     def rule(self):
         terms = []
