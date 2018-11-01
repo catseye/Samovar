@@ -72,7 +72,7 @@ class Parser(object):
             return Assert(term=self.term())
 
     def term(self):
-        if self.scanner.on_type('variable'):
+        if self.scanner.on_type('variable') or self.scanner.on_type('qmark'):
             return self.var()
         self.scanner.check_type('word', 'punct')
         constructor = self.scanner.token
@@ -86,7 +86,8 @@ class Parser(object):
         return Term(constructor, subterms=subterms)
 
     def var(self):
-        self.scanner.check_type('variable')
+        #self.scanner.check_type('variable')
         name = self.scanner.token
         self.scanner.scan()
-        return Var(name)
+        v = Var(name)
+        return v

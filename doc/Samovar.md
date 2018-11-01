@@ -34,21 +34,21 @@ chairs
 
     rules
     
-    [actor(ρ)∧¬sitting(ρ)]
-    ρ walks around the room.
-    []
+      [actor(ρ)∧¬sitting(ρ)]
+        ρ walks around the room.
+      []
     
-    [actor(ρ)∧¬sitting(ρ)∧nearby(κ)∧empty(κ)]
-    ρ sits down in the κ.
-    [sitting(ρ)∧in(ρ,κ)∧¬empty(κ)]
+      [actor(ρ)∧¬sitting(ρ)∧nearby(κ)∧empty(κ)]
+        ρ sits down in the κ.
+      [sitting(ρ)∧in(ρ,κ)∧¬empty(κ)]
     
-    [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
-    ρ leans back in the κ.
-    []
+      [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
+        ρ leans back in the κ.
+      []
     
-    [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
-    ρ gets up and stretches.
-    [¬sitting(ρ)∧¬in(ρ,κ)∧empty(κ)]
+      [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
+        ρ gets up and stretches.
+      [¬sitting(ρ)∧¬in(ρ,κ)∧empty(κ)]
     
     end
     
@@ -75,11 +75,11 @@ idle
     rules
     
       [actor(ρ)]
-      ρ rubs his chin.
+        ρ rubs his chin.
       []
       
       [actor(ρ)]
-      ρ yawns.
+        ρ yawns.
       []
     
     end
@@ -88,9 +88,42 @@ idle
 no need for functions
 ---------------------
 
+Samovar 0.1 had functions, but they were removed because they
+were not necessary.  If you want to look up a property of
+some thing, you can just pattern-match for it.  The example was
+
+    their(Alice) → her
+    their(Bob) → his
+    
+but we can just say
+    
     rules
       [actor(ρ),possessive(ρ,ξ)]
         ρ scratches ξ head.
+      []
+    end
+    situations
+    [
+        actor(Alice),
+        possessive(Alice, her),
+        actor(Bob),
+        possessive(Bob, his)
+    ]
+    end
+    
+    ===> Alice scratches her head.
+    ===> Alice scratches her head.
+    ===> Bob scratches his head.
+    ===> Bob scratches his head.
+    ===> Alice scratches her head.
+
+This loses the nice property of the function name being a readable
+placeholder in the sentence, but you can now use named variables
+instead:
+
+    rules
+      [actor(?Actor),possessive(?Actor,?their)]
+        ?Actor scratches ?their head.
       []
     end
     situations
