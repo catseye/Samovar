@@ -34,13 +34,15 @@ class Scanner(object):
             self.token = None
             self.type = 'EOF'
             return
-        if self.scan_pattern(ur'\~|→', 'operator'):
+        if self.scan_pattern(ur'\~|→|¬|∧|∨', 'operator'):
             return
         if self.scan_pattern(r'\,|\.|\?|\!|\"' + r"|\'", 'punct'):
             return
         if self.scan_pattern(r'\(|\)|\{|\}|\[|\]', 'bracket'):
             return
         if self.scan_pattern(r'[a-zA-Z_]+', 'word'):
+            return
+        if self.scan_pattern(r'\?[a-zA-Z_]+', 'qmark'):
             return
         if self.scan_pattern(ur'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
             return
@@ -67,8 +69,8 @@ class Scanner(object):
             raise SyntaxError(u"Expected %s, but found %s ('%s') (near '%s')" %
                               (types, self.type, self.token, self.near_text()))
 
-    def consume(self, token):
-        if self.token == token:
+    def consume(self, *tokens):
+        if self.token in tokens:
             self.scan()
             return True
         else:
