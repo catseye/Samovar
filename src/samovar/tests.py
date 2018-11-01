@@ -26,30 +26,27 @@ class TermTestCase(TestCase):
     def test_term_match_ground(self):
         t1 = Term('actor', subterms=[Term('alice')])
         p1 = Term('actor', subterms=[Term('alice')])
-        u = {}
-        p1.match(t1, u)
+        u = p1.match(t1, {})
         self.assertEqual(u, {})
 
     def test_term_no_match_ground(self):
         t1 = Term('actor', subterms=[Term('alice')])
         p1 = Term('actor', subterms=[Term('bob')])
-        u = {}
         with self.assertRaises(ValueError):
-            p1.match(t1, u)
-        self.assertEqual(u, {})
+            p1.match(t1, {})
 
     def test_term_match_bind_var(self):
         t1 = Term('actor', subterms=[Term('alice')])
         p1 = Term('actor', subterms=[Var('?A')])
-        u = {}
-        p1.match(t1, u)
+        e = {}
+        u = p1.match(t1, e)
         self.assertEqual(u, {u'?A': Term('alice')})
+        self.assertEqual(e, {})
 
     def test_term_match_already_bound_var(self):
         t1 = Term('actor', subterms=[Term('alice')])
         p1 = Term('actor', subterms=[Var('?A')])
-        u = {u'?A': Term('alice')}
-        p1.match(t1, u)
+        u = p1.match(t1, {u'?A': Term('alice')})
         self.assertEqual(u, {u'?A': Term('alice')})
 
     def test_term_no_match_already_bound_var(self):
