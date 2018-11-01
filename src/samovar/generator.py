@@ -9,8 +9,17 @@ from samovar.query import match_all
 from samovar.terms import Term
 
 
-def word_count(s):
-    return len(re.split(r'\s+', s))
+class Event(object):
+    def __init__(self, rule, unifier):
+        self.rule = rule
+        self.unifier = unifier
+
+    def to_json(self):
+        u = dict([(str(k), str(v)) for k, v in self.unifier.items()])
+        return [self.rule.to_json(), u]
+
+    def __str__(self):
+        return self.rule.format(self.unifier)
 
 
 class Generator(object):
@@ -30,23 +39,11 @@ class Generator(object):
             moves.append(self.generate_move())
         return moves
 
-    def generate_words(self, target):
-        if self.debug:
-            self.debug_state()
-        moves = []
-        count = 0
-        while count < target:
-            move = self.generate_move()
-            count += word_count(move)
-            moves.append(move)
-        return moves
-
     def generate_move(self):
         candidates = self.get_candidate_rules()
         rule, unifier = random.choice(candidates)
-        move = rule.format(unifier)
         self.update_state(unifier, rule)
-        return move
+        return Event(rule, unifier)
 
     def get_candidate_rules(self):
         candidates = []

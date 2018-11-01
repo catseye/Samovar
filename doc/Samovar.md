@@ -10,7 +10,7 @@ can be run as tests.  (That's what Falderal does.)
 
     -> Functionality "Run Samovar Simulation" is implemented by
     -> shell command
-    -> "bin/samovar %(test-body-file) --words 20 --seed 0"
+    -> "bin/samovar %(test-body-file) --events 4 --seed 0"
 
 Scenarios
 ---------
@@ -160,7 +160,6 @@ but we can just say
     ===> Bob scratches his head.
     ===> Alice scratches her head.
     ===> Alice scratches her head.
-    ===> Bob scratches his head.
 
 This loses the nice property of the function name being a readable
 placeholder in the sentence, but you can now use named variables
@@ -183,4 +182,3 @@ instead:
     ===> Bob scratches his head.
     ===> Alice scratches her head.
     ===> Alice scratches her head.
-    ===> Bob scratches his head.

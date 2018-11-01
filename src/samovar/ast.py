@@ -42,6 +42,16 @@ class Rule(AST):
                 acc += u' ' + s
         return acc
 
+    def to_json(self):
+        acc = u''
+        for t in self.terms:
+            s = unicode(t)
+            if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
+                acc += s
+            else:
+                acc += u' ' + s
+        return acc
+
 
 class Scenario(AST):
     pass

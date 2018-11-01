@@ -33,7 +33,7 @@ def main(args):
     argparser.add_argument("--dump-ast",
                          action="store_true",
                          help="Just show the AST and stop")
-    argparser.add_argument("--length",
+    argparser.add_argument("--events",
                          type=int, default=0,
                          help="If given, generate this many events for each situation")
     argparser.add_argument("--output-type",
@@ -46,9 +46,6 @@ def main(args):
     argparser.add_argument("--profile",
                          action="store_true",
                          help="Run cProfile on standard 'heavy load' case and exit")
-    argparser.add_argument("--words",
-                         type=int, default=0,
-                         help="If given, generate each scenario til this many words")
 
     options = argparser.parse_args(args)
 
@@ -77,15 +74,14 @@ def main(args):
         sys.exit(0)
     if options.seed is not None:
         random.seed(options.seed)
+
     event_buckets = []
     for scenario in ast.scenarios:
         if scenario.goal is None:
             continue
         g = Generator(ast, scenario, debug=options.debug)
-        if options.length > 0:
-            events = g.generate_events(options.length)
-        elif options.words > 0:
-            events = g.generate_words(options.words)
+        if options.events > 0:
+            events = g.generate_events(options.events)
         event_buckets.append(events)
 
     if options.output_type == 'naive-text':
@@ -94,7 +90,10 @@ def main(args):
                 sys.stdout.write("%s\n" % e)
             sys.stdout.write("\n")
     elif options.output_type == 'events-json':
-        sys.stdout.write(json.dumps(event_buckets, indent=4, sort_keys=True))
+        def jsonify_bucket(b):
+            return [e.to_json() for e in b]
+        jsonified_buckets = [jsonify_bucket(b) for b in event_buckets]
+        sys.stdout.write(json.dumps(jsonified_buckets, indent=4, sort_keys=True))
     elif options.output_type == 'scenarios-json':
         raise NotImplementedError
     else:
