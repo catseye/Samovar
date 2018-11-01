@@ -3,10 +3,10 @@ Samovar
 
 *Version 0.2 (unreleased).  Subject to change in backwards-incompatible ways.*
 
-Samovar is a DSL for world-modeling using propositions.
+Samovar is a DSL for modelling a world using propositions (facts), and possible
+events that can occur based on those facts, changing them.
 
-A Samovar world is an immutable set of rules which operate on a mutable set of
-facts.  Each rule looks like
+Possible events are described with _event rules_.  Each event rule looks like
 
     [A] X [B]
 
@@ -28,17 +28,17 @@ We can add a complementary rule:
 
     [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
 
-And we can package this all into a world-description:
+And we can package this all into a scenario:
 
-    rules
+    scenario IgnatzWithBrick {
       [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
       [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
-    end
-    situations
-      [actor(Ignatz),item(brick)]
-    end
+    
+      actor(Ignatz).
+      item(brick).
+    }
 
-And an implementation of Samovar could take this world-description and use it to,
+And an implementation of Samovar could take this scenario and use it to,
 among other things, generate textual descriptions of chains of events like
 
     Ignatz picks up the brick. Ignatz puts down the brick.
