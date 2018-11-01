@@ -64,16 +64,17 @@ class Term(AbstractTerm):
                 return False
         return True
 
-    def match(self, term, unifier):
+    def match(self, term, env):
         if self.constructor != term.constructor:
             raise ValueError("`%s` != `%s`" % (self.constructor, term.constructor))
         if len(self.subterms) != len(term.subterms):
             raise ValueError("`%s` != `%s`" % (len(self.subterms), len(term.subterms)))
         for (subpat, subterm) in zip(self.subterms, term.subterms):
-            subpat.match(subterm, unifier)
+            env = subpat.match(subterm, env)
+        return env
 
-    def subst(self, unifier):
-        return Term(self.constructor, subterms=[subterm.subst(unifier) for subterm in self.subterms])
+    def subst(self, env):
+        return Term(self.constructor, subterms=[subterm.subst(env) for subterm in self.subterms])
 
     def collect_atoms(self, atoms):
         if self.is_atom():
@@ -108,14 +109,15 @@ class Var(AbstractTerm):
     def is_ground(term):
         return False
 
-    def match(self, term, unifier):
-        if self.name in unifier:
-            unifier[self.name].match(term, unifier)
+    def match(self, term, env):
+        if self.name in env:
+            bound_to = env[self.name]
+            return bound_to.match(term, env)
         else:
-            unifier[self.name] = term
+            return dict(list(env.items()) + [(self.name, term)])
 
-    def subst(self, unifier):
-        return unifier[self.name]
+    def subst(self, env):
+        return env[self.name]
 
     def collect_atoms(self, atoms):
         pass
