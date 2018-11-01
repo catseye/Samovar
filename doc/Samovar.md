@@ -12,8 +12,11 @@ can be run as tests.  (That's what Falderal does.)
     -> shell command
     -> "bin/samovar %(test-body-file) --words 20 --line-per-sentence --seed 0"
 
-Ignatz
-------
+Scenarios
+---------
+
+The basic unit of a Samovar world is a scenario.  A scenario may contain
+any number of propositions and event rules, in any order.
 
     scenario IgnatzWithBrick {
     
@@ -29,6 +32,57 @@ Ignatz
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
 
+A source file may contain more than one scenario.
+The implementation runs a simulation on one of the scenarios (TODO:
+make this specific.  Currently it's just the last scenario.)
+
+    scenario MollyWithBrick {
+    
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+      actor(Molly).
+      item(brick).
+    
+    }
+
+    scenario IgnatzWithBrick {
+    
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+      actor(Ignatz).
+      item(brick).
+    
+    }
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+
+Scenarios can import the event rules and propositions from other scenarios.
+This makes a scenario a good place to collect a setting, or a group of
+characters who will appear together in scenes.
+
+    scenario ItemRules {
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+    }
+    scenario Actors {
+      actor(Ignatz).
+    }
+    scenario Brickyard {
+      item(brick).
+    }
+    scenario Main {
+      import ItemRules.
+      import Actors.
+      import Brickyard.
+    }
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
 
 chairs
 ------

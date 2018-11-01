@@ -6,7 +6,8 @@ from samovar.scanner import Scanner
 
 
 # World         ::= {Scenario}.
-# Scenario      ::= "scenario" Atom "{" {Proposition | Rule} "}".
+# Scenario      ::= "scenario" Atom "{" {Import | Proposition | Rule} "}".
+# Import        ::= "import" Atom ["." | ","].
 # Proposition   ::= Term ["." | ","].
 # Rule          ::= Cond {Term | Punct} Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
@@ -23,11 +24,14 @@ from samovar.scanner import Scanner
 class Parser(object):
     def __init__(self, text):
         self.scanner = Scanner(text)
+        self.scenario_map = {}
 
     def world(self):
         scenarios = []
         while self.scanner.on('scenario'):
-            scenarios.append(self.scenario())
+            scenario = self.scenario()
+            self.scenario_map[scenario.name] = scenario
+            scenarios.append(scenario)
         return World(scenarios=scenarios)
 
     def scenario(self):
@@ -39,7 +43,16 @@ class Parser(object):
         self.scanner.scan()
         self.scanner.expect('{')
         while not self.scanner.on('}'):
-            if self.scanner.on('['):
+            if self.scanner.consume('import'):
+                self.scanner.check_type('word')
+                from_name = self.scanner.token
+                self.scanner.scan()
+                from_scenario = self.scenario_map[from_name]
+                rules.extend(from_scenario.rules)
+                propositions.extend(from_scenario.propositions)
+                self.scanner.consume('.')
+                self.scanner.consume(',')
+            elif self.scanner.on('['):
                 rules.append(self.rule())
             else:
                 propositions.append(self.proposition())

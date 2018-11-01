@@ -26,7 +26,7 @@ class Generator(object):
         self.debug = debug
         self.state = set()  # set of things currently true about the world
         self.things = set()
-        self.scenario = self.world.scenarios[0]
+        self.scenario = self.world.scenarios[-1]
         for term in self.scenario.propositions:
             assert isinstance(term, Term)
             self.state.add(term)
