@@ -1,16 +1,14 @@
 # encoding: UTF-8
 
-from samovar.ast import World, Rule, Function, Situation, Cond, Assert, Retract
+from samovar.ast import World, Rule, Situation, Cond, Assert, Retract
 from samovar.terms import Term, Var
 from samovar.scanner import Scanner
 
 
-# World         ::= {Rules | Functions | Situations}.
+# World         ::= {Rules | Situations}.
 # Rules         ::= "rules" {Rule} "end".
-# Functions     ::= "functions" {Function} "end".
 # Situations    ::= "situations" {Situation} "end".
 # Rule          ::= Cond {Term | Punct} Cond.
-# Function      ::= Term "→" Term.
 # Situation     ::= Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Expr          ::= Term | NotSym Term.
@@ -29,16 +27,13 @@ class Parser(object):
 
     def world(self):
         rules = []
-        functions = []
         situations = []
-        while self.scanner.on('rules', 'functions', 'situations'):
+        while self.scanner.on('rules', 'situations'):
             if self.scanner.on('rules'):
                 rules.extend(self._section('rules', self.rule))
-            if self.scanner.on('functions'):
-                functions.extend(self._section('functions', self.function))
             if self.scanner.on('situations'):
                 situations.extend(self._section('situations', self.situation))
-        return World(rules=rules, functions=functions, situations=situations)
+        return World(rules=rules, situations=situations)
 
     def _section(self, heading, method):
         items = []
@@ -55,12 +50,6 @@ class Parser(object):
             terms.append(self.term())
         post = self.cond()
         return Rule(pre=pre, terms=terms, post=post)
-
-    def function(self):
-        sign = self.term()
-        self.scanner.expect(u'→')
-        result = self.term()
-        return Function(sign=sign, result=result)
 
     def situation(self):
         cond = self.cond()
@@ -83,7 +72,7 @@ class Parser(object):
             return Assert(term=self.term())
 
     def term(self):
-        if self.scanner.on_type('variable'):
+        if self.scanner.on_type('variable') or self.scanner.on_type('qmark'):
             return self.var()
         self.scanner.check_type('word', 'punct')
         constructor = self.scanner.token
@@ -97,7 +86,8 @@ class Parser(object):
         return Term(constructor, subterms=subterms)
 
     def var(self):
-        self.scanner.check_type('variable')
+        #self.scanner.check_type('variable')
         name = self.scanner.token
         self.scanner.scan()
-        return Var(name)
+        v = Var(name)
+        return v

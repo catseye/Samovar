@@ -64,33 +64,9 @@ does, and use the conditions to chain actions together in a sensible order.
 
 *   Implement the pattern-matching of propositions using
     [this algorithm](https://github.com/NaNoGenMo/2018/issues/6#issuecomment-433445689)
-*   Allow `¬` instead of `~`, `∧` instead of `,`.
 *   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
-*   Should probably also allow ASCII tokens for those who don't want to type Greek
-    letters and weird logical connectives.
 *   Allow sentence trees to be given for actions.
-*   Give the implementation some mode where it deterministically processes rules.
-*   Given the above, write a Falderal test document for Samovar.
 *   Allow situations to define a termination condition, so that the implementation
     can generate a scenario where the condition is met (by whatever method).
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
-*   Remove functions as I believe they are not necessary -- if you want to look
-    up a property, you can just pattern-match for it.  e.g. the example currently is
-    
-        their(Alice) → her
-        their(Bob) → his
-    
-    but we can just say
-    
-        possessive(Alice, her),
-        possessive(Bob, his)
-    
-    in the world-database, then write rules like
-    
-        [actor(α),possessive(α,ξ)] α scratches ξ head. []
-    
-    This loses the nice property of the function name being a placeholder, but
-    you could use named variables instead:
-    
-        [actor(?Actor),possessive(?Actor,?their)] ?Actor scratches ?their head. []

@@ -29,17 +29,11 @@ class Rule(AST):
     def nu_format(self):
         return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.terms]) + u" " + self.post.format()
 
-    def format(self, unifier, functions):
+    def format(self, unifier):
         acc = u''
         for t in self.terms:
 
             t = t.subst(unifier)
-
-            # now resolve functions.  NOTE: this is a terrible hacky just-for-now implementation.  TODO: better it.
-            for f in functions:
-                if t == f.sign:
-                    t = f.result
-                    break
 
             s = unicode(t)
             if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
@@ -47,10 +41,6 @@ class Rule(AST):
             else:
                 acc += u' ' + s
         return acc
-
-
-class Function(AST):
-    pass
 
 
 class Situation(AST):

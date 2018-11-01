@@ -1,0 +1,13 @@
+rules
+  [actor(?Actor),possessive(?Actor,?their)]
+    ?Actor scratches ?their head.
+  []
+end
+situations
+[
+    actor(Alice),
+    possessive(Alice, her),
+    actor(Bob),
+    possessive(Bob, his)
+]
+end

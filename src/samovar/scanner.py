@@ -36,13 +36,14 @@ class Scanner(object):
             return
         if self.scan_pattern(ur'\~|→|¬|∧|∨', 'operator'):
             return
+        # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
+        if self.scan_pattern(r'\?[a-zA-Z_]+', 'qmark'):
+            return
         if self.scan_pattern(r'\,|\.|\?|\!|\"' + r"|\'", 'punct'):
             return
         if self.scan_pattern(r'\(|\)|\{|\}|\[|\]', 'bracket'):
             return
         if self.scan_pattern(r'[a-zA-Z_]+', 'word'):
-            return
-        if self.scan_pattern(r'\?[a-zA-Z_]+', 'qmark'):
             return
         if self.scan_pattern(ur'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
             return
