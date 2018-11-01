@@ -2,6 +2,14 @@ import unittest
 from unittest import TestCase
 
 from samovar.terms import Term, Var
+from samovar.query import match_all
+
+
+def t(s, *args):
+    return Term(s, subterms=args)
+
+def v(s):
+    return Var(s)
 
 
 class TermTestCase(TestCase):
@@ -61,6 +69,60 @@ class TermTestCase(TestCase):
         t = Term('actor', subterms=[Var('?A')])
         r = t.subst({u'?A': Term('alice')})
         self.assertEqual(r, Term('actor', subterms=[Term('alice')]))
+
+
+DATABASE = [
+    t('actor', t('alice')),
+    t('actor', t('bob')),
+
+    t('drink', t('gin')),
+
+    t('weapon', t('revolver')),
+    t('weapon', t('knife')),
+    t('weapon', t('club')),
+
+    t('holding', t('bob'), t('revolver')),
+    t('holding', t('alice'), t('gin')),
+    t('holding', t('alice'), t('knife')),
+]
+
+
+class TestMatchAll(unittest.TestCase):
+
+    def assertMatchAll(self, query, result):
+        self.assertEqual(match_all(DATABASE, query, {}), result)
+
+    def test_match_all(self):
+        # Find all actors who are Cody.  Since there is no such actor, this will return no matches.
+        self.assertMatchAll(
+            [t('actor', t('cody'))],
+            []
+        )
+        # Find all actor who are Alice.  This will return one match, but no bindings.
+        self.assertMatchAll(
+            [t('actor', t('alice'))],
+            [{}]
+        )
+        # Find all drinks.  This will return one match, with ?D bound to the result.
+        self.assertMatchAll(
+            [t("drink", v("?D"))],
+            [{'?D': Term('gin')}]               # there was a match, in which ?D was bound
+        )
+        # Find all actors.
+        self.assertMatchAll(
+            [t('actor', v('?C'))],
+            [{'?C': Term('alice')}, {'?C': Term('bob')}]
+        )
+        # Find all actors who are holding the revolver.
+        self.assertMatchAll(
+            [t('actor', v('?C')), t('holding', v('?C'), t('revolver'))],
+            [{'?C': t('bob')}]
+        )
+        # Find all actors who are holding a weapon.
+        self.assertMatchAll(
+            [t('actor', v('?C')), t('weapon', v('?W')), t('holding', v('?C'), v('?W'))],
+            [{'?W': t('knife'), '?C': t('alice')}, {'?W': t('revolver'), '?C': t('bob')}]
+        )
 
 
 if __name__ == '__main__':
