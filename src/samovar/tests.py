@@ -17,6 +17,10 @@ def a(t):
     return Assert(term=t)
 
 
+def r(t):
+    return Retract(term=t)
+
+
 class TermTestCase(TestCase):
     def test_term_basic_properties(self):
         t1 = Term('alice')
@@ -76,26 +80,29 @@ class TermTestCase(TestCase):
         self.assertEqual(r, Term('actor', Term('alice')))
 
 
-DATABASE = [
-    t('actor', t('alice')),
-    t('actor', t('bob')),
+class DatabaseTestCase(unittest.TestCase):
 
-    t('drink', t('gin')),
+    def setUp(self):
+        self.database = [
+            t('actor', t('alice')),
+            t('actor', t('bob')),
 
-    t('weapon', t('revolver')),
-    t('weapon', t('knife')),
-    t('weapon', t('club')),
+            t('drink', t('gin')),
 
-    t('holding', t('bob'), t('revolver')),
-    t('holding', t('alice'), t('gin')),
-    t('holding', t('alice'), t('knife')),
-]
+            t('weapon', t('revolver')),
+            t('weapon', t('knife')),
+            t('weapon', t('club')),
+
+            t('holding', t('bob'), t('revolver')),
+            t('holding', t('alice'), t('gin')),
+            t('holding', t('alice'), t('knife')),
+        ]
 
 
-class TestMatchAll(unittest.TestCase):
+class TestMatchAll(DatabaseTestCase):
 
     def assertMatchAll(self, query, result):
-        self.assertEqual(match_all(DATABASE, query, {}), result)
+        self.assertEqual(match_all(self.database, query, {}), result)
 
     def test_match_all(self):
         # Find all actors who are Cody.  Since there is no such actor, this will return no matches.
@@ -103,7 +110,7 @@ class TestMatchAll(unittest.TestCase):
             [a(t('actor', t('cody')))],
             []
         )
-        # Find all actor who are Alice.  This will return one match, but no bindings.
+        # Find all actors who are Alice.  This will return one match, but no bindings.
         self.assertMatchAll(
             [a(t('actor', t('alice')))],
             [{}]
@@ -128,6 +135,44 @@ class TestMatchAll(unittest.TestCase):
             [a(t('actor', t('?C'))), a(t('weapon', t('?W'))), a(t('holding', t('?C'), t('?W')))],
             [{'?W': t('knife'), '?C': t('alice')}, {'?W': t('revolver'), '?C': t('bob')}]
         )
+
+    def test_match_all_with_negation(self):
+        # Find all actors who are not holding the revolver.
+        self.assertMatchAll(
+            [a(t('actor', t('?C'))), r(t('holding', t('?C'), t('revolver')))],
+            [{'?C': t('alice')}]
+        )
+        # Find all actors who are not holding a weapon.  Or rather, all pairs
+        # of (actor, weapon) where the actor is not holding that weapon.
+        self.assertMatchAll(
+            [a(t('actor', t('?C'))), a(t('weapon', t('?W'))), r(t('holding', t('?C'), t('?W')))],
+            [
+                {'?W': t('revolver'), '?C': t('alice')},
+                {'?W': t('club'), '?C': t('alice')},
+                {'?W': t('knife'), '?C': t('bob')},
+                {'?W': t('club'), '?C': t('bob')},
+            ]
+        )
+        # Note that we can't say "Find all actors who aren't Alice".
+        # We can say this:
+        self.assertMatchAll(
+            [a(t('actor', t('?C'))), r(t('actor', t('alice')))],
+            []
+        )
+        # ... but what this is saying is "Find all actors if Alice doesn't exist."
+
+        # For a one-off case, we can do something like this:
+        self.database.append(t('is_alice', t('alice')))
+        self.assertMatchAll(
+            [a(t('actor', t('?C'))), r(t('is_alice', t('?C')))],
+            [{'?C': t('bob')}]
+        )
+
+        # For the general case, we'll need to think about equality tests.
+
+        # Note also that we can't search on negative clauses with free variables:
+        with self.assertRaises(KeyError):
+            match_all(self.database, [a(t('actor', t('?C'))), r(t('weapon', t('?W')))], {})
 
 
 if __name__ == '__main__':
