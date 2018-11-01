@@ -9,22 +9,9 @@ class AbstractTerm(object):
     def __hash__(self):
         return hash(unicode(self))
 
-    def match_many(self, terms):
-        successes = []
-        for term in terms:
-            unifier = {}
-            try:
-                self.match(term, unifier)
-                successes.append((term, unifier))
-            except ValueError as e:
-                pass
-        return successes
-
 
 class Term(AbstractTerm):
-    def __init__(self, constructor, subterms=None):
-        if subterms is None:
-            subterms = []
+    def __init__(self, constructor, *subterms):
         self.constructor = constructor
         self.subterms = subterms
 
@@ -35,7 +22,7 @@ class Term(AbstractTerm):
 
     def __repr__(self):
         if self.subterms:
-            return "%s(%r, subterms=%r)" % (
+            return "%s(%r, *%r)" % (
                 self.__class__.__name__, self.constructor, self.subterms
             )
         else:
@@ -74,7 +61,7 @@ class Term(AbstractTerm):
         return env
 
     def subst(self, env):
-        return Term(self.constructor, subterms=[subterm.subst(env) for subterm in self.subterms])
+        return Term(self.constructor, *[subterm.subst(env) for subterm in self.subterms])
 
     def collect_atoms(self, atoms):
         if self.is_atom():
