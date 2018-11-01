@@ -66,7 +66,11 @@ does, and use the conditions to chain actions together in a sensible order.
     [this algorithm](https://github.com/NaNoGenMo/2018/issues/6#issuecomment-433445689)
 *   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
 *   Allow sentence trees to be given for actions.
-*   Allow situations to define a termination condition, so that the implementation
-    can generate a scenario where the condition is met (by whatever method).
+*   Allow scenarios to define a termination condition, so that the implementation
+    can generate a scene where the condition is met (by whatever method).
+*   Allow scenarios to import the content of other scenarios to "modularly" define
+    settings, characters appearing in a scene, etc.
+*   Have the generator generate scenes for all scenarios with goals.
+*   Allow scenarios to specify a minimum number of events to generate (maybe?)
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
