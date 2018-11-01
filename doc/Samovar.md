@@ -85,31 +85,6 @@ idle
     end
     ???> IndexError
 
-functions
----------
-
-    rules
-      [actor(ρ)]
-        ρ scratches their(ρ) head.
-      []
-    end
-    functions
-      their(Alice) → her
-      their(Bob) → his
-    end
-    situations
-    [
-        actor(Alice),
-        actor(Bob)
-    ]
-    end
-    
-    ===> Alice scratches her head.
-    ===> Alice scratches her head.
-    ===> Bob scratches his head.
-    ===> Bob scratches his head.
-    ===> Alice scratches her head.
-
 no need for functions
 ---------------------
 
