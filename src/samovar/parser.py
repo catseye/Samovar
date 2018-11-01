@@ -1,15 +1,16 @@
 # encoding: UTF-8
 
-from samovar.ast import World, Rule, Situation, Cond, Assert, Retract
+from samovar.ast import World, Scenario, Rule, Cond, Assert, Retract
 from samovar.terms import Term, Var
 from samovar.scanner import Scanner
 
 
-# World         ::= {Rules | Situations}.
-# Rules         ::= "rules" {Rule} "end".
-# Situations    ::= "situations" {Situation} "end".
+# World         ::= {Scenario}.
+# Scenario      ::= "scenario" Atom "{" {Import | Proposition | Rule | Goal} ["." | ","] "}".
+# Import        ::= "import" Atom.
+# Goal          ::= "goal" Cond.
+# Proposition   ::= Term.
 # Rule          ::= Cond {Term | Punct} Cond.
-# Situation     ::= Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Expr          ::= Term | NotSym Term.
 # Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
@@ -24,24 +25,47 @@ from samovar.scanner import Scanner
 class Parser(object):
     def __init__(self, text):
         self.scanner = Scanner(text)
+        self.scenario_map = {}
 
     def world(self):
-        rules = []
-        situations = []
-        while self.scanner.on('rules', 'situations'):
-            if self.scanner.on('rules'):
-                rules.extend(self._section('rules', self.rule))
-            if self.scanner.on('situations'):
-                situations.extend(self._section('situations', self.situation))
-        return World(rules=rules, situations=situations)
+        scenarios = []
+        while self.scanner.on('scenario'):
+            scenario = self.scenario()
+            self.scenario_map[scenario.name] = scenario
+            scenarios.append(scenario)
+        return World(scenarios=scenarios)
 
-    def _section(self, heading, method):
-        items = []
-        self.scanner.expect(heading)
-        while not self.scanner.on('end'):
-            items.append(method())
-        self.scanner.expect('end')
-        return items
+    def scenario(self):
+        propositions = []
+        rules = []
+        goal = None
+        self.scanner.expect('scenario')
+        self.scanner.check_type('word')
+        name = self.scanner.token
+        self.scanner.scan()
+        self.scanner.expect('{')
+        while not self.scanner.on('}'):
+            if self.scanner.consume('import'):
+                self.scanner.check_type('word')
+                from_name = self.scanner.token
+                self.scanner.scan()
+                from_scenario = self.scenario_map[from_name]
+                rules.extend(from_scenario.rules)
+                propositions.extend(from_scenario.propositions)
+            elif self.scanner.consume('goal'):
+                assert goal is None
+                goal = self.cond()
+            elif self.scanner.on('['):
+                rules.append(self.rule())
+            else:
+                propositions.append(self.proposition())
+            self.scanner.consume('.')
+            self.scanner.consume(',')
+        self.scanner.expect('}')
+        return Scenario(name=name, propositions=propositions, rules=rules, goal=goal)
+
+    def proposition(self):
+        return self.term()
 
     def rule(self):
         terms = []
@@ -50,10 +74,6 @@ class Parser(object):
             terms.append(self.term())
         post = self.cond()
         return Rule(pre=pre, terms=terms, post=post)
-
-    def situation(self):
-        cond = self.cond()
-        return Situation(cond=cond)
 
     def cond(self):
         exprs = []

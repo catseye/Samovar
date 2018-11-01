@@ -34,7 +34,7 @@ class Scanner(object):
             self.token = None
             self.type = 'EOF'
             return
-        if self.scan_pattern(ur'\~|→|¬|∧|∨', 'operator'):
+        if self.scan_pattern(ur'\~|→|=|¬|∧|∨', 'operator'):
             return
         # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
         if self.scan_pattern(r'\?[a-zA-Z_]+', 'qmark'):

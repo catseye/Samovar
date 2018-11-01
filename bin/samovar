@@ -41,7 +41,7 @@ if __name__ == '__main__':
                          help="Run cProfile on standard 'heavy load' case and exit")
     optparser.add_option("--words",
                          type=int, default=0,
-                         help="If given, generate each situation til this many words")
+                         help="If given, generate each scenario til this many words")
     (options, args) = optparser.parse_args(sys.argv[1:])
 
     if options.profile:
@@ -69,14 +69,17 @@ if __name__ == '__main__':
         sys.exit(0)
     if options.seed is not None:
         random.seed(options.seed)
-    g = Generator(ast, debug=options.debug)
-    if options.length > 0:
-        events = g.generate_events(options.length)
-    elif options.words > 0:
-        events = g.generate_words(options.words)
-    for e in events:
-        if options.line_per_sentence:
-            sys.stdout.write("%s\n" % e)
-        else:
-            sys.stdout.write("%s  " % e)
-    sys.stdout.write("\n")
+    for scenario in ast.scenarios:
+        if scenario.goal is None:
+            continue
+        g = Generator(ast, scenario, debug=options.debug)
+        if options.length > 0:
+            events = g.generate_events(options.length)
+        elif options.words > 0:
+            events = g.generate_words(options.words)
+        for e in events:
+            if options.line_per_sentence:
+                sys.stdout.write("%s\n" % e)
+            else:
+                sys.stdout.write("%s  " % e)
+        sys.stdout.write("\n")

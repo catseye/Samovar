@@ -14,13 +14,13 @@ def word_count(s):
 
 
 class Generator(object):
-    def __init__(self, world, debug=False):
+    def __init__(self, world, scenario, debug=False):
         self.world = world
         self.debug = debug
         self.state = set()  # set of things currently true about the world
-        for e in self.world.situations[0].cond.exprs:
-            if isinstance(e, Assert):
-                self.state.add(e.term)
+        self.scenario = scenario
+        for term in self.scenario.propositions:
+            self.state.add(term)
 
     def generate_events(self, count):
         if self.debug:
@@ -50,7 +50,7 @@ class Generator(object):
 
     def get_candidate_rules(self):
         candidates = []
-        for rule in self.world.rules:
+        for rule in self.scenario.rules:
             for unifier in match_all(self.state, rule.pre.exprs, {}):
                 candidates.append((rule, unifier))
 
