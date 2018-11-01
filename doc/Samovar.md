@@ -34,21 +34,21 @@ chairs
 
     rules
     
-      [actor(ρ),~sitting(ρ)]
-      ρ walks around the room.
-      []
+    [actor(ρ)∧¬sitting(ρ)]
+    ρ walks around the room.
+    []
     
-      [actor(ρ),~sitting(ρ),nearby(κ),empty(κ)]
-      ρ sits down in the κ.
-      [sitting(ρ),in(ρ,κ),~empty(κ)]
+    [actor(ρ)∧¬sitting(ρ)∧nearby(κ)∧empty(κ)]
+    ρ sits down in the κ.
+    [sitting(ρ)∧in(ρ,κ)∧¬empty(κ)]
     
-      [actor(ρ),sitting(ρ),in(ρ,κ)]
-      ρ leans back in the κ.
-      []
+    [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
+    ρ leans back in the κ.
+    []
     
-      [actor(ρ),sitting(ρ),in(ρ,κ)]
-      ρ gets up and stretches.
-      [~sitting(ρ),~in(ρ,κ),empty(κ)]
+    [actor(ρ)∧sitting(ρ)∧in(ρ,κ)]
+    ρ gets up and stretches.
+    [¬sitting(ρ)∧¬in(ρ,κ)∧empty(κ)]
     
     end
     
