@@ -3,10 +3,10 @@ Samovar
 
 *Version 0.2 (unreleased).  Subject to change in backwards-incompatible ways.*
 
-Samovar is a DSL for world-modeling using propositions.
+Samovar is a DSL for modelling a world using propositions (facts), and possible
+events that can occur based on those facts, changing them.
 
-A Samovar world is an immutable set of rules which operate on a mutable set of
-facts.  Each rule looks like
+Possible events are described with _event rules_.  Each event rule looks like
 
     [A] X [B]
 
@@ -28,17 +28,20 @@ We can add a complementary rule:
 
     [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
 
-And we can package this all into a world-description:
+And we can package this all into a scenario:
 
-    rules
-      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
-      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
-    end
-    situations
-      [actor(Ignatz),item(brick)]
-    end
+    scenario IgnatzWithBrick {
+      
+        [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+        [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+    
+        actor(Ignatz).
+        item(brick).
+    
+        goal [].
+    }
 
-And an implementation of Samovar could take this world-description and use it to,
+And an implementation of Samovar could take this scenario and use it to,
 among other things, generate textual descriptions of chains of events like
 
     Ignatz picks up the brick. Ignatz puts down the brick.
@@ -66,7 +69,8 @@ does, and use the conditions to chain actions together in a sensible order.
     [this algorithm](https://github.com/NaNoGenMo/2018/issues/6#issuecomment-433445689)
 *   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
 *   Allow sentence trees to be given for actions.
-*   Allow situations to define a termination condition, so that the implementation
-    can generate a scenario where the condition is met (by whatever method).
+*   Allow scenarios to define a termination condition, so that the implementation
+    can generate a scene where the condition is met (by whatever method).
+*   Allow scenarios to specify a minimum number of events to generate (maybe?)
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.

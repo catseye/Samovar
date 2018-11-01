@@ -21,17 +21,18 @@ def all_assignments(vars_, things):
 
 
 class Generator(object):
-    def __init__(self, world, debug=False):
+    def __init__(self, world, scenario, debug=False):
         self.world = world
         self.debug = debug
         self.state = set()  # set of things currently true about the world
         self.things = set()
-        for e in self.world.situations[0].cond.exprs:
-            if isinstance(e, Assert):
-                self.state.add(e.term)
-                atoms = set()
-                e.term.collect_atoms(atoms)
-                self.things |= atoms
+        self.scenario = scenario
+        for term in self.scenario.propositions:
+            assert isinstance(term, Term)
+            self.state.add(term)
+            atoms = set()
+            term.collect_atoms(atoms)
+            self.things |= atoms
 
     def generate_events(self, count):
         if self.debug:
@@ -61,7 +62,7 @@ class Generator(object):
 
     def get_candidate_rules(self):
         candidates = []
-        for rule in self.world.rules:
+        for rule in self.scenario.rules:
             vars_ = set()
             for expr in rule.pre.exprs:
                 expr.term.collect_variables(vars_)

@@ -12,27 +12,91 @@ can be run as tests.  (That's what Falderal does.)
     -> shell command
     -> "bin/samovar %(test-body-file) --words 20 --line-per-sentence --seed 0"
 
-Ignatz
-------
+Scenarios
+---------
 
-    rules
+The basic unit of a Samovar world is a scenario.  A scenario may contain
+any number of propositions and event rules, and an optional goal, in any order.
+
+    scenario IgnatzWithBrick {
+    
       [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
       [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
-    end
-    situations
-      [actor(Ignatz),item(brick)]
-    end
+      
+      actor(Ignatz).
+      item(brick).
     
+      goal [].
+    }
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
     ===> Ignatz picks up the brick.
     ===> Ignatz puts down the brick.
 
+A source file may contain more than one scenario.  By default, our
+implementation of Samovar runs a simulation on each of the scenarios
+that has a goal defined, even if that goal is empty.
+
+    scenario MollyWithBrick {
+    
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+      actor(Molly).
+      item(brick).
+    
+    }
+
+    scenario IgnatzWithBrick {
+    
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+      actor(Ignatz).
+      item(brick).
+        
+      goal [].
+    }
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+
+Scenarios can import the event rules and propositions from other scenarios.
+This makes a scenario a good place to collect a setting, or a group of
+characters who will appear together in scenes.  These "library" scenarios
+should have no goal, as we don't want to generate simulations for them.
+
+    scenario ItemRules {
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+    }
+    scenario Actors {
+      actor(Ignatz).
+    }
+    scenario Brickyard {
+      item(brick).
+    }
+    scenario Main {
+      import ItemRules.
+      import Actors.
+      import Brickyard.
+      goal [].
+    }
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+
+There is nothing stopping an implementation from allowing a Samovar
+description to be spread over multiple source files, but there is no
+facility to reference one source file from another in Samovar, so how
+they are located and collected is up to the implementation.
 
 chairs
 ------
 
-    rules
+    scenario Chairs {
     
       [actor(ρ)∧¬sitting(ρ)]
         ρ walks around the room.
@@ -50,40 +114,22 @@ chairs
         ρ gets up and stretches.
       [¬sitting(ρ)∧¬in(ρ,κ)∧empty(κ)]
     
-    end
+      actor(Hastings).
+      actor(Petersen).
+      actor(Wembley).
+      nearby(chair). empty(chair).
+      nearby(recliner).
+      empty(recliner).
+      nearby(sofa).
+      empty(sofa).
     
-    situations
-    
-    [
-        actor(Hastings),
-        actor(Petersen),
-        actor(Wembley),
-        nearby(chair), empty(chair),
-        nearby(recliner), empty(recliner),
-        nearby(sofa), empty(sofa)
-    ]
-    
-    end
+      goal [].
+    }
     ===> Hastings sits down in the chair.
     ===> Hastings leans back in the chair.
     ===> Wembley sits down in the recliner.
     ===> Petersen sits down in the sofa.
 
-idle
-----
-
-    rules
-    
-      [actor(ρ)]
-        ρ rubs his chin.
-      []
-      
-      [actor(ρ)]
-        ρ yawns.
-      []
-    
-    end
-    ???> IndexError
 
 no need for functions
 ---------------------
@@ -97,20 +143,19 @@ some thing, you can just pattern-match for it.  The example was
     
 but we can just say
     
-    rules
+    scenario ScratchesHead {
+    
       [actor(ρ),possessive(ρ,ξ)]
         ρ scratches ξ head.
       []
-    end
-    situations
-    [
-        actor(Alice),
-        possessive(Alice, her),
-        actor(Bob),
-        possessive(Bob, his)
-    ]
-    end
     
+      actor(Alice).
+      possessive(Alice, her).
+      actor(Bob).
+      possessive(Bob, his).
+    
+      goal [].
+    }
     ===> Alice scratches her head.
     ===> Alice scratches her head.
     ===> Bob scratches his head.
@@ -121,20 +166,19 @@ This loses the nice property of the function name being a readable
 placeholder in the sentence, but you can now use named variables
 instead:
 
-    rules
+    scenario ScratchesHead {
+    
       [actor(?Actor),possessive(?Actor,?their)]
         ?Actor scratches ?their head.
       []
-    end
-    situations
-    [
-        actor(Alice),
-        possessive(Alice, her),
-        actor(Bob),
-        possessive(Bob, his)
-    ]
-    end
     
+      actor(Alice).
+      possessive(Alice, her).
+      actor(Bob).
+      possessive(Bob, his).
+    
+      goal [].
+    }
     ===> Alice scratches her head.
     ===> Alice scratches her head.
     ===> Bob scratches his head.
