@@ -12,37 +12,43 @@ import sys
 
 sys.path.insert(0, join(dirname(realpath(sys.argv[0])), '..', 'src'))
 
+from argparse import ArgumentParser
 import codecs
-from optparse import OptionParser
+import json
 import random
 
 from samovar.parser import Parser
 from samovar.generator import Generator
 
 
-if __name__ == '__main__':
-    optparser = OptionParser(__doc__)
-    optparser.add_option("--debug",
+def main(args):
+    argparser = ArgumentParser()
+
+    argparser.add_argument('input_files', nargs='+', metavar='FILENAME', type=str,
+        help='Source files containing the scenario descriptions'
+    )
+    argparser.add_argument("--debug",
                          action="store_true",
                          help="Show state before and after each move")
-    optparser.add_option("--dump-ast",
+    argparser.add_argument("--dump-ast",
                          action="store_true",
                          help="Just show the AST and stop")
-    optparser.add_option("--length",
+    argparser.add_argument("--length",
                          type=int, default=0,
                          help="If given, generate this many events for each situation")
-    optparser.add_option("--line-per-sentence",
+    argparser.add_argument("--line-per-sentence",
                          action="store_true")
-    optparser.add_option("--seed",
+    argparser.add_argument("--seed",
                          type=int, default=None,
                          help="Set random seed (to select moves deterministically)")
-    optparser.add_option("--profile",
+    argparser.add_argument("--profile",
                          action="store_true",
                          help="Run cProfile on standard 'heavy load' case and exit")
-    optparser.add_option("--words",
+    argparser.add_argument("--words",
                          type=int, default=0,
                          help="If given, generate each scenario til this many words")
-    (options, args) = optparser.parse_args(sys.argv[1:])
+
+    options = argparser.parse_args(args)
 
     if options.profile:
         import cProfile
@@ -58,7 +64,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     text = ''
-    for arg in args:
+    for arg in options.input_files:
         with codecs.open(arg, 'r', encoding='UTF-8') as f:
             text += f.read()
 
@@ -83,3 +89,7 @@ if __name__ == '__main__':
             else:
                 sys.stdout.write("%s  " % e)
         sys.stdout.write("\n")
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

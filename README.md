@@ -69,7 +69,6 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   (+) Allow sentence trees to be given for actions.
 *   (+) Allow scenarios to define a termination condition, so that the implementation
     can generate a scene where the condition is met (by whatever method).
 *   (+) Allow scenarios to specify a minimum number of events to generate.
@@ -79,7 +78,6 @@ they can be selected by simple pattern-matching rather than full unification.
 *   Output events to JSON.
 *   Output AST to JSON.
 *   Python 3 support.
-*   ArgParser, not OptionParser.
 *   Test (manually) that multiple source files can be given.  (put in `eg/`)
 *   Allow comments in source file.  Probably `#` or `//`.
 *   Say that Greek letter variables are exactly equivalent to `?rho`, etc.
@@ -88,3 +86,7 @@ they can be selected by simple pattern-matching rather than full unification.
 *   Consider allowing `∨`.
 *   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with
     named tuples, but this is probably madness and not at all worth doing)
+
+#### Probably we don't do
+
+*   (+) Allow sentence trees to be given for actions.
