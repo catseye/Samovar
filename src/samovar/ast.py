@@ -43,7 +43,7 @@ class Rule(AST):
         return acc
 
 
-class Situation(AST):
+class Scenario(AST):
     pass
 
 
