@@ -1,6 +1,7 @@
 import unittest
 from unittest import TestCase
 
+from samovar.ast import Assert, Retract
 from samovar.terms import Term, Var
 from samovar.query import match_all
 
@@ -10,6 +11,10 @@ def t(s, *args):
         return Var(s)
     else:
         return Term(s, *args)
+
+
+def a(t):
+    return Assert(term=t)
 
 
 class TermTestCase(TestCase):
@@ -95,32 +100,32 @@ class TestMatchAll(unittest.TestCase):
     def test_match_all(self):
         # Find all actors who are Cody.  Since there is no such actor, this will return no matches.
         self.assertMatchAll(
-            [t('actor', t('cody'))],
+            [a(t('actor', t('cody')))],
             []
         )
         # Find all actor who are Alice.  This will return one match, but no bindings.
         self.assertMatchAll(
-            [t('actor', t('alice'))],
+            [a(t('actor', t('alice')))],
             [{}]
         )
         # Find all drinks.  This will return one match, with ?D bound to the result.
         self.assertMatchAll(
-            [t("drink", t("?D"))],
+            [a(t("drink", t("?D")))],
             [{'?D': Term('gin')}]               # there was a match, in which ?D was bound
         )
         # Find all actors.
         self.assertMatchAll(
-            [t('actor', t('?C'))],
+            [a(t('actor', t('?C')))],
             [{'?C': Term('alice')}, {'?C': Term('bob')}]
         )
         # Find all actors who are holding the revolver.
         self.assertMatchAll(
-            [t('actor', t('?C')), t('holding', t('?C'), t('revolver'))],
+            [a(t('actor', t('?C'))), a(t('holding', t('?C'), t('revolver')))],
             [{'?C': t('bob')}]
         )
         # Find all actors who are holding a weapon.
         self.assertMatchAll(
-            [t('actor', t('?C')), t('weapon', t('?W')), t('holding', t('?C'), t('?W'))],
+            [a(t('actor', t('?C'))), a(t('weapon', t('?W'))), a(t('holding', t('?C'), t('?W')))],
             [{'?W': t('knife'), '?C': t('alice')}, {'?W': t('revolver'), '?C': t('bob')}]
         )
 
