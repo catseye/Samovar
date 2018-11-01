@@ -62,8 +62,6 @@ does, and use the conditions to chain actions together in a sensible order.
 
 ### TODO
 
-*   Implement the pattern-matching of propositions using
-    [this algorithm](https://github.com/NaNoGenMo/2018/issues/6#issuecomment-433445689)
 *   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
 *   Allow sentence trees to be given for actions.
 *   Allow situations to define a termination condition, so that the implementation
