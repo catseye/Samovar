@@ -69,14 +69,11 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   (+) Allow scenarios to define a termination condition, so that the implementation
-    can generate a scene where the condition is met (by whatever method).
 *   (+) Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   (+) Consider macros.
 *   Output scenarios to JSON.
 *   Python 3 support.
-*   Test (manually) that multiple source files can be given.  (put in `eg/`)
 *   Allow comments in source file.  Probably `#` or `//`.
 *   Say that Greek letter variables are exactly equivalent to `?rho`, etc.
 *   `!` for not.

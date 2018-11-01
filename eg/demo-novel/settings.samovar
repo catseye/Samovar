@@ -1,0 +1,9 @@
+scenario Brickyard {
+    item(brick).
+    item(glass).
+}
+
+scenario DiningRoom {
+    item(table).
+    item(chair).
+}

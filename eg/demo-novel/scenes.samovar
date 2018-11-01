@@ -1,0 +1,20 @@
+scenario Actors {
+  [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+  [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+  actor(Ignatz).
+  actor(Molly).
+}
+
+scenario ChapterI {
+    import Brickyard.
+    import Actors.
+
+    goal [].
+}
+
+scenario ChapterII {
+    import DiningRoom.
+    import Actors.
+
+    goal [].
+}
