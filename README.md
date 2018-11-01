@@ -76,7 +76,7 @@ they can be selected by simple pattern-matching rather than full unification.
     a given action has been taken previously or not.
 *   (+) Consider macros.
 *   Output events to JSON.
-*   Output AST to JSON.
+*   Output scenarios to JSON.
 *   Python 3 support.
 *   Test (manually) that multiple source files can be given.  (put in `eg/`)
 *   Allow comments in source file.  Probably `#` or `//`.

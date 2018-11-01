@@ -27,17 +27,19 @@ def main(args):
     argparser.add_argument('input_files', nargs='+', metavar='FILENAME', type=str,
         help='Source files containing the scenario descriptions'
     )
-    argparser.add_argument("--debug",
-                         action="store_true",
-                         help="Show state before and after each move")
+    argparser.add_argument("--debug", action="store_true",
+        help="Show state before and after each move"
+    )
     argparser.add_argument("--dump-ast",
                          action="store_true",
                          help="Just show the AST and stop")
     argparser.add_argument("--length",
                          type=int, default=0,
                          help="If given, generate this many events for each situation")
-    argparser.add_argument("--line-per-sentence",
-                         action="store_true")
+    argparser.add_argument("--output-type",
+                         choices=['naive-text', 'events-json', 'scenarios-json'],
+                         default='naive-text',
+                         help="Specify what to output and in what format")
     argparser.add_argument("--seed",
                          type=int, default=None,
                          help="Set random seed (to select moves deterministically)")
@@ -75,6 +77,7 @@ def main(args):
         sys.exit(0)
     if options.seed is not None:
         random.seed(options.seed)
+    event_buckets = []
     for scenario in ast.scenarios:
         if scenario.goal is None:
             continue
@@ -83,12 +86,19 @@ def main(args):
             events = g.generate_events(options.length)
         elif options.words > 0:
             events = g.generate_words(options.words)
-        for e in events:
-            if options.line_per_sentence:
+        event_buckets.append(events)
+
+    if options.output_type == 'naive-text':
+        for b in event_buckets:
+            for e in events:
                 sys.stdout.write("%s\n" % e)
-            else:
-                sys.stdout.write("%s  " % e)
-        sys.stdout.write("\n")
+            sys.stdout.write("\n")
+    elif options.output_type == 'events-json':
+        sys.stdout.write(json.dumps(event_buckets, indent=4, sort_keys=True))
+    elif options.output_type == 'scenarios-json':
+        raise NotImplementedError
+    else:
+        raise NotImplementedError
 
 
 if __name__ == '__main__':
