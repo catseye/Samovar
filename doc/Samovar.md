@@ -10,7 +10,7 @@ can be run as tests.  (That's what Falderal does.)
 
     -> Functionality "Run Samovar Simulation" is implemented by
     -> shell command
-    -> "bin/samovar %(test-body-file) --events 4 --seed 0"
+    -> "bin/samovar %(test-body-file) --min-events 4 --seed 0"
 
 Scenarios
 ---------
