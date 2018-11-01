@@ -4,7 +4,7 @@
 """\
 samovar {option} input.samovar
 
-Driver script for Samovr assertion-retraction engine.
+Driver script for Samovar assertion-retraction engine.
 """
 
 from os.path import realpath, dirname, join
@@ -14,6 +14,7 @@ sys.path.insert(0, join(dirname(realpath(sys.argv[0])), '..', 'src'))
 
 import codecs
 from optparse import OptionParser
+import random
 
 from samovar.parser import Parser
 from samovar.generator import Generator
@@ -31,6 +32,11 @@ if __name__ == '__main__':
     optparser.add_option("--length",
                          type=int, default=0,
                          help="If given, generate this many events for each situation")
+    optparser.add_option("--line-per-sentence",
+                         action="store_true")
+    optparser.add_option("--seed",
+                         type=int, default=None,
+                         help="Set random seed (to select moves deterministically)")
     optparser.add_option("--words",
                          type=int, default=0,
                          help="If given, generate each situation til this many words")
@@ -46,11 +52,16 @@ if __name__ == '__main__':
     if options.dump_ast:
         print ast
         sys.exit(0)
+    if options.seed is not None:
+        random.seed(options.seed)
     g = Generator(ast, debug=options.debug)
     if options.length > 0:
         events = g.generate_events(options.length)
     elif options.words > 0:
         events = g.generate_words(options.words)
     for e in events:
-        sys.stdout.write("%s  " % e)
+        if options.line_per_sentence:
+            sys.stdout.write("%s\n" % e)
+        else:
+            sys.stdout.write("%s  " % e)
     sys.stdout.write("\n")
