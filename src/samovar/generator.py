@@ -32,12 +32,21 @@ class Generator(object):
             self.state.add(term)
 
     def generate_events(self, count):
-        if self.debug:
-            self.debug_state()
-        moves = []
-        for i in xrange(0, count):
-            moves.append(self.generate_move())
+        acceptable = False
+        while not acceptable:
+            if self.debug:
+                self.debug_state()
+            moves = []
+            for i in xrange(0, count):
+                moves.append(self.generate_move())
+            acceptable = self.events_meet_goal(moves)
+            if not acceptable:
+                count *= 2
         return moves
+
+    def events_meet_goal(self, moves):
+        matches = match_all(self.state, self.scenario.goal.exprs, {})
+        return len(matches) > 0
 
     def generate_move(self):
         candidates = self.get_candidate_rules()

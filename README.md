@@ -71,7 +71,6 @@ they can be selected by simple pattern-matching rather than full unification.
 
 *   (+) Allow scenarios to define a termination condition, so that the implementation
     can generate a scene where the condition is met (by whatever method).
-*   (+) Allow scenarios to specify a minimum number of events to generate.
 *   (+) Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   (+) Consider macros.
@@ -89,3 +88,4 @@ they can be selected by simple pattern-matching rather than full unification.
 #### Probably we don't do
 
 *   (+) Allow sentence trees to be given for actions.
+*   (+) Allow scenarios to specify a minimum number of events to generate.

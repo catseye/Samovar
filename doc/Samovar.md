@@ -93,6 +93,32 @@ description to be spread over multiple source files, but there is no
 facility to reference one source file from another in Samovar, so how
 they are located and collected is up to the implementation.
 
+Goals
+-----
+
+A scenario is run until it meets the goal.  How it meets the goal
+is up to the implementation.  Our implementation generates events
+randomly, until it comes up with a series of events wherein the
+goal is met, generating more events each time.
+
+A goal of `[]`, as above, is trivially met.
+
+Generation of events does not stop immediately once the goal is
+met.  A number of events are generated, and then the check is made.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      item(oilcan).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picks up the oilcan.
+    ===> Ignatz puts down the oilcan.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz picks up the oilcan.
+
 chairs
 ------
 
