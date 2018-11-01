@@ -86,13 +86,13 @@ class Parser(object):
         return Cond(exprs=exprs)
 
     def expr(self):
-        if self.scanner.consume('~', u'¬'):
+        if self.scanner.consume('~', u'¬', '!'):
             return Retract(term=self.term())
         else:
             return Assert(term=self.term())
 
     def term(self):
-        if self.scanner.on_type('variable') or self.scanner.on_type('qmark'):
+        if self.scanner.on_type('variable'):
             return self.var()
         self.scanner.check_type('word', 'punct')
         constructor = self.scanner.token
@@ -106,7 +106,7 @@ class Parser(object):
         return Term(constructor, *subterms)
 
     def var(self):
-        #self.scanner.check_type('variable')
+        self.scanner.check_type('variable')
         name = self.scanner.token
         self.scanner.scan()
         v = Var(name)

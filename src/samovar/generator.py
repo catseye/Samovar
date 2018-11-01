@@ -15,7 +15,7 @@ class Event(object):
         self.unifier = unifier
 
     def to_json(self):
-        u = dict([(str(k), str(v)) for k, v in self.unifier.items()])
+        u = dict([(unicode(k), unicode(v)) for k, v in self.unifier.items()])
         return [self.rule.to_json(), u]
 
     def __str__(self):

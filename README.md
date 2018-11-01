@@ -75,8 +75,6 @@ they can be selected by simple pattern-matching rather than full unification.
 *   Output scenarios to JSON.
 *   Python 3 support.
 *   Allow comments in source file.  Probably `#` or `//`.
-*   Say that Greek letter variables are exactly equivalent to `?rho`, etc.
-*   `!` for not.
 *   Consider a simple equality rule.
 *   Consider allowing `∨`.
 *   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with

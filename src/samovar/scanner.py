@@ -3,6 +3,33 @@
 import re
 
 
+GREEK = [
+    (u'?alpha', u'α'),
+    (u'?beta', u'β'),
+    (u'?gamma', u'γ'),
+    (u'?delta', u'δ'),
+    (u'?epsilon', u'ε'),
+    (u'?zeta', u'ζ'),
+    (u'?theta', u'θ'),
+    (u'?iota', u'ι'),
+    (u'?kappa', u'κ'),
+    (u'?lambda', u'λ'),
+    (u'?mu', u'μ'),
+    (u'?nu', u'ν'),
+    (u'?xi', u'ξ'),
+    (u'?omicron', u'ο'),
+    (u'?pi', u'π'),
+    (u'?rho', u'ρ'),
+    (u'?sigma', u'σ'),
+    (u'?tau', u'τ'),
+    (u'?upsilon', u'υ'),
+    (u'?phi', u'φ'),
+    (u'?chi', u'χ'),
+    (u'?psi', u'ψ'),
+    (u'?omega', u'ω'),
+]
+
+
 class Scanner(object):
     def __init__(self, text):
         self.text = unicode(text)
@@ -37,7 +64,7 @@ class Scanner(object):
         if self.scan_pattern(ur'\~|→|=|¬|∧|∨', 'operator'):
             return
         # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
-        if self.scan_pattern(r'\?[a-zA-Z_]+', 'qmark'):
+        if self.scan_pattern(r'\?[a-zA-Z_]+', 'variable'):
             return
         if self.scan_pattern(r'\,|\.|\?|\!|\"' + r"|\'", 'punct'):
             return
@@ -46,6 +73,11 @@ class Scanner(object):
         if self.scan_pattern(r'[a-zA-Z_]+', 'word'):
             return
         if self.scan_pattern(ur'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
+            for varname, letter in GREEK:
+                if letter == self.token:
+                    self.token = varname
+                    break
+            assert self.token.startswith('?'), repr(self.token)
             return
         if self.scan_pattern(r'.', 'unknown character'):
             return
