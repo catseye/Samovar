@@ -31,11 +31,14 @@ We can add a complementary rule:
 And we can package this all into a scenario:
 
     scenario IgnatzWithBrick {
-      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
-      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+        [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+        [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
     
-      actor(Ignatz).
-      item(brick).
+        actor(Ignatz).
+        item(brick).
+    
+        goal [].
     }
 
 And an implementation of Samovar could take this scenario and use it to,
