@@ -61,6 +61,10 @@ like you would find in [Hoare logic][], to actions in a world-model.  Instead of
 proving that the action satisfies the conditions, though, we simply assume it
 does, and use the conditions to chain actions together in a sensible order.
 
+But really, the internals are far simpler than an inference engine or a theorem
+prover: there are no logical rules in the database, only propositions, so
+they can be selected by simple pattern-matching rather than full unification.
+
 [Hoare logic]: https://en.wikipedia.org/wiki/Hoare_logic
 
 ### TODO
@@ -82,3 +86,5 @@ does, and use the conditions to chain actions together in a sensible order.
 *   `!` for not.
 *   Consider a simple equality rule.
 *   Consider allowing `∨`.
+*   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with
+    named tuples, but this is probably madness and not at all worth doing)
