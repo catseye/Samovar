@@ -5,6 +5,7 @@ import random
 import re
 
 from samovar.ast import Assert, Retract
+from samovar.query import match_all
 from samovar.terms import Term
 
 
@@ -12,27 +13,14 @@ def word_count(s):
     return len(re.split(r'\s+', s))
 
 
-def all_assignments(vars_, things):
-    assignments = []
-    var_names = [v.name for v in vars_]
-    for p in permutations(things, len(vars_)):
-        assignments.append(dict(zip(var_names, p)))
-    return assignments
-
-
 class Generator(object):
     def __init__(self, world, scenario, debug=False):
         self.world = world
         self.debug = debug
         self.state = set()  # set of things currently true about the world
-        self.things = set()
         self.scenario = scenario
         for term in self.scenario.propositions:
-            assert isinstance(term, Term)
             self.state.add(term)
-            atoms = set()
-            term.collect_atoms(atoms)
-            self.things |= atoms
 
     def generate_events(self, count):
         if self.debug:
@@ -63,16 +51,8 @@ class Generator(object):
     def get_candidate_rules(self):
         candidates = []
         for rule in self.scenario.rules:
-            vars_ = set()
-            for expr in rule.pre.exprs:
-                expr.term.collect_variables(vars_)
-
-            for a in all_assignments(vars_, self.things):
-                result = rule.pre.eval(a, self.state)
-                if self.debug:
-                    print rule.nu_format(), "WITH", a, "==>", result
-                if result:
-                    candidates.append((rule, a))
+            for unifier in match_all(self.state, rule.pre.exprs, {}):
+                candidates.append((rule, unifier))
 
         if self.debug:
             print "Candidate rules:"

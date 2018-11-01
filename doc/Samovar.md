@@ -127,8 +127,8 @@ chairs
     }
     ===> Hastings sits down in the chair.
     ===> Hastings leans back in the chair.
-    ===> Wembley sits down in the recliner.
     ===> Petersen sits down in the sofa.
+    ===> Wembley sits down in the recliner.
 
 
 no need for functions
@@ -156,11 +156,11 @@ but we can just say
     
       goal [].
     }
-    ===> Alice scratches her head.
-    ===> Alice scratches her head.
     ===> Bob scratches his head.
     ===> Bob scratches his head.
     ===> Alice scratches her head.
+    ===> Alice scratches her head.
+    ===> Bob scratches his head.
 
 This loses the nice property of the function name being a readable
 placeholder in the sentence, but you can now use named variables
@@ -179,8 +179,8 @@ instead:
     
       goal [].
     }
-    ===> Alice scratches her head.
-    ===> Alice scratches her head.
     ===> Bob scratches his head.
     ===> Bob scratches his head.
     ===> Alice scratches her head.
+    ===> Alice scratches her head.
+    ===> Bob scratches his head.

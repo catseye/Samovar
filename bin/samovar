@@ -21,7 +21,6 @@ from samovar.generator import Generator
 
 
 if __name__ == '__main__':
-
     optparser = OptionParser(__doc__)
     optparser.add_option("--debug",
                          action="store_true",
@@ -37,10 +36,26 @@ if __name__ == '__main__':
     optparser.add_option("--seed",
                          type=int, default=None,
                          help="Set random seed (to select moves deterministically)")
+    optparser.add_option("--profile",
+                         action="store_true",
+                         help="Run cProfile on standard 'heavy load' case and exit")
     optparser.add_option("--words",
                          type=int, default=0,
                          help="If given, generate each scenario til this many words")
     (options, args) = optparser.parse_args(sys.argv[1:])
+
+    if options.profile:
+        import cProfile
+        def generate_fifty_thousand_words():
+            with codecs.open('eg/chairs.samovar', 'r', encoding='UTF-8') as f:
+                text = f.read()
+            p = Parser(text)
+            ast = p.world()
+            random.seed(0)
+            g = Generator(ast)
+            g.generate_words(50000)
+        cProfile.run('generate_fifty_thousand_words()')
+        sys.exit(0)
 
     text = ''
     for arg in args:

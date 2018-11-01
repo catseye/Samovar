@@ -54,17 +54,6 @@ class Cond(AST):
     def format(self):
         return u'[%s]' % ','.join([e.format() for e in self.exprs])
 
-    def eval(self, unifier, state):
-        for expr in self.exprs:
-            term = expr.term.subst(unifier)
-            if isinstance(expr, Assert):
-                if term not in state:
-                    return False
-            if isinstance(expr, Retract):
-                if term in state:
-                    return False
-        return True
-
 
 class Assert(AST):
     def format(self):

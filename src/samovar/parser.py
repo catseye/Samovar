@@ -103,7 +103,7 @@ class Parser(object):
             while self.scanner.consume(','):
                 subterms.append(self.term())
             self.scanner.expect(')')
-        return Term(constructor, subterms=subterms)
+        return Term(constructor, *subterms)
 
     def var(self):
         #self.scanner.check_type('variable')
