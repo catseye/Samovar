@@ -64,20 +64,6 @@ class Term(AbstractTerm):
                 return False
         return True
 
-    def contains(self, other):
-        if self == other:
-            return True
-        for st in self.subterms:
-            if st.contains(other):
-                return True
-        return False
-
-    def replace(self, old, new):
-        if self == old:
-            return new
-        else:
-            return Term(self.constructor, subterms=[subterm.replace(old, new) for subterm in self.subterms])
-
     def match(self, term, unifier):
         if self.constructor != term.constructor:
             raise ValueError("`%s` != `%s`" % (self.constructor, term.constructor))

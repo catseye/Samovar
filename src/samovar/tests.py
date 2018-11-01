@@ -23,9 +23,31 @@ class TermTestCase(TestCase):
 
         self.assertEqual(t2, Term('actor', subterms=[Term('alice')]))
 
-    def test_term_replace(self):
+    def test_term_match_ground(self):
+        t1 = Term('actor', subterms=[Term('alice')])
+        p1 = Term('actor', subterms=[Term('alice')])
+        u = {}
+        p1.match(t1, u)
+        self.assertEqual(u, {})
+
+    def test_term_no_match_ground(self):
+        t1 = Term('actor', subterms=[Term('alice')])
+        p1 = Term('actor', subterms=[Term('bob')])
+        u = {}
+        with self.assertRaises(ValueError):
+            p1.match(t1, u)
+        self.assertEqual(u, {})
+
+    def test_term_match_bind_var(self):
+        t1 = Term('actor', subterms=[Term('alice')])
+        p1 = Term('actor', subterms=[Var('?A')])
+        u = {}
+        p1.match(t1, u)
+        self.assertEqual(u, {u'?A': Term('alice')})
+
+    def test_term_subst(self):
         t = Term('actor', subterms=[Var('?A')])
-        r = t.replace(Var('?A'), Term('alice'))
+        r = t.subst({u'?A': Term('alice')})
         self.assertEqual(r, Term('actor', subterms=[Term('alice')]))
 
 
