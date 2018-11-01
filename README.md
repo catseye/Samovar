@@ -65,10 +65,20 @@ does, and use the conditions to chain actions together in a sensible order.
 
 ### TODO
 
-*   Maybe allow `∨` - there doesn't seem to be as much call for it, though.
-*   Allow sentence trees to be given for actions.
-*   Allow scenarios to define a termination condition, so that the implementation
+*   (+) Allow sentence trees to be given for actions.
+*   (+) Allow scenarios to define a termination condition, so that the implementation
     can generate a scene where the condition is met (by whatever method).
-*   Allow scenarios to specify a minimum number of events to generate (maybe?)
-*   Consider what it would take to add a predicate that evaluates to whether
+*   (+) Allow scenarios to specify a minimum number of events to generate.
+*   (+) Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
+*   (+) Consider macros.
+*   Output events to JSON.
+*   Output AST to JSON.
+*   Python 3 support.
+*   ArgParser, not OptionParser.
+*   Test (manually) that multiple source files can be given.  (put in `eg/`)
+*   Allow comments in source file.  Probably `#` or `//`.
+*   Say that Greek letter variables are exactly equivalent to `?rho`, etc.
+*   `!` for not.
+*   Consider a simple equality rule.
+*   Consider allowing `∨`.
