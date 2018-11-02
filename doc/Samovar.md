@@ -1,10 +1,12 @@
 Samovar
 =======
 
-This is a literate test suite for Samovar, in Falderal format.
+This is a literate test suite for Samovar, in [Falderal][] format.
 It describes Samovar, and includes examples inline; each example
 specifies the expected result of running it, so these examples
 can be run as tests.  (That's what Falderal does.)
+
+[Falderal]: http://catseye.tc/node/Falderal
 
     -> Tests for functionality "Run Samovar Simulation"
 
@@ -30,6 +32,62 @@ You can include comments with `//`.
     scenario A {}
     
     ===> 
+
+The name of a scenario must begin with a letter, but can otherwise
+contain numbers, hyphens, and underscores.  The same rules apply
+to most other "words" appearing in a Samovar description.
+
+    scenario Pin_afore-1000 {
+        this-is-a-constructor(this-is-an-atom).
+    }
+    
+    ===> 
+
+Basic Semantics
+---------------
+
+The basic unit of a Samovar world is a scenario.  Inside a scenario,
+facts are defined with _propositions_, and possible events are
+defined with _event rules_.  Each event rule looks like
+
+    [A] X [B]
+
+which can be read
+
+> If A holds, then X is a possible action to take, and if you do take it,
+> you must make B hold afterwards.
+
+By "hold" we mean "matches the current set of facts."
+
+As an example,
+
+    [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
+
+Which can be read
+
+>   If α is an actor and β is an item and α is not holding β, then one possible
+>   action is to write out 'α picks up the β' and assert that α is now holding β.
+
+We can add a complementary rule:
+
+    [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
+
+And we can package this all into a scenario:
+
+    scenario IgnatzWithBrick {
+    
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+      
+      actor(Ignatz).
+      item(brick).
+    
+      goal [].
+    }
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
+    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
 
 Scenarios
 ---------

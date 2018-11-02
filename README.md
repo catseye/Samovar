@@ -6,34 +6,12 @@ Samovar
 Samovar is a DSL for modelling a world using propositions (facts), and possible
 events that can occur based on those facts, changing them.
 
-Possible events are described with _event rules_.  Each event rule looks like
-
-    [A] X [B]
-
-and means "If A holds, then X is a possible action to take, and if you do take it,
-you must make B hold afterwards."
-
-By "hold" we mean "matches the current set of facts."
-
-As an example,
-
-    [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
-
-Which can be read
-
->   If α is an actor and β is an item and α is not holding β, then one possible
->   action is to write out 'α picks up the β' and assert that α is now holding β.
-
-We can add a complementary rule:
-
-    [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
-
-And we can package this all into a scenario:
+Here is a short example of a Samovar description:
 
     scenario IgnatzWithBrick {
       
-        [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
-        [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+        [actor(?A),item(?I),~holding(?A,?I)]  ?A picks up the ?I.   [holding(?A,?I)]
+        [actor(?A),item(?I),holding(?A,?I)]   ?A puts down the ?I.  [~holding(?A,?I)]
     
         actor(Ignatz).
         item(brick).
@@ -46,11 +24,14 @@ among other things, generate textual descriptions of chains of events like
 
     Ignatz picks up the brick. Ignatz puts down the brick.
 
-Of course, this is a very simple example.  A more complex example might have
-more actors, more items, and more rules (for example, that two actors cannot
-be holding the same item at the same time.)
+Of course, this is a very simple example.  (It doesn't even prevent two
+actors from picking up the same item at the same time!)  For more complex
+examples, and a fuller description of the language, see
+[doc/Samovar.md](doc/Samovar.md), which doubles as a test suite.
 
 ### Discussion
+
+This looks like logic programming but the internals are actually much simpler.
 
 Samovar could be described as an "assertion-retraction engine", which itself could
 be thought of as a highly stylized form of Prolog programming plus some syntactic
@@ -72,7 +53,6 @@ they can be selected by simple pattern-matching rather than full unification.
 *   (+) Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   (+) Consider macros.
-*   Digits and -'s in atoms.
 *   Output scenarios to JSON.
 *   Python 3 support.
 *   Consider a simple equality rule.
