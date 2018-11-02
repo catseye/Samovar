@@ -33,9 +33,10 @@ You can include comments with `//`.
     
     ===> 
 
-The name of a scenario must begin with a letter, but can otherwise
-contain numbers, hyphens, and underscores.  The same rules apply
-to most other "words" appearing in a Samovar description.
+The name of a scenario must begin with a letter or underscore,
+and can consist of letters, numbers, hyphens, and underscores.
+The same rules apply to most other "words" appearing in a Samovar
+description.
 
     scenario Pin_afore-1000 {
         this-is-a-constructor(this-is-an-atom).

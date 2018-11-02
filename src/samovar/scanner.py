@@ -70,7 +70,7 @@ class Scanner(object):
             return
         if self.scan_pattern(r'\(|\)|\{|\}|\[|\]', 'bracket'):
             return
-        if self.scan_pattern(r'[a-zA-Z0-9_-]+', 'word'):
+        if self.scan_pattern(r'[a-zA-Z_][a-zA-Z0-9_-]*', 'word'):
             return
         if self.scan_pattern(ur'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
             for varname, letter in GREEK:
