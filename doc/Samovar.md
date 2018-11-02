@@ -192,10 +192,10 @@ met.  A number of events are generated, and then the check is made.
       item(oilcan).
       goal [holding(Ignatz,brick)].
     }
-    ===> Ignatz picks up the oilcan.
-    ===> Ignatz puts down the oilcan.
     ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the brick.
     ===> Ignatz picks up the oilcan.
+    ===> Ignatz picks up the brick.
 
 chairs
 ------
@@ -229,10 +229,10 @@ chairs
     
       goal [].
     }
-    ===> Hastings sits down in the chair.
-    ===> Hastings leans back in the chair.
-    ===> Petersen sits down in the sofa.
     ===> Wembley sits down in the recliner.
+    ===> Wembley leans back in the recliner.
+    ===> Hastings sits down in the chair.
+    ===> Petersen sits down in the sofa.
 
 
 no need for functions
@@ -260,10 +260,10 @@ but we can just say
     
       goal [].
     }
-    ===> Bob scratches his head.
-    ===> Bob scratches his head.
     ===> Alice scratches her head.
     ===> Alice scratches her head.
+    ===> Bob scratches his head.
+    ===> Bob scratches his head.
 
 This loses the nice property of the function name being a readable
 placeholder in the sentence, but you can now use named variables
@@ -282,7 +282,7 @@ instead:
     
       goal [].
     }
-    ===> Bob scratches his head.
-    ===> Bob scratches his head.
     ===> Alice scratches her head.
     ===> Alice scratches her head.
+    ===> Bob scratches his head.
+    ===> Bob scratches his head.

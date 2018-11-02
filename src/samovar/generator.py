@@ -9,6 +9,13 @@ from samovar.query import match_all
 from samovar.terms import Term
 
 
+# Python 2/3
+try:
+    xrange = xrange
+except NameError:
+    xrange = range
+
+
 class Event(object):
     def __init__(self, rule, unifier):
         self.rule = rule

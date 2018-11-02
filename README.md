@@ -54,7 +54,6 @@ they can be selected by simple pattern-matching rather than full unification.
     a given action has been taken previously or not.
 *   (+) Consider macros.
 *   Output scenarios to JSON.
-*   Python 3 support.
 *   Consider a simple equality rule.
 *   Consider allowing `∨`.
 *   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with

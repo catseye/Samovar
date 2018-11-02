@@ -5,6 +5,13 @@ from pprint import pprint
 import random
 
 
+# Python 2/3
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
+
 class AST(object):
     def __init__(self, **kwargs):
         self.attrs = kwargs

@@ -9,18 +9,20 @@ except NameError:
 
 
 class AbstractTerm(object):
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return hash(unicode(self))
+    pass
 
 
 class Term(AbstractTerm):
     def __init__(self, constructor, *subterms):
-        self.constructor = constructor
-        self.subterms = subterms
+        self.t = tuple([constructor] + list(subterms))
+
+    @property
+    def constructor(self):
+        return self.t[0]
+
+    @property
+    def subterms(self):
+        return self.t[1:]
 
     def __str__(self):
         if len(self.subterms) == 0:
@@ -38,16 +40,10 @@ class Term(AbstractTerm):
             )
 
     def __eq__(self, other):
-        if not isinstance(other, Term):
-            return False
-        if self.constructor != other.constructor:
-            return False
-        if len(self.subterms) != len(other.subterms):
-            return False
-        for (st1, st2) in zip(self.subterms, other.subterms):
-            if st1 != st2:
-                return False
-        return True
+        return isinstance(other, Term) and self.t == other.t
+
+    def __hash__(self):
+        return hash(self.t)
 
     def is_atom(self):
         return len(self.subterms) == 0
@@ -93,9 +89,10 @@ class Var(AbstractTerm):
         return "%s(%r)" % (self.__class__.__name__, self.name)
 
     def __eq__(self, other):
-        if not isinstance(other, Var):
-            return False
-        return self.name == other.name
+        return isinstance(other, Var) and self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
 
     def is_atom(self):
         return False
