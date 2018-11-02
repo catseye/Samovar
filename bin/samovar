@@ -21,6 +21,16 @@ from samovar.parser import Parser
 from samovar.generator import Generator
 
 
+def generate_fifty_thousand_words():
+    with codecs.open('eg/chairs.samovar', 'r', encoding='UTF-8') as f:
+        text = f.read()
+    p = Parser(text)
+    ast = p.world()
+    random.seed(0)
+    g = Generator(ast, ast.scenarios[0])
+    g.generate_events(8000)
+
+
 def main(args):
     argparser = ArgumentParser()
 
@@ -51,14 +61,6 @@ def main(args):
 
     if options.profile:
         import cProfile
-        def generate_fifty_thousand_words():
-            with codecs.open('eg/chairs.samovar', 'r', encoding='UTF-8') as f:
-                text = f.read()
-            p = Parser(text)
-            ast = p.world()
-            random.seed(0)
-            g = Generator(ast)
-            g.generate_words(50000)
         cProfile.run('generate_fifty_thousand_words()')
         sys.exit(0)
 
