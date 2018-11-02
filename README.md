@@ -50,16 +50,16 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   (+) Consider what it would take to add a predicate that evaluates to whether
-    a given action has been taken previously or not.
-*   (+) Consider macros.
 *   Output scenarios to JSON.
-*   Consider a simple equality rule.
-*   Consider allowing `∨`.
 *   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with
     named tuples, but this is probably madness and not at all worth doing)
 
-#### Probably we don't do
+### TODO for v0.3
 
-*   (+) Allow sentence trees to be given for actions.
-*   (+) Allow scenarios to specify a minimum number of events to generate.
+*   Consider what it would take to add a predicate that evaluates to whether
+    a given action has been taken previously or not.
+*   Consider macros.
+*   Consider a simple equality rule, `eq(?X,?X)` but built-in.
+*   Consider a "wildcard" variable that will match anything *without* binding it.
+*   Consider making "wildcard" work such that you can say `¬holding(?_, club)`
+    to mean "if no one is holding the club".
