@@ -72,6 +72,7 @@ they can be selected by simple pattern-matching rather than full unification.
 *   (+) Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   (+) Consider macros.
+*   Digits and -'s in atoms.
 *   Output scenarios to JSON.
 *   Python 3 support.
 *   Allow comments in source file.  Probably `#` or `//`.

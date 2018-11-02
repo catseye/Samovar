@@ -1,9 +1,37 @@
-scenario Brickyard {
-    item(brick).
-    item(glass).
+scenario SittingRoom {
+    prop(desk).
+    prop(bookshelf).
+    prop(window).
+    prop(grandfather_clock).
+    prop(leather_chair).
+
+    seat(leather_chair).
+    empty(leather_chair).
+
+    item(newspaper).
+    item(whiskey).
+    item(brandy).
+    item(pocket_watch).
+
+    unheld(newspaper).
+    unheld(whiskey).
+    unheld(brandy).
+    unheld(pcoket_watch).
 }
 
-scenario DiningRoom {
-    item(table).
-    item(chair).
+scenario GardenShed {
+    prop(workbench).
+    prop(window).
+    prop(bags_of_potting_soil).
+
+    seat(bags_of_potting_soil).
+    empty(bags_of_potting_soil).
+
+    item(oilcan).
+    item(wrench).
+    item(screwdriver).
+
+    unheld(oilcan).
+    unheld(wrench).
+    unheld(screwdriver).
 }

@@ -1,20 +1,35 @@
-scenario Actors {
-  [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
-  [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
-  actor(Ignatz).
-  actor(Molly).
+scenario Rules {
+  [actor(?A),item(?I),unheld(?I)]     ?A picked up the ?I.   [holding(?A,?I),!unheld(?I)]
+  [actor(?A),item(?I),holding(?A,?I)] ?A put down the ?I.       [holding(?A,?I),unheld(?I)]
+
+  [actor(?A),!sitting(?A)]                    ?A walked around the room. []
+  [actor(?A),!sitting(?A),seat(?S),empty(?S)] ?A sat down on the ?S.     [sitting(?A),sitting_on(?A,?S),!empty(?S)]
+  [actor(?A),sitting(?A),sitting_on(?A,?S)]   ?A leaned back in the ?S.  []
+  [actor(?A),sitting(?A),sitting_on(?A,?S)]   ?A got up and stretched.   [!sitting(?A),!sitting_on(?A,?S),empty(?S)]
 }
 
-scenario ChapterI {
-    import Brickyard.
-    import Actors.
+scenario SceneOne {
+    import SittingRoom.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    shocked(Throgmorton).
 
     goal [].
 }
 
-scenario ChapterII {
-    import DiningRoom.
-    import Actors.
+scenario SceneTwo {
+    import GardenShed.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    shocked(Throgmorton).
 
     goal [].
 }

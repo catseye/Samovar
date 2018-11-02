@@ -1,3 +1,9 @@
 #!/bin/sh
 
-samovar settings.samovar scenes.samovar --min-events=12 | python formatter.py
+THIS_SCRIPT=`realpath $0`
+cd `dirname $THIS_SCRIPT`
+samovar settings.samovar scenes.samovar --seed=0 --min-events=40 > events.txt
+python formatter.py < events.txt > novel.md
+cat novel.md
+wc -w novel.md
+
