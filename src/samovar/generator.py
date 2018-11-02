@@ -66,11 +66,11 @@ class Generator(object):
                 candidates.append((rule, unifier))
 
         if self.debug:
-            print "Candidate rules:"
+            print("Candidate rules:")
             for rule, unifiers in candidates:
-                print rule.nu_format()
-                print "->", unifiers
-            print
+                print(rule.nu_format())
+                print("->", unifiers)
+            print("")
 
         return candidates
 
@@ -85,10 +85,10 @@ class Generator(object):
             self.debug_state()
 
     def debug_state(self):
-        print "Things now:"
+        print("Things now:")
         for term in self.things:
-            print u"  %s" % term
-        print "State now:"
+            print(u"  %s" % term)
+        print("State now:")
         for term in self.state:
-            print u"  %s" % term
-        print
+            print(u"  %s" % term)
+        print("")

@@ -1,6 +1,13 @@
 # encoding: UTF-8
 
 
+# Python 2/3
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
+
 class AbstractTerm(object):
 
     def __ne__(self, other):

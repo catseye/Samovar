@@ -70,7 +70,7 @@ def main(args):
     p = Parser(text)
     ast = p.world()
     if options.dump_ast:
-        print ast
+        print(ast)
         sys.exit(0)
     if options.seed is not None:
         random.seed(options.seed)

@@ -1,5 +1,13 @@
 # encoding: UTF-8
 
+
+# Python 2/3
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
+
 import re
 
 
@@ -61,7 +69,7 @@ class Scanner(object):
             self.token = None
             self.type = 'EOF'
             return
-        if self.scan_pattern(ur'\~|→|=|¬|∧|∨', 'operator'):
+        if self.scan_pattern(u'\\~|→|=|¬|∧|∨', 'operator'):
             return
         # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
         if self.scan_pattern(r'\?[a-zA-Z_]+', 'variable'):
@@ -72,7 +80,7 @@ class Scanner(object):
             return
         if self.scan_pattern(r'[a-zA-Z_][a-zA-Z0-9_-]*', 'word'):
             return
-        if self.scan_pattern(ur'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
+        if self.scan_pattern(u'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
             for varname, letter in GREEK:
                 if letter == self.token:
                     self.token = varname
