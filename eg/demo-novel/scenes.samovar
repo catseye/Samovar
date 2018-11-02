@@ -50,8 +50,9 @@ scenario Rules {
 
   [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
 
-  [actor(?A),has-news(?A,?T),!exclaimed-has-news(?A,?T)]  ?A exclaimed, "I have news!"  [exclaimed-has-news(?A,?T)]
-  [actor(?A),exclaimed-has-news(?B,?T),!heard-news(?A,?T)]  ?A asked, "What is it, ?B?" [been-asked-about-news(?B,?T)]
+  [actor(?A),has-news(?A,?T),!exclaimed-has-news(?A,?T)]    ?A exclaimed, "I have news!"  [exclaimed-has-news(?A,?T)]
+  [actor(?A),exclaimed-has-news(?B,?T),!heard-news(?A,?T)]  ?A asked, "What is it, ?B?"   [been-asked-about-news(?B,?T)]
+  [actor(?A),been-asked-about-news(?A,?T),actor(?B)]        ?A told ?B of the ?T.         [heard-news(?B,?T)]
 }
 
 // ----------------------------- SETTINGS ------------------------
@@ -109,8 +110,7 @@ scenario Scene_1 {
 
     shocked(Throgmorton).
 
-    // goal [exclaimed-has-news(Scurthorpe, impending_hurricane)].
-    goal [been-asked-about-news(Scurthorpe, impending_hurricane)].
+    goal [heard-news(Throgmorton, impending_hurricane)].
 }
 
 scenario Scene_2 {
