@@ -48,12 +48,6 @@ they can be selected by simple pattern-matching rather than full unification.
 
 [Hoare logic]: https://en.wikipedia.org/wiki/Hoare_logic
 
-### TODO
-
-*   Output scenarios to JSON.
-*   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with
-    named tuples, but this is probably madness and not at all worth doing)
-
 ### TODO for v0.3
 
 *   Consider what it would take to add a predicate that evaluates to whether

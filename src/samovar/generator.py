@@ -33,14 +33,18 @@ class Generator(object):
     def __init__(self, world, scenario, debug=False):
         self.world = world
         self.debug = debug
-        self.state = set()  # set of things currently true about the world
         self.scenario = scenario
+        self.reset_state()
+
+    def reset_state(self):
+        self.state = set()  # set of things currently true about the world
         for term in self.scenario.propositions:
             self.state.add(term)
 
     def generate_events(self, count):
         acceptable = False
         while not acceptable:
+            self.reset_state()
             if self.debug:
                 self.debug_state()
             events = []
