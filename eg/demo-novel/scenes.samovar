@@ -34,13 +34,15 @@ scenario Rules {
   [actor(?A)]  ?A coughed.  []
   [actor(?A)]  ?A rubbed his chin.  []
   [actor(?A),shocked(?A)]  ?A gasped.  []
+  [actor(?A),shocked(?A)]  ?A stared blankly off into space.  []
+  [actor(?A),shocked(?A)]  ?A winced.  []
 
   [actor(?A),actor(?B)]  ?A looked at ?B.  []
   [actor(?A),actor(?B)]  ?A nodded to ?B.  []
 
   [actor(?A),fenestration(?P)]  ?A looked out the ?P.  []
 
-  [actor(?A),!sitting(?A),prop(?P),!near(?A,?P)]  ?A walked over to the ?P.    [near(?A,?P)]
+  [actor(?A),!sitting(?A),prop(?P),!near(?A,?P)]  ?A walked over to the ?P.    [near(?A,?P)]  // TODO: retract all other near
   [actor(?A),near(?A,?P)]                         ?A examined the ?P closely.  []
 
   [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
