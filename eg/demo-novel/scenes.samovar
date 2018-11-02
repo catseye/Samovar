@@ -16,6 +16,9 @@
 // near(?A,?P)     ?A is an actor who is near or next to prop ?P.
 // described(?P)   ?P is a prop that has been described.
 
+// topic(?T)       ?T is a topic of conversation.
+// has-news(?A,?T) ?A has news which is ?T
+
 // ----------------------------- RULES ------------------------
 
 scenario Rules {
@@ -46,6 +49,9 @@ scenario Rules {
   [actor(?A),near(?A,?P)]                         ?A examined the ?P closely.  []
 
   [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
+
+  [actor(?A),has-news(?A,?T),!exclaimed-has-news(?A,?T)]  ?A exclaimed, "I have news!"  [exclaimed-has-news(?A,?T)]
+  [actor(?A),exclaimed-has-news(?B,?T),!heard-news(?A,?T)]  ?A asked, "What is it, ?B?" [been-asked-about-news(?B,?T)]
 }
 
 // ----------------------------- SETTINGS ------------------------
@@ -98,9 +104,13 @@ scenario Scene_1 {
     actor(Scurthorpe).
     actor(Throgmorton).
 
+    topic(impending_hurricane).
+    has-news(Scurthorpe, impending_hurricane).
+
     shocked(Throgmorton).
 
-    goal [].
+    // goal [exclaimed-has-news(Scurthorpe, impending_hurricane)].
+    goal [been-asked-about-news(Scurthorpe, impending_hurricane)].
 }
 
 scenario Scene_2 {
