@@ -12,6 +12,25 @@ can be run as tests.  (That's what Falderal does.)
     -> shell command
     -> "bin/samovar %(test-body-file) --min-events 4 --seed 0"
 
+Basic Syntax
+------------
+
+A minimally valid Samovar description looks like this.
+(The `===>` is not part of the Samovar description.  It
+indicates what output we would expect from this.  In this case,
+nothing.)
+
+    scenario A {}
+    
+    ===> 
+
+You can include comments with `//`.
+
+    // This is my minimal Samovar description.
+    scenario A {}
+    
+    ===> 
+
 Scenarios
 ---------
 

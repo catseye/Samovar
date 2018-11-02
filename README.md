@@ -74,7 +74,6 @@ they can be selected by simple pattern-matching rather than full unification.
 *   (+) Consider macros.
 *   Output scenarios to JSON.
 *   Python 3 support.
-*   Allow comments in source file.  Probably `#` or `//`.
 *   Consider a simple equality rule.
 *   Consider allowing `∨`.
 *   Take AST code from SixtyPical or ALPACA (or try to do better, perhaps with
