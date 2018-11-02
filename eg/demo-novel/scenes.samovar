@@ -12,6 +12,9 @@
 // sitting(?A)
 // sitting_on(?A,?S)
 // empty(?S)       ?S is a seat that is not currently occupied.
+// fenestration(?P)  ?P is a prop that can be looked out of to the outside.
+// near(?A,?P)     ?A is an actor who is near or next to prop ?P.
+// described(?P)   ?P is a prop that has been described.
 
 // ----------------------------- RULES ------------------------
 
@@ -32,6 +35,15 @@ scenario Rules {
   [actor(?A)]  ?A rubbed his chin.  []
   [actor(?A),shocked(?A)]  ?A gasped.  []
 
+  [actor(?A),actor(?B)]  ?A looked at ?B.  []
+  [actor(?A),actor(?B)]  ?A nodded to ?B.  []
+
+  [actor(?A),fenestration(?P)]  ?A looked out the ?P.  []
+
+  [actor(?A),!sitting(?A),prop(?P),!near(?A,?P)]  ?A walked over to the ?P.    [near(?A,?P)]
+  [actor(?A),near(?A,?P)]                         ?A examined the ?P closely.  []
+
+  [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
 }
 
 // ----------------------------- SETTINGS ------------------------
@@ -39,7 +51,7 @@ scenario Rules {
 scenario SittingRoom {
     prop(desk).
     prop(bookshelf).
-    prop(window).
+    prop(window). fenestration(window).
     prop(grandfather_clock).
     prop(leather_chair).
 
@@ -59,7 +71,7 @@ scenario SittingRoom {
 
 scenario GardenShed {
     prop(workbench).
-    prop(window).
+    prop(window). fenestration(window).
     prop(bags_of_potting_soil).
 
     seat(bags_of_potting_soil).
@@ -76,7 +88,7 @@ scenario GardenShed {
 
 // ----------------------------- SCENES ------------------------
 
-scenario SceneOne {
+scenario Scene_1 {
     import SittingRoom.
     import Rules.
 
@@ -89,7 +101,7 @@ scenario SceneOne {
     goal [].
 }
 
-scenario SceneTwo {
+scenario Scene_2 {
     import GardenShed.
     import Rules.
 
@@ -99,6 +111,21 @@ scenario SceneTwo {
 
     shocked(Throgmorton).
     can_exit(Scurthorpe).
+
+    goal [].
+}
+
+scenario Scene_3 {
+    import SittingRoom.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    can_exit(Pranehurst).
+    can_exit(Scurthorpe).
+    can_exit(Throgmorton).
 
     goal [].
 }
