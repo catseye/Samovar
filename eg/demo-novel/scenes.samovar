@@ -13,7 +13,8 @@
 // sitting_on(?A,?S)
 // empty(?S)       ?S is a seat that is not currently occupied.
 // fenestration(?P)  ?P is a prop that can be looked out of to the outside.
-// near(?A,?P)     ?A is an actor who is near or next to prop ?P.
+// near(?A)        ?A is near a prop.
+// near_to(?A,?P)  ?A is an actor who is near or next to prop ?P.
 // described(?P)   ?P is a prop that has been described.
 
 // topic(?T)       ?T is a topic of conversation.
@@ -45,8 +46,9 @@ scenario Rules {
 
   [actor(?A),fenestration(?P)]  ?A looked out the ?P.  []
 
-  [actor(?A),!sitting(?A),prop(?P),!near(?A,?P)]  ?A walked over to the ?P.    [near(?A,?P)]  // TODO: retract all other near
-  [actor(?A),near(?A,?P)]                         ?A examined the ?P closely.  []
+  [actor(?A),!sitting(?A),prop(?P),!near(?A)]  ?A walked over to the ?P.    [near(?A),near_to(?A,?P)]
+  [actor(?A),near_to(?A,?P)]                   ?A examined the ?P closely.  []
+  [actor(?A),near_to(?A,?P)]                   ?A walked away from the ?P.  [!near(?A),!near_to(?A,?P)]
 
   [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
 

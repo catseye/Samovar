@@ -50,15 +50,12 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   Implement a simple equality rule, `eq(?X,?X)`, as a built-in.
-    This is basically necessary to stop characters from talking to
-    themselves, nodding to themselves, ET CETERA.
+*   Implement a "wildcard" variable that will match anything *without* binding it.
 
 ### TODO for v0.3
 
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   Consider macros.
-*   Consider a "wildcard" variable that will match anything *without* binding it.
 *   Consider making "wildcard" work such that you can say `¬holding(?_, club)`
     to mean "if no one is holding the club".
