@@ -18,7 +18,7 @@ def match_all(database, patterns, env):
     if isinstance(pattern, Assert):
         for proposition in database:
             try:
-                unifier = pattern.term.match(proposition, env)
+                unifier = pattern.term.match(proposition, env, unique_binding=True)
             except ValueError:
                 continue
             envs.extend(match_all(database, patterns[1:], unifier))

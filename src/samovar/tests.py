@@ -136,6 +136,19 @@ class TestMatchAll(DatabaseTestCase):
             [{'?W': t('knife'), '?C': t('alice')}, {'?W': t('revolver'), '?C': t('bob')}]
         )
 
+    def test_match_all_with_unique_binding(self):
+        # Find all pairs of actors.  Because the actors must be different, there are only 2 matches.
+        self.assertMatchAll(
+            [a(t('actor', t('?A'))), a(t('actor', t('?B')))],
+            [{'?A': Term('alice'), '?B': Term('bob')}, {'?A': Term('bob'), '?B': Term('alice')}]
+        )
+        # Find all pairs of drinks.  Since there is only one, and we can't return (gin,gin),
+        # there will be no matches.
+        self.assertMatchAll(
+            [a(t('drink', t('?A'))), a(t('drink', t('?B')))],
+            []
+        )
+
     def test_match_all_with_negation(self):
         # Find all actors who are not holding the revolver.
         self.assertMatchAll(

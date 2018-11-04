@@ -54,13 +54,13 @@ class Term(AbstractTerm):
                 return False
         return True
 
-    def match(self, term, env):
+    def match(self, term, env, **kwargs):
         if self.constructor != term.constructor:
             raise ValueError("`%s` != `%s`" % (self.constructor, term.constructor))
         if len(self.subterms) != len(term.subterms):
             raise ValueError("`%s` != `%s`" % (len(self.subterms), len(term.subterms)))
         for (subpat, subterm) in zip(self.subterms, term.subterms):
-            env = subpat.match(subterm, env)
+            env = subpat.match(subterm, env, **kwargs)
         return env
 
     def subst(self, env):
@@ -100,11 +100,14 @@ class Var(AbstractTerm):
     def is_ground(term):
         return False
 
-    def match(self, term, env):
+    def match(self, term, env, **kwargs):
         if self.name in env:
             bound_to = env[self.name]
-            return bound_to.match(term, env)
+            return bound_to.match(term, env, **kwargs)
         else:
+            if kwargs.get('unique_binding'):
+                if term in env.values():
+                    raise ValueError("Not unique")
             return dict(list(env.items()) + [(self.name, term)])
 
     def subst(self, env):
