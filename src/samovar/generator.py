@@ -3,6 +3,7 @@
 from itertools import permutations
 import random
 import re
+import sys
 
 from samovar.ast import Assert, Retract
 from samovar.query import match_all
@@ -42,8 +43,10 @@ class Generator(object):
             self.state.add(term)
 
     def generate_events(self, count):
+        MAX_COUNT = 5000
         acceptable = False
         while not acceptable:
+            sys.stderr.write("Generating {} events\n".format(count))
             self.reset_state()
             if self.debug:
                 self.debug_state()
@@ -56,6 +59,8 @@ class Generator(object):
             acceptable = self.events_meet_goal(events)
             if not acceptable:
                 count *= 2
+            if count > MAX_COUNT:
+                raise ValueError("{}: count exceeds maximum".format(self.scenario.name))
         return events
 
     def events_meet_goal(self, moves):

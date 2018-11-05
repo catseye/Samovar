@@ -17,6 +17,8 @@ import codecs
 import json
 import random
 
+#from tqdm import tqdm
+
 from samovar.parser import Parser
 from samovar.generator import Generator
 
@@ -78,7 +80,8 @@ def main(args):
         random.seed(options.seed)
 
     event_buckets = []
-    for scenario in ast.scenarios:
+    for n, scenario in enumerate(ast.scenarios):
+        sys.stderr.write("{}. {}\n".format(n, scenario.name))
         if scenario.goal is None:
             continue
         g = Generator(ast, scenario, debug=options.debug)
