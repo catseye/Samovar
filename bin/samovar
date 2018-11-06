@@ -17,8 +17,6 @@ import codecs
 import json
 import random
 
-#from tqdm import tqdm
-
 from samovar.parser import Parser
 from samovar.generator import Generator
 
