@@ -31,9 +31,10 @@ class Event(object):
 
 
 class Generator(object):
-    def __init__(self, world, scenario, debug=False):
+    def __init__(self, world, scenario, debug=False, verbose=False):
         self.world = world
         self.debug = debug
+        self.verbose = verbose
         self.scenario = scenario
         self.reset_state()
 
@@ -45,7 +46,8 @@ class Generator(object):
     def generate_events(self, count, max_count, lengthen_factor):
         acceptable = False
         while not acceptable:
-            sys.stderr.write("Generating {} events\n".format(count))
+            if self.verbose:
+                sys.stderr.write("Generating {} events\n".format(count))
             self.reset_state()
             if self.debug:
                 self.debug_state()

@@ -42,6 +42,9 @@ def main(args):
     argparser.add_argument("--debug", action="store_true",
         help="Show state before and after each move"
     )
+    argparser.add_argument("--verbose", action="store_true",
+        help="Show some progress information"
+    )
     argparser.add_argument("--dump-ast",
                          action="store_true",
                          help="Just show the AST and stop")
@@ -90,12 +93,13 @@ def main(args):
 
     event_buckets = []
     for n, scenario in enumerate(ast.scenarios):
-        sys.stderr.write("{}. {}\n".format(n, scenario.name))
+        if options.verbose:
+            sys.stderr.write("{}. {}\n".format(n, scenario.name))
         if scenario.goal is None:
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = Generator(ast, scenario, debug=options.debug)
+        g = Generator(ast, scenario, debug=options.debug, verbose=options.verbose)
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 
