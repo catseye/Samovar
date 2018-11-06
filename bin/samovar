@@ -45,9 +45,18 @@ def main(args):
     argparser.add_argument("--dump-ast",
                          action="store_true",
                          help="Just show the AST and stop")
+    argparser.add_argument("--generate-scenarios",
+                         type=str, default=None,
+                         help="If given, generate only these scenarios")
     argparser.add_argument("--min-events",
                          type=int, default=1,
                          help="Generate at least this many events for each scenario")
+    argparser.add_argument("--max-events",
+                         type=int, default=1000000,
+                         help="Assume something's gone wrong if more than this many events are generated")
+    argparser.add_argument("--lengthen-factor",
+                         type=float, default=2.0,
+                         help="When scenario goal was not met, multiply number of events to generate by this")
     argparser.add_argument("--output-type",
                          choices=['naive-text', 'events-json', 'scenarios-json'],
                          default='naive-text',
@@ -84,8 +93,10 @@ def main(args):
         sys.stderr.write("{}. {}\n".format(n, scenario.name))
         if scenario.goal is None:
             continue
+        if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
+            continue
         g = Generator(ast, scenario, debug=options.debug)
-        events = g.generate_events(options.min_events)
+        events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 
     if options.output_type == 'naive-text':

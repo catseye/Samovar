@@ -42,8 +42,7 @@ class Generator(object):
         for term in self.scenario.propositions:
             self.state.add(term)
 
-    def generate_events(self, count):
-        MAX_COUNT = 5000
+    def generate_events(self, count, max_count, lengthen_factor):
         acceptable = False
         while not acceptable:
             sys.stderr.write("Generating {} events\n".format(count))
@@ -58,8 +57,8 @@ class Generator(object):
                 events.append(event)
             acceptable = self.events_meet_goal(events)
             if not acceptable:
-                count *= 2
-            if count > MAX_COUNT:
+                count = int(float(count) * lengthen_factor)
+            if count > max_count:
                 raise ValueError("{}: count exceeds maximum".format(self.scenario.name))
         return events
 
