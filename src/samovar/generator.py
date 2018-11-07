@@ -50,13 +50,15 @@ class Generator(object):
                 sys.stderr.write("Generating {} events\n".format(count))
             self.reset_state()
             if self.debug:
-                self.debug_state()
+                self.debug_state("Initial")
             events = []
             for i in xrange(0, count):
                 event = self.generate_event()
                 if event is None:
                     break
                 events.append(event)
+            if self.debug:
+                self.debug_state("Final")
             acceptable = self.events_meet_goal(events)
             if not acceptable:
                 count = int(float(count) * lengthen_factor)
@@ -82,12 +84,12 @@ class Generator(object):
             for unifier in match_all(self.state, rule.pre.exprs, {}):
                 candidates.append((rule, unifier))
 
-        if self.debug:
-            print("Candidate rules:")
+        if self.debug and False:  # FIXME
+            sys.stderr.write("Candidate rules:")
             for rule, unifiers in candidates:
-                print(rule.nu_format())
-                print("->", unifiers)
-            print("")
+                sys.stderr.write(rule.nu_format())
+                sys.stderr.write("->", unifiers)
+            sys.stderr.write("")
 
         return candidates
 
@@ -98,14 +100,11 @@ class Generator(object):
                 self.state.add(term)
             elif isinstance(expr, Retract):
                 self.state.remove(term)
-        if self.debug:
+        if self.debug and False:  # FIXME
             self.debug_state()
 
-    def debug_state(self):
-        print("Things now:")
-        for term in self.things:
-            print(u"  %s" % term)
-        print("State now:")
-        for term in self.state:
-            print(u"  %s" % term)
-        print("")
+    def debug_state(self, label):
+        sys.stderr.write(":::: {} State [\n".format(label))
+        for term in sorted(self.state):
+            sys.stderr.write("::::   {}\n".format(term))
+        sys.stderr.write(":::: ]\n")
