@@ -24,7 +24,7 @@
 
 scenario Rules {
   [actor(?A),item(?I),unheld(?I)]     ?A picked up the ?I.   [holding(?A,?I),!unheld(?I)]
-  [actor(?A),item(?I),holding(?A,?I)] ?A put down the ?I.       [holding(?A,?I),unheld(?I)]
+  [actor(?A),item(?I),holding(?A,?I)] ?A put down the ?I.    [!holding(?A,?I),unheld(?I)]
 
   [actor(?A),item(?I),holding(?A,?I),drink(?I)] ?A took a sip of the ?I. []
 
