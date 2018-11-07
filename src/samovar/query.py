@@ -37,11 +37,7 @@ def match_all(database, patterns, env):
         # now we simply check if the term exists in the database.
         # if it does not, we recurse down to the next clause in the pattern.
 
-        found = False
-        for proposition in database:
-            if proposition == expanded_pattern:
-                found = True
-        if not found:
+        if not (expanded_pattern in database):
             envs.extend(match_all(database, patterns[1:], env))
 
     else:
