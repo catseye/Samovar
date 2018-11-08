@@ -1,7 +1,7 @@
 import unittest
 from unittest import TestCase
 
-from samovar.ast import Assert, Retract
+from samovar.ast import Assert, Retract, join_sentence_parts
 from samovar.terms import Term, Var
 from samovar.query import match_all
 
@@ -78,6 +78,14 @@ class TermTestCase(TestCase):
         t = Term('actor', Var('?A'))
         r = t.subst({u'?A': Term('alice')})
         self.assertEqual(r, Term('actor', Term('alice')))
+
+
+class RenderTestCase(TestCase):
+    def test_join_sentence_parts(self):
+        self.assertEqual(
+            join_sentence_parts(['"', "Hello", ",", '"', "said", "the", "mouse", "."]),
+            '"Hello," said the mouse.'
+        )
 
 
 class DatabaseTestCase(unittest.TestCase):

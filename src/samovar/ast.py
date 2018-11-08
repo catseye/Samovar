@@ -34,13 +34,20 @@ class World(AST):
 
 def join_sentence_parts(parts):
     acc = u''
+    q = 0
     i = 0
     while i < len(parts):
         part = parts[i]
-        if (acc == u'') or (part in (u'.', u',', u'!', u'"', u"'")):
+        if part in (u'"'):
+            acc += part
+            q += 1
+        elif part in (u'.', u',', u'!', u'?', u"'"):
             acc += part
         else:
-            acc += u' ' + part
+            if (acc == u'') or (acc[-1] == '"' and (q % 2 == 1)):
+                acc += part
+            else:
+                acc += u' ' + part
         i += 1
     return acc
 
