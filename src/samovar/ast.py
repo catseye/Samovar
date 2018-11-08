@@ -54,13 +54,13 @@ def join_sentence_parts(parts):
 
 class Rule(AST):
     def nu_format(self):
-        return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.terms]) + u" " + self.post.format()
+        return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.words]) + u" " + self.post.format()
 
     def format(self, unifier):
-        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.terms])
+        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.words])
 
     def to_json(self):
-        return join_sentence_parts([unicode(t) for t in self.terms])
+        return join_sentence_parts([unicode(t) for t in self.words])
 
 
 class Scenario(AST):

@@ -74,7 +74,7 @@ class Parser(object):
         while not self.scanner.on('['):
             words.append(self.word())
         post = self.cond()
-        return Rule(pre=pre, terms=words, post=post)
+        return Rule(pre=pre, words=words, post=post)
 
     def cond(self):
         exprs = []
