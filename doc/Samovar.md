@@ -197,6 +197,33 @@ met.  A number of events are generated, and then the check is made.
     ===> Ignatz picks up the oilcan.
     ===> Ignatz picks up the brick.
 
+Event rules
+-----------
+
+An event may be selected if its pattern matches the current set of
+facts.
+
+The text inside the event rule is typically expanded with the values
+that the pattern variables matched.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picks up the brick.
+
+The text may contain punctuation.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  "What a lovely β this is!" says α, picking it up.  [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "What a lovely brick this is!" says Ignatz, picking it up.
+
 chairs
 ------
 
