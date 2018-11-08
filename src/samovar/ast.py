@@ -32,32 +32,28 @@ class World(AST):
     pass
 
 
+def join_sentence_parts(parts):
+    acc = u''
+    i = 0
+    while i < len(parts):
+        part = parts[i]
+        if (acc == u'') or (part in (u'.', u',', u'!', u'"', u"'")):
+            acc += part
+        else:
+            acc += u' ' + part
+        i += 1
+    return acc
+
+
 class Rule(AST):
     def nu_format(self):
         return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.terms]) + u" " + self.post.format()
 
     def format(self, unifier):
-        acc = u''
-        for t in self.terms:
-
-            t = t.subst(unifier)
-
-            s = unicode(t)
-            if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
-                acc += s
-            else:
-                acc += u' ' + s
-        return acc
+        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.terms])
 
     def to_json(self):
-        acc = u''
-        for t in self.terms:
-            s = unicode(t)
-            if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
-                acc += s
-            else:
-                acc += u' ' + s
-        return acc
+        return join_sentence_parts([unicode(t) for t in self.terms])
 
 
 class Scenario(AST):
