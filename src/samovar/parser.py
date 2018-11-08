@@ -10,14 +10,15 @@ from samovar.scanner import Scanner
 # Import        ::= "import" Atom.
 # Goal          ::= "goal" Cond.
 # Proposition   ::= Term.
-# Rule          ::= Cond {Term | Punct} Cond.
+# Rule          ::= Cond {Var | Punct} Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Expr          ::= Term | NotSym Term.
 # Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
 # Var           ::= Qmark | Greek.
-# Qmark         ::= '?' <<A-Za-z>>.
+# Qmark         ::= '?' Atom.
 # Greek         ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>.
-# Atom          ::= <<A-Za-z possibly with punctuation on either end>>.
+# Atom          ::= <<A-Za-z_>> <<A-Za-z0-9_->>*.
+# Punct         ::= <<A-Za-z0-9_-"',.;:?!>>+.
 # NotSym        ::= '~' | '¬'.
 # AndSym        ::= ',' | '∧'.
 
@@ -68,12 +69,12 @@ class Parser(object):
         return self.term()
 
     def rule(self):
-        terms = []
+        words = []
         pre = self.cond()
         while not self.scanner.on('['):
-            terms.append(self.term())
+            words.append(self.word())
         post = self.cond()
-        return Rule(pre=pre, terms=terms, post=post)
+        return Rule(pre=pre, terms=words, post=post)
 
     def cond(self):
         exprs = []
@@ -94,7 +95,7 @@ class Parser(object):
     def term(self):
         if self.scanner.on_type('variable'):
             return self.var()
-        self.scanner.check_type('word', 'punct')
+        self.scanner.check_type('word')
         constructor = self.scanner.token
         self.scanner.scan()
         subterms = []
@@ -104,6 +105,14 @@ class Parser(object):
                 subterms.append(self.term())
             self.scanner.expect(')')
         return Term(constructor, *subterms)
+
+    def word(self):
+        if self.scanner.on_type('variable'):
+            return self.var()
+        self.scanner.check_type('word', 'punct', 'operator')
+        constructor = self.scanner.token
+        self.scanner.scan()
+        return Term(constructor)
 
     def var(self):
         self.scanner.check_type('variable')

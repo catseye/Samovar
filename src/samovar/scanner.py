@@ -69,16 +69,16 @@ class Scanner(object):
             self.token = None
             self.type = 'EOF'
             return
-        if self.scan_pattern(u'\\~|→|=|¬|∧|∨', 'operator'):
+        if self.scan_pattern(u'\\~|→|=|¬|∧|∨|,', 'operator'):
             return
         # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
         if self.scan_pattern(r'\?[a-zA-Z_]+', 'variable'):
             return
-        if self.scan_pattern(r'\,|\.|\?|\!|\"' + r"|\'", 'punct'):
-            return
         if self.scan_pattern(r'\(|\)|\{|\}|\[|\]', 'bracket'):
             return
         if self.scan_pattern(r'[a-zA-Z_][a-zA-Z0-9_-]*', 'word'):
+            return
+        if self.scan_pattern(r"""[a-zA-Z0-9\"\'\,\.\;\:\?\!]+""", 'punct'):
             return
         if self.scan_pattern(u'[αβγδεζθικλμνξοπρστυφχψω]', 'variable'):
             for varname, letter in GREEK:
