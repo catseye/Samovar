@@ -81,10 +81,16 @@ class TermTestCase(TestCase):
 
 
 class RenderTestCase(TestCase):
-    def test_join_sentence_parts(self):
+    def test_join_sentence_parts_1(self):
         self.assertEqual(
             join_sentence_parts(['"', "Hello", ",", '"', "said", "the", "mouse", "."]),
             '"Hello," said the mouse.'
+        )
+
+    def test_join_sentence_parts_2(self):
+        self.assertEqual(
+            join_sentence_parts(["The", "mouse", "asked", ",", '"', "What", "is", "it", "?", '"']),
+            'The mouse asked, "What is it?"'
         )
 
 
