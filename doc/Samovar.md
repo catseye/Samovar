@@ -34,7 +34,9 @@ You can include comments with `//`.
     ===> 
 
 The name of a scenario must begin with a letter or underscore,
-and can consist of letters, numbers, hyphens, and underscores.
+and can consist of letters, numbers, hyphens, underscores, and
+apostrophes.
+
 The same rules apply to most other "words" appearing in a Samovar
 description.
 
@@ -223,6 +225,16 @@ The text may contain punctuation.
       goal [holding(Ignatz,brick)].
     }
     ===> "What a lovely brick this is!" says Ignatz, picking it up.
+
+Punctuation should be preserved sensibly.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  "β, don't you know?" says α, picking it up.  [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "brick, don't you know?" says Ignatz, picking it up.
 
 chairs
 ------

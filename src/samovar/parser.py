@@ -10,15 +10,15 @@ from samovar.scanner import Scanner
 # Import        ::= "import" Atom.
 # Goal          ::= "goal" Cond.
 # Proposition   ::= Term.
-# Rule          ::= Cond {Var | Punct} Cond.
+# Rule          ::= Cond {Var | Atom | Punct} Cond.
 # Cond          ::= "[" Expr {"," Expr} "]".
 # Expr          ::= Term | NotSym Term.
 # Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
 # Var           ::= Qmark | Greek.
 # Qmark         ::= '?' Atom.
 # Greek         ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>.
-# Atom          ::= <<A-Za-z_>> <<A-Za-z0-9_->>*.
-# Punct         ::= <<A-Za-z0-9_-"',.;:?!>>+.
+# Atom          ::= <<A-Za-z_>> <<A-Za-z0-9_-'>>*.
+# Punct         ::= <<"',.;:?!>>.
 # NotSym        ::= '~' | '¬'.
 # AndSym        ::= ',' | '∧'.
 
