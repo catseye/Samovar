@@ -40,7 +40,7 @@ apostrophes.
 The same rules apply to most other "words" appearing in a Samovar
 description.
 
-    scenario Pin_afore-1000 {
+    scenario Pin_afore-isn't-1000 {
         this-is-a-constructor(this-is-an-atom).
     }
     
@@ -226,10 +226,26 @@ The text may contain punctuation.
     }
     ===> "What a lovely brick this is!" says Ignatz, picking it up.
 
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)]  "What a lovely ?I this is!" says ?A, picking it up.  [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "What a lovely brick this is!" says Ignatz, picking it up.
+
 Punctuation should be preserved sensibly.
 
     scenario UntilHoldBrick {
       [actor(α),item(β),~holding(α,β)]  "β, don't you know?" says α, picking it up.  [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "brick, don't you know?" says Ignatz, picking it up.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)]  "?I, don't you know?" says ?A, picking it up.  [holding(?A,?I)]
       actor(Ignatz).
       item(brick).
       goal [holding(Ignatz,brick)].
