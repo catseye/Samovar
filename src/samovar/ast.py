@@ -34,21 +34,28 @@ class World(AST):
 
 def join_sentence_parts(parts):
     acc = u''
-    q = 0
-    i = 0
-    while i < len(parts):
-        part = parts[i]
-        if part in (u'"'):
+    quote_open = False
+    for part in parts:
+        last = '' if not acc else acc[-1]
+        if last == '':
             acc += part
-            q += 1
-        elif part in (u'.', u',', u'!', u'?', u"'"):
+        elif last == '"' and quote_open:
             acc += part
-        else:
-            if (acc == u'') or (acc[-1] == '"' and (q % 2 == 1)):
+        elif last == '"' and not quote_open:
+            if part in (u'.', u',', u'!', u'?'):
                 acc += part
             else:
-                acc += u' ' + part
-        i += 1
+                acc += ' ' + part
+        elif last == ',' and part == u'"' and not quote_open:
+            acc += ' ' + part
+        elif last in (u'.', u',', u'!', u'?', u"'") and part == u'"' and not quote_open:
+            acc += part
+        elif part in (u'.', u',', u'!', u'?', u"'", u'"'):
+            acc += part
+        else:
+            acc += u' ' + part
+        if part == '"':
+            quote_open = not quote_open
     return acc
 
 
