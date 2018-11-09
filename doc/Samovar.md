@@ -34,11 +34,13 @@ You can include comments with `//`.
     ===> 
 
 The name of a scenario must begin with a letter or underscore,
-and can consist of letters, numbers, hyphens, and underscores.
+and can consist of letters, numbers, hyphens, underscores, and
+apostrophes.
+
 The same rules apply to most other "words" appearing in a Samovar
 description.
 
-    scenario Pin_afore-1000 {
+    scenario Pin_afore-isn't-1000 {
         this-is-a-constructor(this-is-an-atom).
     }
     
@@ -196,6 +198,59 @@ met.  A number of events are generated, and then the check is made.
     ===> Ignatz puts down the brick.
     ===> Ignatz picks up the oilcan.
     ===> Ignatz picks up the brick.
+
+Event rules
+-----------
+
+An event may be selected if its pattern matches the current set of
+facts.
+
+The text inside the event rule is typically expanded with the values
+that the pattern variables matched.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picks up the brick.
+
+The text may contain punctuation.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  "What a lovely β this is!" says α, picking it up.  [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "What a lovely brick this is!" says Ignatz, picking it up.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)]  "What a lovely ?I this is!" says ?A, picking it up.  [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "What a lovely brick this is!" says Ignatz, picking it up.
+
+Punctuation should be preserved sensibly.
+
+    scenario UntilHoldBrick {
+      [actor(α),item(β),~holding(α,β)]  "β, don't you know?" says α, picking it up.  [holding(α,β)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "brick, don't you know?" says Ignatz, picking it up.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)]  "?I, don't you know?" says ?A, picking it up.  [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> "brick, don't you know?" says Ignatz, picking it up.
 
 chairs
 ------

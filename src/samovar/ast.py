@@ -32,32 +32,42 @@ class World(AST):
     pass
 
 
+def join_sentence_parts(parts):
+    acc = u''
+    quote_open = False
+    for part in parts:
+        last = '' if not acc else acc[-1]
+        if last == '':
+            acc += part
+        elif last == '"' and quote_open:
+            acc += part
+        elif last == '"' and not quote_open:
+            if part in (u'.', u',', u'!', u'?'):
+                acc += part
+            else:
+                acc += ' ' + part
+        elif last == ',' and part == u'"' and not quote_open:
+            acc += ' ' + part
+        elif last in (u'.', u',', u'!', u'?', u"'") and part == u'"' and not quote_open:
+            acc += part
+        elif part in (u'.', u',', u'!', u'?', u"'", u'"'):
+            acc += part
+        else:
+            acc += u' ' + part
+        if part == '"':
+            quote_open = not quote_open
+    return acc
+
+
 class Rule(AST):
     def nu_format(self):
-        return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.terms]) + u" " + self.post.format()
+        return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.words]) + u" " + self.post.format()
 
     def format(self, unifier):
-        acc = u''
-        for t in self.terms:
-
-            t = t.subst(unifier)
-
-            s = unicode(t)
-            if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
-                acc += s
-            else:
-                acc += u' ' + s
-        return acc
+        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.words])
 
     def to_json(self):
-        acc = u''
-        for t in self.terms:
-            s = unicode(t)
-            if (acc == u'') or (s in (u'.', u',', u'!', u'"', u"'")):
-                acc += s
-            else:
-                acc += u' ' + s
-        return acc
+        return join_sentence_parts([unicode(t) for t in self.words])
 
 
 class Scenario(AST):
