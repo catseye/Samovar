@@ -1,0 +1,145 @@
+// ----------------------------- MEANINGS ------------------------
+
+// actor(?A)       ?A is an actor in the scene.
+// shocked(?A)     ?A is in mental state: shocked.
+// can_exit(?A)    ?A is allowed to leave the scene.
+// item(?I)        ?I is an item in the scene.
+// drink(?I)       ?I is an item that can be drank.
+// holding(?A, ?I) ?A is an actor holding item ?I.
+// unheld(?I)      ?I is an item that is not currently held.
+// prop(?P)        ?P is a prop in the scene.
+// seat(?S)        ?S is a prop that can be sat on.
+// sitting(?A)
+// sitting_on(?A,?S)
+// empty(?S)       ?S is a seat that is not currently occupied.
+// fenestration(?P)  ?P is a prop that can be looked out of to the outside.
+// near(?A)        ?A is near a prop.
+// near_to(?A,?P)  ?A is an actor who is near or next to prop ?P.
+// described(?P)   ?P is a prop that has been described.
+
+// topic(?T)       ?T is a topic of conversation.
+// has-news(?A,?T) ?A has news which is ?T
+
+// ----------------------------- RULES ------------------------
+
+scenario Rules {
+  [actor(?A),item(?I),unheld(?I)]     ?A picked up the ?I.   [holding(?A,?I),!unheld(?I)]
+  [actor(?A),item(?I),holding(?A,?I)] ?A put down the ?I.    [!holding(?A,?I),unheld(?I)]
+
+  [actor(?A),item(?I),holding(?A,?I),drink(?I)] ?A took a sip of the ?I. []
+
+  [actor(?A),!sitting(?A)]                    ?A walked around the room. []
+  [actor(?A),!sitting(?A),seat(?S),empty(?S)] ?A sat down on the ?S.     [sitting(?A),sitting_on(?A,?S),!empty(?S)]
+  [actor(?A),sitting(?A),sitting_on(?A,?S)]   ?A leaned back in the ?S.  []
+  [actor(?A),sitting(?A),sitting_on(?A,?S)]   ?A got up and stretched.   [!sitting(?A),!sitting_on(?A,?S),empty(?S)]
+
+  [actor(?A),can_exit(?A)]  ?A left the room.  [!actor(?A)]
+
+  [actor(?A)]  ?A coughed.  []
+  [actor(?A)]  ?A rubbed his chin.  []
+  [actor(?A),shocked(?A)]  ?A gasped.  []
+  [actor(?A),shocked(?A)]  ?A stared blankly off into space.  []
+  [actor(?A),shocked(?A)]  ?A winced.  []
+
+  [actor(?A),actor(?B)]  ?A looked at ?B.  []
+  [actor(?A),actor(?B)]  ?A nodded to ?B.  []
+
+  [actor(?A),fenestration(?P)]  ?A looked out the ?P.  []
+
+  [actor(?A),!sitting(?A),prop(?P),!near(?A)]  ?A walked over to the ?P.    [near(?A),near_to(?A,?P)]
+  [actor(?A),near_to(?A,?P)]                   ?A examined the ?P closely.  []
+  [actor(?A),near_to(?A,?P)]                   ?A walked away from the ?P.  [!near(?A),!near_to(?A,?P)]
+
+  [prop(?P),!described(?P)]  Nearby there was a ?P.  [described(?P)]
+
+  [actor(?A),has-news(?A,?T),!exclaimed-has-news(?A,?T)]    ?A exclaimed, "I have news!"  [exclaimed-has-news(?A,?T)]
+  [actor(?A),exclaimed-has-news(?B,?T),!heard-news(?A,?T)]  ?A asked, "What is it, ?B?"   [been-asked-about-news(?B,?T)]
+  [actor(?A),been-asked-about-news(?A,?T),actor(?B)]        ?A told ?B of the ?T.         [heard-news(?B,?T)]
+}
+
+// ----------------------------- SETTINGS ------------------------
+
+scenario SittingRoom {
+    prop(desk).
+    prop(bookshelf).
+    prop(window). fenestration(window).
+    prop(grandfather_clock).
+    prop(leather_chair).
+
+    seat(leather_chair).
+    empty(leather_chair).
+
+    item(newspaper).
+    item(whiskey). drink(whiskey).
+    item(brandy). drink(brandy).
+    item(pocket_watch).
+
+    unheld(newspaper).
+    unheld(whiskey).
+    unheld(brandy).
+    unheld(pcoket_watch).
+}
+
+scenario GardenShed {
+    prop(workbench).
+    prop(window). fenestration(window).
+    prop(bags_of_potting_soil).
+
+    seat(bags_of_potting_soil).
+    empty(bags_of_potting_soil).
+
+    item(oilcan).
+    item(wrench).
+    item(screwdriver).
+
+    unheld(oilcan).
+    unheld(wrench).
+    unheld(screwdriver).
+}
+
+// ----------------------------- SCENES ------------------------
+
+scenario Scene_1 {
+    import SittingRoom.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    topic(impending_hurricane).
+    has-news(Scurthorpe, impending_hurricane).
+
+    shocked(Throgmorton).
+
+    goal [heard-news(Throgmorton, impending_hurricane)].
+}
+
+scenario Scene_2 {
+    import GardenShed.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    shocked(Throgmorton).
+    can_exit(Scurthorpe).
+
+    goal [].
+}
+
+scenario Scene_3 {
+    import SittingRoom.
+    import Rules.
+
+    actor(Pranehurst).
+    actor(Scurthorpe).
+    actor(Throgmorton).
+
+    can_exit(Pranehurst).
+    can_exit(Scurthorpe).
+    can_exit(Throgmorton).
+
+    goal [].
+}

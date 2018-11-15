@@ -1,58 +1,61 @@
 Samovar
 =======
 
-*Version 0.1.  Subject to change in backwards-incompatible ways.*
+*Version 0.2.  Subject to change in backwards-incompatible ways.*
 
-Samovar is a DSL for world-modeling using predicates rather than explicit objects.
+Samovar is a DSL for modelling a world using propositions (facts), and possible
+events that can occur based on those facts, changing them.
 
-The remainder of this document will probably be trying to explain what I mean by
-that.
+Here is a short example of a Samovar description:
 
-It could be thought of as an "assertion-retraction engine", which itself could be
-thought of as a very stilted style of Prolog programming plus some syntactic
-sugar.
+    scenario IgnatzWithBrick {
+      
+        [actor(?A),item(?I),~holding(?A,?I)]  ?A picks up the ?I.   [holding(?A,?I)]
+        [actor(?A),item(?I),holding(?A,?I)]   ?A puts down the ?I.  [~holding(?A,?I)]
+    
+        actor(Ignatz).
+        item(brick).
+    
+        goal [].
+    }
 
-Alternately, it could be thought of as assigning preconditions and postconditions,
-like you would find in a program proof, to actions in a world-model.  Instead of
-proving that the action satisfies the conditions, though, we simply assume it
-does, and use the conditions to chain actions together in a sensible order.
-
-A Samovar world is an immutable set of rules which operate on a mutable set of
-facts.  Each rule looks like
-
-    [A] X [B]
-
-and means "If A holds, then X is a possible action to take, and if you do take it,
-you must make B hold afterwards."
-
-By "hold" we mean "can unify with the current set of facts."
-
-As an example,
-
-    [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
-
-Which can be read "If A is an actor and B is an item and A is not holding B, then
-one possible action is to say 'A picks up the B' and assert that A is now holding B."
-
-We can add a complementary rule:
-
-    [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
-
-And we can package this all into a world-description:
-
-    rules
-      [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
-      [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
-    end
-    situations
-      [actor(Ignatz),item(brick)]
-    end
-
-And an implementation of Samovar can take this world-description and use it to,
-among other things, generate chains of events like
+And an implementation of Samovar could take this scenario and use it to,
+among other things, generate textual descriptions of chains of events like
 
     Ignatz picks up the brick. Ignatz puts down the brick.
 
-Of course, this is a very simple example.  A more complex example might have
-more actors, more items, and more rules (for example, that two actors cannot
-be holding the same item at the same time.)
+Of course, this is a very simple example.  (It doesn't even prevent two
+actors from picking up the same item at the same time!)  For more complex
+examples, and a fuller description of the language, see
+[doc/Samovar.md](doc/Samovar.md), which doubles as a test suite.
+
+### Discussion
+
+This looks like logic programming but the internals are actually much simpler.
+
+Samovar could be described as an "assertion-retraction engine", which itself could
+be thought of as a highly stylized form of Prolog programming plus some syntactic
+sugar.
+
+Alternately, it could be thought of as assigning preconditions and postconditions,
+like you would find in [Hoare logic][], to actions in a world-model.  Instead of
+proving that the action satisfies the conditions, though, we simply assume it
+does, and use the conditions to chain actions together in a sensible order.
+
+But really, the internals are far simpler than an inference engine or a theorem
+prover: there are no logical rules in the database, only propositions, so
+they can be selected by simple pattern-matching rather than full unification.
+
+[Hoare logic]: https://en.wikipedia.org/wiki/Hoare_logic
+
+### TODO
+
+*   Implement a "wildcard" variable that will match anything *without* binding it.
+*   Consider what it would take to add a predicate that evaluates to whether
+    a given action has been taken previously or not.
+*   Consider macros.
+*   Consider making "wildcard" work such that you can say `¬holding(?_, club)`
+    to mean "if no one is holding the club".
+*   Statically check that the 2nd cond in a rule has no "where" clause
+*   Commas after bindings in "where"
+*   Statically check that every var in the 2nd cond was bound in the 1st cond

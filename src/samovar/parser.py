@@ -1,79 +1,100 @@
 # encoding: UTF-8
 
-from samovar.ast import World, Rule, Function, Situation, Cond, Assert, Retract
+from samovar.ast import World, Scenario, Rule, Cond, Assert, Retract
 from samovar.terms import Term, Var
 from samovar.scanner import Scanner
 
 
-# World         ::= {Rules | Functions | Situations}.
-# Rules         ::= "rules" {Rule} "end".
-# Functions     ::= "functions" {Function} "end".
-# Situations    ::= "situations" {Situation} "end".
-# Rule          ::= Cond {Term | Punct} Cond.
-# Function      ::= Term "→" Term.
-# Situation     ::= Cond.
-# Cond          ::= "[" Expr {"," Expr} "]".
-# Expr          ::= Term | "~" Term.
-# Term          ::= Var | Word ["(" Term {"," Term} ")"].
-# Var           ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>
-# Atom          ::= <<A-Za-z possibly with punctuation on either end>>
+# World         ::= {Scenario}.
+# Scenario      ::= "scenario" Atom "{" {Import | Proposition | Rule | Goal} ["." | ","] "}".
+# Import        ::= "import" Atom.
+# Goal          ::= "goal" Cond.
+# Proposition   ::= Term.
+# Rule          ::= Cond {Var | Atom | Punct} Cond.
+# Cond          ::= "[" Expr {"," Expr} ["where" {Var "=" Term}"]".
+# Expr          ::= Term | NotSym Term.
+# Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
+# Var           ::= Qmark | Greek.
+# Qmark         ::= '?' Atom.
+# Greek         ::= <<one of: αβγδεζθικλμνξοπρστυφχψω>>.
+# Atom          ::= <<A-Za-z_>> <<A-Za-z0-9_-'>>*.
+# Punct         ::= <<"',.;:?!>>.
+# NotSym        ::= '~' | '¬'.
+# AndSym        ::= ',' | '∧'.
 
 
 class Parser(object):
     def __init__(self, text):
         self.scanner = Scanner(text)
+        self.scenario_map = {}
 
     def world(self):
-        rules = []
-        functions = []
-        situations = []
-        while self.scanner.on('rules', 'functions', 'situations'):
-            if self.scanner.on('rules'):
-                rules.extend(self._section('rules', self.rule))
-            if self.scanner.on('functions'):
-                functions.extend(self._section('functions', self.function))
-            if self.scanner.on('situations'):
-                situations.extend(self._section('situations', self.situation))
-        return World(rules=rules, functions=functions, situations=situations)
+        scenarios = []
+        while self.scanner.on('scenario'):
+            scenario = self.scenario()
+            self.scenario_map[scenario.name] = scenario
+            scenarios.append(scenario)
+        return World(scenarios=scenarios)
 
-    def _section(self, heading, method):
-        items = []
-        self.scanner.expect(heading)
-        while not self.scanner.on('end'):
-            items.append(method())
-        self.scanner.expect('end')
-        return items
+    def scenario(self):
+        propositions = []
+        rules = []
+        goal = None
+        self.scanner.expect('scenario')
+        self.scanner.check_type('word')
+        name = self.scanner.token
+        self.scanner.scan()
+        self.scanner.expect('{')
+        while not self.scanner.on('}'):
+            if self.scanner.consume('import'):
+                self.scanner.check_type('word')
+                from_name = self.scanner.token
+                self.scanner.scan()
+                from_scenario = self.scenario_map[from_name]
+                rules.extend(from_scenario.rules)
+                propositions.extend(from_scenario.propositions)
+            elif self.scanner.consume('goal'):
+                assert goal is None
+                goal = self.cond()
+            elif self.scanner.on('['):
+                rules.append(self.rule())
+            else:
+                propositions.append(self.proposition())
+            self.scanner.consume('.')
+            self.scanner.consume(',')
+        self.scanner.expect('}')
+        return Scenario(name=name, propositions=propositions, rules=rules, goal=goal)
+
+    def proposition(self):
+        return self.term()
 
     def rule(self):
-        terms = []
+        words = []
         pre = self.cond()
         while not self.scanner.on('['):
-            terms.append(self.term())
+            words.append(self.word())
         post = self.cond()
-        return Rule(pre=pre, terms=terms, post=post)
-
-    def function(self):
-        sign = self.term()
-        self.scanner.expect(u'→')
-        result = self.term()
-        return Function(sign=sign, result=result)
-
-    def situation(self):
-        cond = self.cond()
-        return Situation(cond=cond)
+        return Rule(pre=pre, words=words, post=post)
 
     def cond(self):
         exprs = []
+        bindings = {}
         self.scanner.expect('[')
-        if not self.scanner.on(']'):
+        if not self.scanner.on(']') and not self.scanner.on('where'):
             exprs.append(self.expr())
-            while self.scanner.consume(','):        
+            while self.scanner.consume(',', u'∧'):
                 exprs.append(self.expr())
+        if self.scanner.consume('where'):
+            while not self.scanner.on(']'):
+                v = self.var()
+                self.scanner.expect('=')
+                t = self.term()
+                bindings[v.name] = t
         self.scanner.expect(']')
-        return Cond(exprs=exprs)
+        return Cond(exprs=exprs, bindings=bindings)
 
     def expr(self):
-        if self.scanner.consume('~'):
+        if self.scanner.consume('~', u'¬', '!'):
             return Retract(term=self.term())
         else:
             return Assert(term=self.term())
@@ -81,7 +102,7 @@ class Parser(object):
     def term(self):
         if self.scanner.on_type('variable'):
             return self.var()
-        self.scanner.check_type('word', 'punct')
+        self.scanner.check_type('word')
         constructor = self.scanner.token
         self.scanner.scan()
         subterms = []
@@ -90,10 +111,19 @@ class Parser(object):
             while self.scanner.consume(','):
                 subterms.append(self.term())
             self.scanner.expect(')')
-        return Term(constructor, subterms=subterms)
+        return Term(constructor, *subterms)
+
+    def word(self):
+        if self.scanner.on_type('variable'):
+            return self.var()
+        self.scanner.check_type('word', 'punct', 'operator')
+        constructor = self.scanner.token
+        self.scanner.scan()
+        return Term(constructor)
 
     def var(self):
         self.scanner.check_type('variable')
         name = self.scanner.token
         self.scanner.scan()
-        return Var(name)
+        v = Var(name)
+        return v

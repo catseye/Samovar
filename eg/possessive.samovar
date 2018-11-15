@@ -1,0 +1,13 @@
+scenario HeadScratching {
+
+  [actor(?Actor),possessive(?Actor,?their)]
+    ?Actor scratches ?their head.
+  []
+
+  actor(Alice).
+  possessive(Alice, her).
+  actor(Bob).
+  possessive(Bob, his).
+
+  goal [].
+}

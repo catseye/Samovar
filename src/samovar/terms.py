@@ -1,32 +1,28 @@
 # encoding: UTF-8
 
 
+# Python 2/3
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
+
 class AbstractTerm(object):
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        return hash(unicode(self))
-
-    def match_many(self, terms):
-        successes = []
-        for term in terms:
-            unifier = {}
-            try:
-                self.match(term, unifier)
-                successes.append((term, unifier))
-            except ValueError as e:
-                pass
-        return successes
+    pass
 
 
 class Term(AbstractTerm):
-    def __init__(self, constructor, subterms=None):
-        if subterms is None:
-            subterms = []
-        self.constructor = constructor
-        self.subterms = subterms
+    def __init__(self, constructor, *subterms):
+        self.t = tuple([constructor] + list(subterms))
+
+    @property
+    def constructor(self):
+        return self.t[0]
+
+    @property
+    def subterms(self):
+        return self.t[1:]
 
     def __str__(self):
         if len(self.subterms) == 0:
@@ -35,7 +31,7 @@ class Term(AbstractTerm):
 
     def __repr__(self):
         if self.subterms:
-            return "%s(%r, subterms=%r)" % (
+            return "%s(%r, *%r)" % (
                 self.__class__.__name__, self.constructor, self.subterms
             )
         else:
@@ -44,16 +40,10 @@ class Term(AbstractTerm):
             )
 
     def __eq__(self, other):
-        if not isinstance(other, Term):
-            return False
-        if self.constructor != other.constructor:
-            return False
-        if len(self.subterms) != len(other.subterms):
-            return False
-        for (st1, st2) in zip(self.subterms, other.subterms):
-            if st1 != st2:
-                return False
-        return True
+        return isinstance(other, Term) and self.t == other.t
+
+    def __hash__(self):
+        return hash(self.t)
 
     def is_atom(self):
         return len(self.subterms) == 0
@@ -64,30 +54,17 @@ class Term(AbstractTerm):
                 return False
         return True
 
-    def contains(self, other):
-        if self == other:
-            return True
-        for st in self.subterms:
-            if st.contains(other):
-                return True
-        return False
-
-    def replace(self, old, new):
-        if self == old:
-            return new
-        else:
-            return Term(self.constructor, subterms=[subterm.replace(old, new) for subterm in self.subterms])
-
-    def match(self, term, unifier):
+    def match(self, term, env, **kwargs):
         if self.constructor != term.constructor:
             raise ValueError("`%s` != `%s`" % (self.constructor, term.constructor))
         if len(self.subterms) != len(term.subterms):
             raise ValueError("`%s` != `%s`" % (len(self.subterms), len(term.subterms)))
         for (subpat, subterm) in zip(self.subterms, term.subterms):
-            subpat.match(subterm, unifier)
+            env = subpat.match(subterm, env, **kwargs)
+        return env
 
-    def subst(self, unifier):
-        return Term(self.constructor, subterms=[subterm.subst(unifier) for subterm in self.subterms])
+    def subst(self, env):
+        return Term(self.constructor, *[subterm.subst(env) for subterm in self.subterms])
 
     def collect_atoms(self, atoms):
         if self.is_atom():
@@ -112,9 +89,10 @@ class Var(AbstractTerm):
         return "%s(%r)" % (self.__class__.__name__, self.name)
 
     def __eq__(self, other):
-        if not isinstance(other, Var):
-            return False
-        return self.name == other.name
+        return isinstance(other, Var) and self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
 
     def is_atom(self):
         return False
@@ -122,14 +100,18 @@ class Var(AbstractTerm):
     def is_ground(term):
         return False
 
-    def match(self, term, unifier):
-        if self.name in unifier:
-            unifier[self.name].match(term, unifier)
+    def match(self, term, env, **kwargs):
+        if self.name in env:
+            bound_to = env[self.name]
+            return bound_to.match(term, env, **kwargs)
         else:
-            unifier[self.name] = term
+            if kwargs.get('unique_binding'):
+                if term in env.values():
+                    raise ValueError("Not unique")
+            return dict(list(env.items()) + [(self.name, term)])
 
-    def subst(self, unifier):
-        return unifier[self.name]
+    def subst(self, env):
+        return env[self.name]
 
     def collect_atoms(self, atoms):
         pass
