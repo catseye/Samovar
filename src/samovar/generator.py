@@ -5,7 +5,7 @@ import random
 import re
 import sys
 
-from samovar.ast import Assert, Retract, format_rule
+from samovar.ast import Assert, Retract, format_rule, rule_to_json
 from samovar.query import match_all
 from samovar.terms import Term
 
@@ -24,7 +24,7 @@ class Event(object):
 
     def to_json(self):
         u = dict([(unicode(k), unicode(v)) for k, v in self.unifier.items()])
-        return [self.rule.to_json(), u]
+        return [rule_to_json(self.rule), u]
 
     def __str__(self):
         return format_rule(self.rule, self.unifier)
