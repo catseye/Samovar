@@ -1,8 +1,6 @@
 # encoding: UTF-8
 
-from copy import deepcopy
-from pprint import pprint
-import random
+from collections import namedtuple
 
 
 # Python 2/3
@@ -12,24 +10,12 @@ except NameError:
     unicode = str
 
 
-class AST(object):
-    def __init__(self, **kwargs):
-        self.attrs = kwargs
-
-    def __repr__(self):
-        return "%s(%s)" % (
-            self.__class__.__name__,
-            ', '.join(['%s=%r' % (k, v) for k, v in self.attrs.iteritems()])
-        )
-
-    def __getattr__(self, name):
-        if name in self.attrs:
-            return self.attrs[name]
-        raise AttributeError(name)
-
-
-class World(AST):
-    pass
+World = namedtuple('World', ['scenarios'])
+Rule = namedtuple('Rule', ['pre', 'words', 'post'])
+Scenario = namedtuple('Scenario', ['name', 'propositions', 'rules', 'goal'])
+Cond = namedtuple('Cond', ['exprs', 'bindings'])
+Assert = namedtuple('Assert', ['term'])
+Retract = namedtuple('Retract', ['term'])
 
 
 def join_sentence_parts(parts):
@@ -59,34 +45,9 @@ def join_sentence_parts(parts):
     return acc
 
 
-class Rule(AST):
-    def nu_format(self):
-        return self.pre.format() + u" " + u' '.join([unicode(t) for t in self.words]) + u" " + self.post.format()
-
-    def format(self, unifier):
-        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.words])
-
-    def to_json(self):
-        return join_sentence_parts([unicode(t) for t in self.words])
+def format_rule(rule, unifier):
+    return join_sentence_parts([unicode(t.subst(unifier)) for t in rule.words])
 
 
-class Scenario(AST):
-    pass
-
-
-class Cond(AST):
-    def __str__(self):
-        return u'[%s]' % ','.join([unicode(e) for e in self.exprs])
-
-    def format(self):
-        return u'[%s]' % ','.join([e.format() for e in self.exprs])
-
-
-class Assert(AST):
-    def format(self):
-        return u'%s' % self.term
-
-
-class Retract(AST):
-    def format(self):
-        return u'~%s' % self.term
+def rule_to_json(rule):
+    return join_sentence_parts([unicode(t) for t in rule.words])

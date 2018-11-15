@@ -5,7 +5,7 @@ import random
 import re
 import sys
 
-from samovar.ast import Assert, Retract
+from samovar.ast import Assert, Retract, format_rule
 from samovar.query import match_all
 from samovar.terms import Term
 
@@ -27,7 +27,7 @@ class Event(object):
         return [self.rule.to_json(), u]
 
     def __str__(self):
-        return self.rule.format(self.unifier)
+        return format_rule(self.rule, self.unifier)
 
 
 class Generator(object):
@@ -87,7 +87,7 @@ class Generator(object):
         if self.debug and False:  # FIXME
             sys.stderr.write("Candidate rules:")
             for rule, unifiers in candidates:
-                sys.stderr.write(rule.nu_format())
+                sys.stderr.write(rule.format())
                 sys.stderr.write("->", unifiers)
             sys.stderr.write("")
 
