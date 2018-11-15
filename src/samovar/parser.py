@@ -11,7 +11,7 @@ from samovar.scanner import Scanner
 # Goal          ::= "goal" Cond.
 # Proposition   ::= Term.
 # Rule          ::= Cond {Var | Atom | Punct} Cond.
-# Cond          ::= "[" Expr {"," Expr} "]".
+# Cond          ::= "[" Expr {"," Expr} ["where" {Var "=" Term}"]".
 # Expr          ::= Term | NotSym Term.
 # Term          ::= Var | Atom ["(" Term {AndSym Term} ")"].
 # Var           ::= Qmark | Greek.
@@ -78,13 +78,20 @@ class Parser(object):
 
     def cond(self):
         exprs = []
+        bindings = {}
         self.scanner.expect('[')
-        if not self.scanner.on(']'):
+        if not self.scanner.on(']') and not self.scanner.on('where'):
             exprs.append(self.expr())
             while self.scanner.consume(',', u'∧'):
                 exprs.append(self.expr())
+        if self.scanner.consume('where'):
+            while not self.scanner.on(']'):
+                v = self.var()
+                self.scanner.expect('=')
+                t = self.term()
+                bindings[v.name] = t
         self.scanner.expect(']')
-        return Cond(exprs=exprs)
+        return Cond(exprs=exprs, bindings=bindings)
 
     def expr(self):
         if self.scanner.consume('~', u'¬', '!'):
