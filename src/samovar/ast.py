@@ -11,7 +11,16 @@ except NameError:
 
 
 World = namedtuple('World', ['scenarios'])
-Rule = namedtuple('Rule', ['pre', 'words', 'post'])
+
+class Rule(namedtuple('Rule', ['pre', 'words', 'post'])):
+    __slots__ = ()
+
+    def format(self, unifier):
+        return join_sentence_parts([unicode(t.subst(unifier)) for t in self.words])
+
+    def to_json(self):
+        return join_sentence_parts([unicode(t) for t in self.words])
+
 Scenario = namedtuple('Scenario', ['name', 'propositions', 'rules', 'goal'])
 Cond = namedtuple('Cond', ['exprs', 'bindings'])
 Assert = namedtuple('Assert', ['term'])
@@ -43,11 +52,3 @@ def join_sentence_parts(parts):
         if part == '"':
             quote_open = not quote_open
     return acc
-
-
-def format_rule(rule, unifier):
-    return join_sentence_parts([unicode(t.subst(unifier)) for t in rule.words])
-
-
-def rule_to_json(rule):
-    return join_sentence_parts([unicode(t) for t in rule.words])
