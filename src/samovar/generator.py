@@ -1,13 +1,10 @@
 # encoding: UTF-8
 
-from itertools import permutations
 import random
-import re
 import sys
 
 from samovar.ast import Assert, Retract
 from samovar.query import match_all
-from samovar.terms import Term
 
 
 # Python 2/3

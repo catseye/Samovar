@@ -1,5 +1,4 @@
 from samovar.ast import Assert, Retract
-from samovar.terms import Term, Var
 
 
 def match_all(database, patterns, env):
