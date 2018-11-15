@@ -93,6 +93,12 @@ class RenderTestCase(TestCase):
             'The mouse asked, "What is it?"'
         )
 
+    def test_join_sentence_parts_3(self):
+        self.assertEqual(
+            join_sentence_parts(["It", "was", "very", ",", "very", "dark", '.']),
+            'It was very, very dark.'
+        )
+
 
 class DatabaseTestCase(unittest.TestCase):
 
