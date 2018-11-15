@@ -67,7 +67,7 @@ class Generator(object):
         return events
 
     def events_meet_goal(self, moves):
-        matches = match_all(self.state, self.scenario.goal.exprs, {})
+        matches = match_all(self.state, self.scenario.goal.exprs, self.scenario.goal.bindings)
         return len(matches) > 0
 
     def generate_event(self):
@@ -81,7 +81,7 @@ class Generator(object):
     def get_candidate_rules(self):
         candidates = []
         for rule in self.scenario.rules:
-            for unifier in match_all(self.state, rule.pre.exprs, {}):
+            for unifier in match_all(self.state, rule.pre.exprs, rule.pre.bindings):
                 candidates.append((rule, unifier))
 
         if self.debug and False:  # FIXME

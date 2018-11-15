@@ -89,7 +89,7 @@ class Parser(object):
                 v = self.var()
                 self.scanner.expect('=')
                 t = self.term()
-                bindings[v] = t
+                bindings[v.name] = t
         self.scanner.expect(']')
         return Cond(exprs=exprs, bindings=bindings)
 
