@@ -2,9 +2,20 @@ Samovar
 =======
 
 This is a literate test suite for Samovar, in [Falderal][] format.
-It describes Samovar, and includes examples inline; each example
-specifies the expected result of running it, so these examples
-can be run as tests.  (That's what Falderal does.)
+It describes Samovar, and includes examples inline, which consist
+of valid Samovar descriptions and what you might expect from
+running them.
+
+Falderal can actually run these examples and check that they actually
+produce these results, so these examples serve as tests.
+
+However, Samovar only specifies the declarative meaning of a
+Samovar description, not the operational aspect.  An implementation
+of Samovar is allowed to do pretty much whatever it likes.
+However, there are certain behaviours that many Samovar implementations
+(and in particular, the reference implementation) would be reasonably
+expected to support, and it is this behaviour which these examples
+will illustrate.
 
 [Falderal]: http://catseye.tc/node/Falderal
 
@@ -251,6 +262,17 @@ Punctuation should be preserved sensibly.
       goal [holding(Ignatz,brick)].
     }
     ===> "brick, don't you know?" says Ignatz, picking it up.
+
+An event rule may come with some variables pre-bound.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I) where ?I=brick] ?A picked up the ?I. [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      item(banana).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picked up the brick.
 
 chairs
 ------
