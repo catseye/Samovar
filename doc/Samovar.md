@@ -225,10 +225,10 @@ A special "wildcard" variable, `?_`, matches any term, and does not unify.
 It cannot appear in the text or the consequent of a rule.
 
     scenario UntilHoldBrick {
-      [actor(?_),item(?_)]  There was an actor and an item.  [ok(then)]
+      [actor(?_),item(?_)]  There was an actor and an item.  [~actor(Ignatz)]
       actor(Ignatz).
       item(brick).
-      goal [ok(then)].
+      goal [].
     }
     ===> There was an actor and an item.
 

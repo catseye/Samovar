@@ -50,7 +50,6 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   Implement a "wildcard" variable that will match anything *without* binding it.
 *   Consider what it would take to add a predicate that evaluates to whether
     a given action has been taken previously or not.
 *   Consider macros.

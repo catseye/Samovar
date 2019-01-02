@@ -101,14 +101,15 @@ class Var(AbstractTerm):
         return False
 
     def match(self, term, env, **kwargs):
+        if self.name == '?_':
+            return env
         if self.name in env:
             bound_to = env[self.name]
             return bound_to.match(term, env, **kwargs)
-        else:
-            if kwargs.get('unique_binding'):
-                if term in env.values():
-                    raise ValueError("Not unique")
-            return dict(list(env.items()) + [(self.name, term)])
+        if kwargs.get('unique_binding'):
+            if term in env.values():
+                raise ValueError("Not unique")
+        return dict(list(env.items()) + [(self.name, term)])
 
     def subst(self, env):
         return env[self.name]
