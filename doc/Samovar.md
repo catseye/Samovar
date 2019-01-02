@@ -218,8 +218,44 @@ met.  A number of events are generated, and then the check is made.
 Event rules
 -----------
 
-An event may be selected if its pattern matches the current set of
-facts.
+We've already seen that an event may be selected if its pattern matches
+the current set of facts.  Let's take a close look at how patterns are
+matched.
+
+If a variable appears more than once in a pattern, it must match
+the same term in each occurrence.
+
+    scenario IgnatzAndMolly {
+      [actor(?A),sitting(?A)] ?A was sitting. []
+      actor(Ignatz).
+      sitting(Molly).
+    
+      goal [].
+    }
+    ===> 
+
+No two variables can match with the same term.  This may seem somewhat
+unusual, if you're familiar with Prolog or other languages with
+pattern-matching, but it prevents a "reflexive" matches (for example,
+"Alice looks at Alice") that don't actually come up very often when
+telling a story.
+
+    scenario IgnatzAndMolly {
+      [actor(?A),actor(?B)] ?A looks at ?B. [~actor(?A),~actor(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Ignatz looks at Molly.
+
+    scenario IgnatzWithoutMolly {
+      [actor(?A),actor(?B)] ?A looks at ?B. [~actor(?A),~actor(?B)]
+      actor(Ignatz).
+    
+      goal [].
+    }
+    ===> 
 
 A special "wildcard" variable, `?_`, matches any term, and does not unify.
 
