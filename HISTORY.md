@@ -5,6 +5,10 @@ History of Samovar
 
 *   The `?_` wildcard variable matches any term, without binding
     it to anything.
+*   Multiple bindings in a `where` clause may be seperated by
+    commas.
+*   Consequences of a rule may not contain a `where` clause;
+    this is statically checked before execution.
 *   Pathologically poor performance of the lexical scanner on
     large input files (essentially a bug) was fixed.
 
