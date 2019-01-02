@@ -267,7 +267,7 @@ A special "wildcard" variable, `?_`, matches any term, and does not unify.
     }
     ===> There was an actor and an item.
 
-`?_` cannot appear in the text or the consequent of a rule.
+`?_` cannot appear in the text or the consequences of a rule.
 
     scenario UntilHoldBrick {
       [actor(?_),item(?_)]  There was ?_ and ?_.  [~actor(Ignatz)]
@@ -354,6 +354,17 @@ seperated by commas.
       goal [holding(Ignatz,brick)].
     }
     ===> Ignatz picked up the brick.
+
+You can't put a `where` clause in the consequences.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)] ?A picked up the ?I. [holding(?A,?I) where ?A=Ignatz]
+      actor(Ignatz).
+      item(brick).
+      item(banana).
+      goal [holding(Ignatz,brick)].
+    }
+    ???> ValueError
 
 chairs
 ------

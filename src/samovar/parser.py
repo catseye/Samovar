@@ -74,6 +74,8 @@ class Parser(object):
         while not self.scanner.on('['):
             words.append(self.word())
         post = self.cond()
+        if post.bindings:
+            raise ValueError("Consequences of a rule cannot include a `where` clause")
         return Rule(pre=pre, words=words, post=post)
 
     def cond(self):
