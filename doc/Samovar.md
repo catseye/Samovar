@@ -77,12 +77,17 @@ As an example,
 
     [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
 
-Which can be read
+Which can be read as
 
 >   If α is an actor and β is an item and α is not holding β, then one possible
 >   action is to write out 'α picks up the β' and assert that α is now holding β.
 
-We can add a complementary rule:
+The Greek letters represent variables, which are bound to concrete
+terms during the pattern-matching process.  (Variables can also be
+written with Latin letters, and given names longer than one character,
+by introducing them with a question mark, like this: `?var`.)
+
+Now, we can add a complementary rule:
 
     [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
 
@@ -215,6 +220,17 @@ Event rules
 
 An event may be selected if its pattern matches the current set of
 facts.
+
+A special "wildcard" variable, `?_`, matches any term, and does not unify.
+It cannot appear in the text or the consequent of a rule.
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was an actor and an item.  [ok(then)]
+      actor(Ignatz).
+      item(brick).
+      goal [ok(then)].
+    }
+    ===> There was an actor and an item.
 
 The text inside the event rule is typically expanded with the values
 that the pattern variables matched.
