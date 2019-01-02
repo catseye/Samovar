@@ -222,7 +222,6 @@ An event may be selected if its pattern matches the current set of
 facts.
 
 A special "wildcard" variable, `?_`, matches any term, and does not unify.
-It cannot appear in the text or the consequent of a rule.
 
     scenario UntilHoldBrick {
       [actor(?_),item(?_)]  There was an actor and an item.  [~actor(Ignatz)]
@@ -231,6 +230,24 @@ It cannot appear in the text or the consequent of a rule.
       goal [].
     }
     ===> There was an actor and an item.
+
+`?_` cannot appear in the text or the consequent of a rule.
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was ?_ and ?_.  [~actor(Ignatz)]
+      actor(Ignatz).
+      item(brick).
+      goal [].
+    }
+    ???> KeyError
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was an actor and an item.  [~actor(?_)]
+      actor(Ignatz).
+      item(brick).
+      goal [].
+    }
+    ???> KeyError
 
 The text inside the event rule is typically expanded with the values
 that the pattern variables matched.
