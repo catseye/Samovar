@@ -343,6 +343,18 @@ An event rule may come with some variables pre-bound.
     }
     ===> Ignatz picked up the brick.
 
+There may be multiple bindings in a where clause.  These may be
+seperated by commas.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I) where ?A=Ignatz,?I=brick] ?A picked up the ?I. [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      item(banana).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picked up the brick.
+
 chairs
 ------
 
