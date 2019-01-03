@@ -219,7 +219,7 @@ Event rules
 -----------
 
 We've already seen that an event may be selected if its pattern matches
-the current set of facts.  Let's take a close look at how patterns are
+the current set of facts.  Let's take a closer look at how patterns are
 matched.
 
 If a variable appears more than once in a pattern, it must match
@@ -257,6 +257,45 @@ telling a story.
     }
     ===> 
 
+A variable may appear in the pattern that is not used in the text or the
+consequences.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] Someone. []
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Someone.
+    ===> Someone.
+    ===> Someone.
+    ===> Someone.
+
+But a variable may not appear in the text if it did not appear in the
+pattern.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] ?B sneezes. []
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ???> SamovarSyntaxError
+
+Likewise, a variable may not appear in the consequences if it did not
+appear in the pattern.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] Someone sneezes. [~actor(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ???> SamovarSyntaxError
+
 A special "wildcard" variable, `?_`, matches any term, and does not unify.
 
     scenario UntilHoldBrick {
@@ -267,7 +306,8 @@ A special "wildcard" variable, `?_`, matches any term, and does not unify.
     }
     ===> There was an actor and an item.
 
-`?_` cannot appear in the text or the consequences of a rule.
+`?_` cannot appear in the text or the consequences of a rule, even if it
+appears in the pattern.
 
     scenario UntilHoldBrick {
       [actor(?_),item(?_)]  There was ?_ and ?_.  [~actor(Ignatz)]
@@ -275,7 +315,7 @@ A special "wildcard" variable, `?_`, matches any term, and does not unify.
       item(brick).
       goal [].
     }
-    ???> KeyError
+    ???> SamovarSyntaxError
 
     scenario UntilHoldBrick {
       [actor(?_),item(?_)]  There was an actor and an item.  [~actor(?_)]
@@ -283,7 +323,7 @@ A special "wildcard" variable, `?_`, matches any term, and does not unify.
       item(brick).
       goal [].
     }
-    ???> KeyError
+    ???> SamovarSyntaxError
 
 The text inside the event rule is typically expanded with the values
 that the pattern variables matched.
@@ -364,7 +404,7 @@ You can't put a `where` clause in the consequences.
       item(banana).
       goal [holding(Ignatz,brick)].
     }
-    ???> ValueError
+    ???> SamovarSyntaxError
 
 chairs
 ------

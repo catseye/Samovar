@@ -50,6 +50,8 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   Consider making "wildcard" work such that you can say `¬holding(?_, club)`
-    to mean "if no one is holding the club".
-*   Statically check that every var in the 2nd cond was bound in the 1st cond
+*   Implement an actual solver.
+*   Allow variables to notated so that they can bind reflexively,
+    e.g. `?*A looks at ?*B` can bind both variables to Alice.
+*   Make `?_` work such that you can say `¬holding(?_, club)` to mean
+    "if no one is holding the club".

@@ -23,6 +23,17 @@ from samovar.scanner import Scanner
 # AndSym        ::= ',' | '∧'.
 
 
+class SamovarSyntaxError(ValueError):
+    pass
+
+
+def variables_in_cond(cond):
+    vars_ = set()
+    for expr in cond.exprs:
+        expr.term.collect_variables(vars_)
+    return vars_
+
+
 class Parser(object):
     def __init__(self, text):
         self.scanner = Scanner(text)
@@ -74,8 +85,28 @@ class Parser(object):
         while not self.scanner.on('['):
             words.append(self.word())
         post = self.cond()
+
         if post.bindings:
-            raise ValueError("Consequences of a rule cannot include a `where` clause")
+            raise SamovarSyntaxError("Consequences of a rule cannot include a `where` clause")
+
+        pre_variables = variables_in_cond(pre)
+
+        words_variables = set(w for w in words if isinstance(w, Var))
+        if '?_' in [w.name for w in words_variables]:
+            raise SamovarSyntaxError("Text contains wildcard")
+        extra_vars_in_words = words_variables - pre_variables
+        if extra_vars_in_words:
+            extra_vars = ', '.join([str(v) for v in sorted(extra_vars_in_words)])
+            raise SamovarSyntaxError("Text contains unbound variables: {}".format(extra_vars))
+
+        post_variables = variables_in_cond(post)
+        if '?_' in [w.name for w in post_variables]:
+            raise SamovarSyntaxError("Consequences contains wildcard")
+        extra_vars_in_post = post_variables - pre_variables
+        if extra_vars_in_post:
+            extra_vars = ', '.join([str(v) for v in sorted(extra_vars_in_words)])
+            raise SamovarSyntaxError("Consequences contains unbound variables: {}".format(extra_vars))
+
         return Rule(pre=pre, words=words, post=post)
 
     def cond(self):
