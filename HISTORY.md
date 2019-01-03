@@ -9,6 +9,8 @@ History of Samovar
     commas.
 *   Consequences of a rule may not contain a `where` clause;
     this is statically checked before execution.
+*   Occurrence of variables in text and consequences is also
+    statically checked.
 *   Pathologically poor performance of the lexical scanner on
     large input files (essentially a bug) was fixed.
 

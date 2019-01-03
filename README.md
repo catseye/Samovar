@@ -51,7 +51,7 @@ they can be selected by simple pattern-matching rather than full unification.
 ### TODO
 
 *   Implement an actual solver.
-*   Allow variables to notated so that they can bind reflexively,
+*   Maybe allow variables to be notated so that they can bind reflexively,
     e.g. `?*A looks at ?*B` can bind both variables to Alice.
 *   Make `?_` work such that you can say `¬holding(?_, club)` to mean
     "if no one is holding the club".
