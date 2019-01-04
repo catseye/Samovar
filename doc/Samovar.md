@@ -383,6 +383,20 @@ An event rule may come with some variables pre-bound.
     }
     ===> Ignatz picked up the brick.
 
+A variable pre-bound in a `where` may appear in the text and consequences.
+
+    scenario IgnatzAndMolly {
+      [actor(?A) where ?B=Molly] ?B sneezes. [sneezed(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+
 There may be multiple bindings in a where clause.  These may be
 seperated by commas.
 

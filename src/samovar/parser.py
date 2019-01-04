@@ -31,6 +31,8 @@ def variables_in_cond(cond):
     vars_ = set()
     for expr in cond.exprs:
         expr.term.collect_variables(vars_)
+    for key, value in cond.bindings.items():
+        vars_.add(Var(key))
     return vars_
 
 
@@ -92,12 +94,13 @@ class Parser(object):
         pre_variables = variables_in_cond(pre)
 
         words_variables = set(w for w in words if isinstance(w, Var))
+        text = ' '.join([str(w) for w in words])
         if '?_' in [w.name for w in words_variables]:
-            raise SamovarSyntaxError("Text contains wildcard")
+            raise SamovarSyntaxError('Text "{}" contains wildcard'.format(text))
         extra_vars_in_words = words_variables - pre_variables
         if extra_vars_in_words:
             extra_vars = ', '.join([str(v) for v in sorted(extra_vars_in_words)])
-            raise SamovarSyntaxError("Text contains unbound variables: {}".format(extra_vars))
+            raise SamovarSyntaxError('Text "{}" contains unbound variables: {}'.format(text, extra_vars))
 
         post_variables = variables_in_cond(post)
         if '?_' in [w.name for w in post_variables]:
