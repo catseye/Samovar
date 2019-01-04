@@ -77,12 +77,17 @@ As an example,
 
     [actor(α),item(β),~holding(α,β)] α picks up the β. [holding(α,β)]
 
-Which can be read
+Which can be read as
 
 >   If α is an actor and β is an item and α is not holding β, then one possible
 >   action is to write out 'α picks up the β' and assert that α is now holding β.
 
-We can add a complementary rule:
+The Greek letters represent variables, which are bound to concrete
+terms during the pattern-matching process.  (Variables can also be
+written with Latin letters, and given names longer than one character,
+by introducing them with a question mark, like this: `?var`.)
+
+Now, we can add a complementary rule:
 
     [actor(α),item(β),holding(α,β)] α puts down the β. [~holding(α,β)]
 
@@ -213,8 +218,112 @@ met.  A number of events are generated, and then the check is made.
 Event rules
 -----------
 
-An event may be selected if its pattern matches the current set of
-facts.
+We've already seen that an event may be selected if its pattern matches
+the current set of facts.  Let's take a closer look at how patterns are
+matched.
+
+If a variable appears more than once in a pattern, it must match
+the same term in each occurrence.
+
+    scenario IgnatzAndMolly {
+      [actor(?A),sitting(?A)] ?A was sitting. []
+      actor(Ignatz).
+      sitting(Molly).
+    
+      goal [].
+    }
+    ===> 
+
+No two variables can match with the same term.  This may seem somewhat
+unusual, if you're familiar with Prolog or other languages with
+pattern-matching, but it prevents a "reflexive" matches (for example,
+"Alice looks at Alice") that don't actually come up very often when
+telling a story.
+
+    scenario IgnatzAndMolly {
+      [actor(?A),actor(?B)] ?A looks at ?B. [~actor(?A),~actor(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Ignatz looks at Molly.
+
+    scenario IgnatzWithoutMolly {
+      [actor(?A),actor(?B)] ?A looks at ?B. [~actor(?A),~actor(?B)]
+      actor(Ignatz).
+    
+      goal [].
+    }
+    ===> 
+
+A variable may appear in the pattern that is not used in the text or the
+consequences.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] Someone. []
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Someone.
+    ===> Someone.
+    ===> Someone.
+    ===> Someone.
+
+But a variable may not appear in the text if it did not appear in the
+pattern.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] ?B sneezes. []
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ???> SamovarSyntaxError
+
+Likewise, a variable may not appear in the consequences if it did not
+appear in the pattern.
+
+    scenario IgnatzAndMolly {
+      [actor(?A)] Someone sneezes. [~actor(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ???> SamovarSyntaxError
+
+A special "wildcard" variable, `?_`, matches any term, and does not unify.
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was an actor and an item.  [~actor(Ignatz)]
+      actor(Ignatz).
+      item(brick).
+      goal [].
+    }
+    ===> There was an actor and an item.
+
+`?_` cannot appear in the text or the consequences of a rule, even if it
+appears in the pattern.
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was ?_ and ?_.  [~actor(Ignatz)]
+      actor(Ignatz).
+      item(brick).
+      goal [].
+    }
+    ???> SamovarSyntaxError
+
+    scenario UntilHoldBrick {
+      [actor(?_),item(?_)]  There was an actor and an item.  [~actor(?_)]
+      actor(Ignatz).
+      item(brick).
+      goal [].
+    }
+    ???> SamovarSyntaxError
 
 The text inside the event rule is typically expanded with the values
 that the pattern variables matched.
@@ -273,6 +382,43 @@ An event rule may come with some variables pre-bound.
       goal [holding(Ignatz,brick)].
     }
     ===> Ignatz picked up the brick.
+
+A variable pre-bound in a `where` may appear in the text and consequences.
+
+    scenario IgnatzAndMolly {
+      [actor(?A) where ?B=Molly] ?B sneezes. [sneezed(?B)]
+      actor(Ignatz).
+      actor(Molly).
+    
+      goal [].
+    }
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+    ===> Molly sneezes.
+
+There may be multiple bindings in a where clause.  These may be
+seperated by commas.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I) where ?A=Ignatz,?I=brick] ?A picked up the ?I. [holding(?A,?I)]
+      actor(Ignatz).
+      item(brick).
+      item(banana).
+      goal [holding(Ignatz,brick)].
+    }
+    ===> Ignatz picked up the brick.
+
+You can't put a `where` clause in the consequences.
+
+    scenario UntilHoldBrick {
+      [actor(?A),item(?I),~holding(?A,?I)] ?A picked up the ?I. [holding(?A,?I) where ?A=Ignatz]
+      actor(Ignatz).
+      item(brick).
+      item(banana).
+      goal [holding(Ignatz,brick)].
+    }
+    ???> SamovarSyntaxError
 
 chairs
 ------

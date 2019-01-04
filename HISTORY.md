@@ -1,6 +1,19 @@
 History of Samovar
 ==================
 
+### Version 0.3
+
+*   The `?_` wildcard variable matches any term, without binding
+    it to anything.
+*   Multiple bindings in a `where` clause may be seperated by
+    commas.
+*   Consequences of a rule may not contain a `where` clause;
+    this is statically checked before execution.
+*   Occurrence of variables in text and consequences is also
+    statically checked.
+*   Pathologically poor performance of the lexical scanner on
+    large input files (essentially a bug) was fixed.
+
 ### Version 0.2
 
 Improved during a "sprint" in the first half of November 2018,

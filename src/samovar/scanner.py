@@ -43,29 +43,29 @@ class Scanner(object):
         self.text = unicode(text)
         self.token = None
         self.type = None
+        self.pos = 0
         self.scan()
 
     def near_text(self, length=10):
-        if len(self.text) < length:
-            return self.text
-        return self.text[:length]
+        return self.text[self.pos:self.pos+length]
 
     def scan_pattern(self, pattern, type, token_group=1, rest_group=2):
-        pattern = r'^(' + pattern + r')(.*?)$'
-        match = re.match(pattern, self.text, re.DOTALL)
+        pattern = r'(' + pattern + r')'
+        regexp = re.compile(pattern, flags=re.DOTALL)
+        match = regexp.match(self.text, pos=self.pos)
         if not match:
             return False
         else:
             self.type = type
             self.token = match.group(token_group)
-            self.text = match.group(rest_group)
+            self.pos += len(self.token)
             return True
 
     def scan(self):
         self.scan_pattern(r'[ \t\n\r]*', 'whitespace')
         while self.scan_pattern(r'\/\/.*?[\n\r]', 'comment'):
             self.scan_pattern(r'[ \t\n\r]*', 'whitespace')
-        if not self.text:
+        if self.pos >= len(self.text):
             self.token = None
             self.type = 'EOF'
             return
@@ -90,7 +90,7 @@ class Scanner(object):
         if self.scan_pattern(r'.', 'unknown character'):
             return
         else:
-            raise AssertionError("this should never happen, self.text=(%s)" % self.text)
+            raise AssertionError("this should never happen, self.text=(%s), self.pos=(%s)" % (self.text, self.pos))
 
     def expect(self, token):
         if self.token == token:

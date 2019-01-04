@@ -1,7 +1,7 @@
 Samovar
 =======
 
-*Version 0.2.  Subject to change in backwards-incompatible ways.*
+*Version 0.3.  Subject to change in backwards-incompatible ways.*
 
 Samovar is a DSL for modelling a world using propositions (facts), and possible
 events that can occur based on those facts, changing them.
@@ -50,12 +50,8 @@ they can be selected by simple pattern-matching rather than full unification.
 
 ### TODO
 
-*   Implement a "wildcard" variable that will match anything *without* binding it.
-*   Consider what it would take to add a predicate that evaluates to whether
-    a given action has been taken previously or not.
-*   Consider macros.
-*   Consider making "wildcard" work such that you can say `¬holding(?_, club)`
-    to mean "if no one is holding the club".
-*   Statically check that the 2nd cond in a rule has no "where" clause
-*   Commas after bindings in "where"
-*   Statically check that every var in the 2nd cond was bound in the 1st cond
+*   Implement an actual solver.
+*   Maybe allow variables to be notated so that they can bind reflexively,
+    e.g. `?*A looks at ?*B` can bind both variables to Alice.
+*   Make `?_` work such that you can say `¬holding(?_, club)` to mean
+    "if no one is holding the club".
