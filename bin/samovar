@@ -15,10 +15,21 @@ sys.path.insert(0, join(dirname(realpath(sys.argv[0])), '..', 'src'))
 from argparse import ArgumentParser
 import codecs
 import json
-import random
 
 from samovar.parser import Parser
 from samovar.generator import Generator
+
+
+class CannedRandomness(object):
+    def __init__(self):
+        self.counter = 0
+
+    def choice(self, iterable):
+        length = len(iterable)
+        index = self.counter % length
+        selection = iterable[index]
+        self.counter += 1
+        return selection
 
 
 def generate_fifty_thousand_words():
@@ -49,25 +60,29 @@ def main(args):
     argparser.add_argument("--generate-scenarios",
                          type=str, default=None,
                          help="If given, generate only these scenarios")
+    argparser.add_argument("--lengthen-factor",
+                         type=float, default=2.0,
+                         help="When scenario goal was not met, multiply number of events to generate by this")
     argparser.add_argument("--min-events",
                          type=int, default=1,
                          help="Generate at least this many events for each scenario")
     argparser.add_argument("--max-events",
                          type=int, default=1000000,
                          help="Assume something's gone wrong if more than this many events are generated")
-    argparser.add_argument("--lengthen-factor",
-                         type=float, default=2.0,
-                         help="When scenario goal was not met, multiply number of events to generate by this")
     argparser.add_argument("--output-type",
-                         choices=['naive-text', 'events-json', 'scenarios-json'],
+                         choices=('naive-text', 'events-json', 'scenarios-json',),
                          default='naive-text',
                          help="Specify what to output and in what format")
-    argparser.add_argument("--seed",
-                         type=int, default=None,
-                         help="Set random seed (to select moves deterministically)")
     argparser.add_argument("--profile",
                          action="store_true",
                          help="Run cProfile on standard 'heavy load' case and exit")
+    argparser.add_argument("--randomness-type",
+                         choices=('python', 'canned',),
+                         default='python',
+                         help="Specify what provides random values to the generator")
+    argparser.add_argument("--seed",
+                         type=int, default=None,
+                         help="Set random seed (to select moves deterministically, when randomness-type=python)")
 
     options = argparser.parse_args(args)
 
@@ -86,8 +101,16 @@ def main(args):
     if options.dump_ast:
         print(ast)
         sys.exit(0)
-    if options.seed is not None:
-        random.seed(options.seed)
+
+    if options.randomness_type == 'python':
+        import random
+        if options.seed is not None:
+            random.seed(options.seed)
+        randomness = random
+    elif options.randomness_type == 'canned':
+        randomness = CannedRandomness()
+    else:
+        raise NotImplementedError('Not a valid randomness-type: {}'.format(options.randomness_type))
 
     event_buckets = []
     for n, scenario in enumerate(ast.scenarios):
@@ -97,7 +120,7 @@ def main(args):
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = Generator(ast, scenario, debug=options.debug, verbose=options.verbose)
+        g = Generator(randomness, ast, scenario, debug=options.debug, verbose=options.verbose)
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 

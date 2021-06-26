@@ -1,6 +1,5 @@
 # encoding: UTF-8
 
-import random
 import sys
 
 from samovar.ast import Assert, Retract
@@ -28,7 +27,8 @@ class Event(object):
 
 
 class Generator(object):
-    def __init__(self, world, scenario, debug=False, verbose=False):
+    def __init__(self, random, world, scenario, debug=False, verbose=False):
+        self.random = random
         self.world = world
         self.debug = debug
         self.verbose = verbose
@@ -71,7 +71,7 @@ class Generator(object):
         candidates = self.get_candidate_rules()
         if not candidates:
             return None
-        rule, unifier = random.choice(candidates)
+        rule, unifier = self.random.choice(candidates)
         self.update_state(unifier, rule)
         return Event(rule, unifier)
 

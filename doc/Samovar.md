@@ -23,11 +23,11 @@ will illustrate.
 
     -> Functionality "Run Samovar Simulation" is implemented by
     -> shell command
-    -> "python2 bin/samovar %(test-body-file) --min-events 4 --seed 0"
+    -> "python2 bin/samovar %(test-body-file) --min-events 4 --randomness-type canned"
 
     -> Functionality "Run Samovar Simulation" is implemented by
     -> shell command
-    -> "python3 bin/samovar %(test-body-file) --min-events 4 --seed 0"
+    -> "python3 bin/samovar %(test-body-file) --min-events 4 --randomness-type canned"
 
 Basic Syntax
 ------------
