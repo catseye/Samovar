@@ -16,6 +16,12 @@ class Term(AbstractTerm):
     def __init__(self, constructor, *subterms):
         self.t = tuple([constructor] + list(subterms))
 
+    def __lt__(self, other):
+        if isinstance(other, Term):
+            return self.t < other.t
+        else:
+            raise TypeError("'<' not supported between instances of 'Term' and '{}'".format(other.__class__.__name__))
+
     @property
     def constructor(self):
         return self.t[0]

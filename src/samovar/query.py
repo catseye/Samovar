@@ -15,7 +15,12 @@ def match_all(database, patterns, env):
     pattern = patterns[0]
 
     if isinstance(pattern, Assert):
-        for proposition in database:
+        # While the construction and iteration of the database set in Python 2 seems to be
+        # stable, when running under Python 3, we get an unpredictable order when iterating
+        # here.  So we sort the iterable before making matches, so that we can accumulate
+        # them in a predictable order (for tests).  TODO: if this hurts performance, provide
+        # a command-line option to turn it off.
+        for proposition in sorted(database):
             try:
                 unifier = pattern.term.match(proposition, env, unique_binding=True)
             except ValueError:

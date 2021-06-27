@@ -215,9 +215,13 @@ met.  A number of events are generated, and then the check is made.
       goal [holding(Ignatz,brick)].
     }
     ===> Ignatz picks up the brick.
-    ===> Ignatz puts down the brick.
     ===> Ignatz picks up the oilcan.
-    ===> Ignatz picks up the brick.
+    ===> Ignatz puts down the oilcan.
+    ===> Ignatz picks up the oilcan.
+    ===> Ignatz puts down the oilcan.
+    ===> Ignatz picks up the oilcan.
+    ===> Ignatz puts down the oilcan.
+    ===> Ignatz picks up the oilcan.
 
 Event rules
 -----------
@@ -427,6 +431,9 @@ You can't put a `where` clause in the consequences.
 chairs
 ------
 
+Somewhat uninteresting due to the deterministic randomness engine required
+to get the tests to be reproducible under both Python 2 and Python 3.
+
     scenario Chairs {
     
       [actor(ρ)∧¬sitting(ρ)]
@@ -456,10 +463,10 @@ chairs
     
       goal [].
     }
-    ===> Wembley sits down in the recliner.
-    ===> Wembley leans back in the recliner.
-    ===> Hastings sits down in the chair.
-    ===> Petersen sits down in the sofa.
+    ===> Hastings walks around the room.
+    ===> Petersen walks around the room.
+    ===> Hastings walks around the room.
+    ===> Petersen walks around the room.
 
 
 no need for functions
@@ -488,8 +495,8 @@ but we can just say
       goal [].
     }
     ===> Alice scratches her head.
-    ===> Alice scratches her head.
     ===> Bob scratches his head.
+    ===> Alice scratches her head.
     ===> Bob scratches his head.
 
 This loses the nice property of the function name being a readable
@@ -510,6 +517,6 @@ instead:
       goal [].
     }
     ===> Alice scratches her head.
-    ===> Alice scratches her head.
     ===> Bob scratches his head.
+    ===> Alice scratches her head.
     ===> Bob scratches his head.

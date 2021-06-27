@@ -18,18 +18,7 @@ import json
 
 from samovar.parser import Parser
 from samovar.generator import Generator
-
-
-class CannedRandomness(object):
-    def __init__(self):
-        self.counter = 0
-
-    def choice(self, iterable):
-        length = len(iterable)
-        index = self.counter % length
-        selection = iterable[index]
-        self.counter += 1
-        return selection
+from samovar.randomness import CannedRandomness
 
 
 def generate_fifty_thousand_words():
@@ -135,9 +124,9 @@ def main(args):
         jsonified_buckets = [jsonify_bucket(b) for b in event_buckets]
         sys.stdout.write(json.dumps(jsonified_buckets, indent=4, sort_keys=True))
     elif options.output_type == 'scenarios-json':
-        raise NotImplementedError
+        raise NotImplementedError("'scenarios-json' output-type not currently implemented")
     else:
-        raise NotImplementedError
+        raise NotImplementedError('Not a valid output-type: {}'.format(options.output_type))
 
 
 if __name__ == '__main__':

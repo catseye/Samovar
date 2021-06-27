@@ -180,10 +180,10 @@ class TestMatchAll(DatabaseTestCase):
         self.assertMatchAll(
             [a(t('actor', t('?C'))), a(t('weapon', t('?W'))), r(t('holding', t('?C'), t('?W')))],
             [
-                {'?W': t('revolver'), '?C': t('alice')},
                 {'?W': t('club'), '?C': t('alice')},
-                {'?W': t('knife'), '?C': t('bob')},
+                {'?W': t('revolver'), '?C': t('alice')},
                 {'?W': t('club'), '?C': t('bob')},
+                {'?W': t('knife'), '?C': t('bob')},
             ]
         )
         # Note that we can't say "Find all actors who aren't Alice".
