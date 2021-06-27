@@ -1,6 +1,10 @@
 History of Samovar
 ==================
 
+### Version 0.4
+
+...
+
 ### Version 0.3
 
 *   The `?_` wildcard variable matches any term, without binding

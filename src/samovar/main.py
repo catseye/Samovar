@@ -8,17 +8,6 @@ from samovar.generator import Generator
 from samovar.randomness import CannedRandomness
 
 
-def generate_fifty_thousand_words():
-    import random
-    with codecs.open('eg/chairs.samovar', 'r', encoding='UTF-8') as f:
-        text = f.read()
-    p = Parser(text)
-    ast = p.world()
-    random.seed(0)
-    g = Generator(ast, ast.scenarios[0])
-    g.generate_events(8000)
-
-
 def main(args):
     argparser = ArgumentParser()
 
@@ -50,9 +39,6 @@ def main(args):
                          choices=('naive-text', 'events-json', 'scenarios-json',),
                          default='naive-text',
                          help="Specify what to output and in what format")
-    argparser.add_argument("--profile",
-                         action="store_true",
-                         help="Run cProfile on standard 'heavy load' case and exit")
     argparser.add_argument("--randomness-type",
                          choices=('python', 'canned',),
                          default='python',
@@ -62,11 +48,6 @@ def main(args):
                          help="Set random seed (to select moves deterministically, when randomness-type=python)")
 
     options = argparser.parse_args(args)
-
-    if options.profile:
-        import cProfile
-        cProfile.run('generate_fifty_thousand_words()')
-        sys.exit(0)
 
     text = ''
     for arg in options.input_files:
