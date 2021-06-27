@@ -12,6 +12,12 @@ try:
 except NameError:
     xrange = range
 
+# Python 2/3
+try:
+    unicode = unicode
+except NameError:
+    unicode = str
+
 
 class Event(object):
     def __init__(self, rule, unifier):

@@ -47,7 +47,7 @@ class Scanner(object):
         self.scan()
 
     def near_text(self, length=10):
-        return self.text[self.pos:self.pos+length]
+        return self.text[self.pos:self.pos + length]
 
     def scan_pattern(self, pattern, type, token_group=1, rest_group=2):
         pattern = r'(' + pattern + r')'

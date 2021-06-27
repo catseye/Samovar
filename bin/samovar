@@ -22,6 +22,7 @@ from samovar.randomness import CannedRandomness
 
 
 def generate_fifty_thousand_words():
+    import random
     with codecs.open('eg/chairs.samovar', 'r', encoding='UTF-8') as f:
         text = f.read()
     p = Parser(text)
