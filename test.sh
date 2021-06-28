@@ -1,5 +1,7 @@
 #!/bin/sh
 
+APPLIANCES=""
+
 if [ "x$PYTHON" != "x" ]; then
     if command -v "$PYTHON" > /dev/null 2>&1; then
         PYTHONPATH=src $PYTHON src/samovar/tests.py || exit 1
@@ -11,11 +13,13 @@ else
     MISSING=""
     if command -v python2 > /dev/null 2>&1; then
         PYTHONPATH=src python2 src/samovar/tests.py || exit 1
+        APPLIANCES="$APPLIANCES doc/appliances/samovar.py2.md"
     else
         MISSING="${MISSING}2"
     fi
     if command -v python3 > /dev/null 2>&1; then
         PYTHONPATH=src python3 src/samovar/tests.py || exit 1
+        APPLIANCES="$APPLIANCES doc/appliances/samovar.py3.md"
     else
         MISSING="${MISSING}3"
     fi
@@ -25,4 +29,4 @@ else
     fi
 fi
 
-falderal doc/Samovar.md || exit 1
+falderal $APPLIANCES doc/Samovar.md || exit 1
