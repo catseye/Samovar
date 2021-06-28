@@ -1,7 +1,12 @@
 Samovar
 =======
 
-*Version 0.4.  Subject to change in backwards-incompatible ways.*
+Version 0.4 | _Entry_ [@ catseye.tc](https://catseye.tc/node/Dungeons%20of%20Ekileugor)
+| _See also:_ [The League of Extraordinarily Dull Gentlemen](https://github.com/catseye/NaNoGenMo-Entries-2018/tree/master/league#readme)
+∘ [The Swallows](https://github.com/catseye/The-Swallows#readme)
+∘ [Maxixe](https://github.com/catseye/Maxixe#readme)
+
+- - - -
 
 Samovar is a DSL for modelling a world using propositions (facts), and possible
 events that can occur based on those facts, changing them.
@@ -48,7 +53,8 @@ whose preconditions hold, and altering the world so that its postconditions hold
 In (I think) autumn 2019, I came across the concept of a [production system][],
 and I realized that is basically what Samovar implements.  Researching it
 further, I discovered [CLIPS][], a production system built in 1985,
-and I realized that Samovar is not essentially different from CLIPS.
+and I realized that Samovar is not essentially different from an
+inefficiently-implemented, stripped-down version of CLIPS.
 
 The main innovation in Samovar is the ability to "narrate" the choices the
 production system makes, with human-readable text.
