@@ -1,7 +1,7 @@
 Samovar
 =======
 
-*Version 0.3.  Subject to change in backwards-incompatible ways.*
+*Version 0.4.  Subject to change in backwards-incompatible ways.*
 
 Samovar is a DSL for modelling a world using propositions (facts), and possible
 events that can occur based on those facts, changing them.
