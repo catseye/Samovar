@@ -3,7 +3,24 @@ History of Samovar
 
 ### Version 0.4
 
-...
+*   No changes to language, only implementation.
+*   Update code to work under both Python 2 and Python 3.
+*   Extend test suite to run the tests under Python 2, or Python 3,
+    or both Python 2 and Python 3, depending on what's available.
+*   When collecting matches in `match_all`, iterate over the
+    database in a predictable order.  Changes to the `set` data
+    type in Python 3 mean that the database wasn't always being
+    searched in the same order, which was introducing nondeterminism
+    into the test suite.
+*   The source of randomness can be configured with the new
+    `--randomness-type` command-line option.  There is now a
+    "canned randomness" provider which is simple and deterministic
+    and used when running the Falderal tests.
+*   Make an external script, `profile.sh`, responsible for
+    profiling, instead of building that into the main executable.
+*   Refactor code so that the `bin/samovar` script contains only
+    minimal driver logic.
+*   Make the source code PEP-8 compliant (except for line lengths).
 
 ### Version 0.3
 
