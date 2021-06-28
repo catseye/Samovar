@@ -1,0 +1,8 @@
+scenario UntilHoldBrick {
+  [actor(α),item(β),~holding(α,β)]  α picks up the β.   [holding(α,β)]
+  [actor(α),item(β),holding(α,β)]   α puts down the β.  [~holding(α,β)]
+  actor(Ignatz).
+  item(brick).
+  item(oilcan).
+  goal [holding(Ignatz,brick)].
+}

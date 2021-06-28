@@ -12,6 +12,7 @@ except NameError:
 
 World = namedtuple('World', ['scenarios'])
 
+
 class Rule(namedtuple('Rule', ['pre', 'words', 'post'])):
     __slots__ = ()
 
@@ -20,6 +21,7 @@ class Rule(namedtuple('Rule', ['pre', 'words', 'post'])):
 
     def to_json(self):
         return join_sentence_parts([unicode(t) for t in self.words])
+
 
 Scenario = namedtuple('Scenario', ['name', 'propositions', 'rules', 'goal'])
 Cond = namedtuple('Cond', ['exprs', 'bindings'])
