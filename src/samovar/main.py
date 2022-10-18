@@ -34,7 +34,7 @@ def main(args):
                          help="Generate at least this many events for each scenario")
     argparser.add_argument("--max-events",
                          type=int, default=1000000,
-                         help="Assume something's gone wrong if more than this many events are generated")
+                         help="Conclude that something has gone wrong and abort if more than this many events are generated")
     argparser.add_argument("--output-type",
                          choices=('naive-text', 'events-json', 'scenarios-json',),
                          default='naive-text',
@@ -46,6 +46,7 @@ def main(args):
     argparser.add_argument("--seed",
                          type=int, default=None,
                          help="Set random seed (to select moves deterministically, when randomness-type=python)")
+    argparser.add_argument('--version', action='version', version="%(prog)s 0.5")
 
     options = argparser.parse_args(args)
 
