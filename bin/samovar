@@ -1,11 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: UTF-8
-
-"""\
-samovar {option} input.samovar
-
-Driver script for Samovar assertion-retraction engine.
-"""
 
 from os.path import realpath, dirname, join
 import sys
