@@ -71,7 +71,9 @@ class Scanner(object):
             return
         if self.scan_pattern(u'\\~|→|=|¬|∧|∨', 'operator'):
             return
-        # TODO: not sure about the ? overloading (here and in punct).  should be okay though?
+        # Note that '?' appears in both `variable` and in `punct`.
+        # This is acceptable however, because in normal prose, the
+        # '?' symbol is never immediately followed by a letter.
         if self.scan_pattern(r'\?[a-zA-Z_]+', 'variable'):
             return
         if self.scan_pattern(r'\,|\.|\;|\:|\?|\!|\"', 'punct'):

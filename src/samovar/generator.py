@@ -89,7 +89,6 @@ class Generator(object):
         if self.verbosity >= 3:
             sys.stderr.write("Candidate rules:\n")
             for rule, unifiers in candidates:
-                # TODO: should we call rule.format() here with each unifier?
                 sys.stderr.write("-> " + rule.to_json() + "\n")
                 sys.stderr.write("---> {}\n".format(unifiers))
             sys.stderr.write("")
