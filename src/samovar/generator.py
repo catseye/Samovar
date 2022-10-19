@@ -33,11 +33,10 @@ class Event(object):
 
 
 class Generator(object):
-    def __init__(self, random, world, scenario, debug=False, verbose=False):
+    def __init__(self, random, world, scenario, verbosity=0):
         self.random = random
         self.world = world
-        self.debug = debug
-        self.verbose = verbose
+        self.verbosity = verbosity
         self.scenario = scenario
         self.reset_state()
 
@@ -49,10 +48,10 @@ class Generator(object):
     def generate_events(self, count, max_count, lengthen_factor):
         acceptable = False
         while not acceptable:
-            if self.verbose:
+            if self.verbosity >= 1:
                 sys.stderr.write("Generating {} events\n".format(count))
             self.reset_state()
-            if self.debug:
+            if self.verbosity >= 2:
                 self.debug_state("Initial")
             events = []
             for i in xrange(0, count):
@@ -60,7 +59,7 @@ class Generator(object):
                 if event is None:
                     break
                 events.append(event)
-            if self.debug:
+            if self.verbosity >= 2:
                 self.debug_state("Final")
             acceptable = self.events_meet_goal(events)
             if not acceptable:
@@ -87,11 +86,12 @@ class Generator(object):
             for unifier in match_all(self.state, rule.pre.exprs, rule.pre.bindings):
                 candidates.append((rule, unifier))
 
-        if self.debug and False:  # FIXME
-            sys.stderr.write("Candidate rules:")
+        if self.verbosity >= 3:
+            sys.stderr.write("Candidate rules:\n")
             for rule, unifiers in candidates:
-                sys.stderr.write(rule.format())
-                sys.stderr.write("->", unifiers)
+                # TODO: should we call rule.format() here with each unifier?
+                sys.stderr.write("-> " + rule.to_json() + "\n")
+                sys.stderr.write("---> {}\n".format(unifiers))
             sys.stderr.write("")
 
         return candidates
@@ -103,8 +103,8 @@ class Generator(object):
                 self.state.add(term)
             elif isinstance(expr, Retract):
                 self.state.remove(term)
-        if self.debug and False:  # FIXME
-            self.debug_state()
+        if self.verbosity >= 3:
+            self.debug_state("Intermediate")
 
     def debug_state(self, label):
         sys.stderr.write(":::: {} State [\n".format(label))

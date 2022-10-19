@@ -14,11 +14,14 @@ def main(args):
     argparser.add_argument('input_files', nargs='+', metavar='FILENAME', type=str,
         help='Source files containing the scenario descriptions'
     )
-    argparser.add_argument("--debug", action="store_true",
-        help="Show state before and after each move"
+    argparser.add_argument("--verbosity", type=int, default=0,
+        help="Show some information about the world as generation takes place"
     )
     argparser.add_argument("--verbose", action="store_true",
-        help="Show some progress information"
+        help="Show some progress information (alias for --verbosity=1)"
+    )
+    argparser.add_argument("--debug", action="store_true",
+        help="Show state before and after each move (alias for --verbosity=2)"
     )
     argparser.add_argument("--dump-ast",
                          action="store_true",
@@ -50,6 +53,12 @@ def main(args):
 
     options = argparser.parse_args(args)
 
+    verbosity = options.verbosity
+    if options.verbose:
+        verbosity = max(verbosity, 1)
+    if options.debug:
+        verbosity = max(verbosity, 2)
+
     text = ''
     for arg in options.input_files:
         with codecs.open(arg, 'r', encoding='UTF-8') as f:
@@ -73,13 +82,13 @@ def main(args):
 
     event_buckets = []
     for n, scenario in enumerate(ast.scenarios):
-        if options.verbose:
+        if verbosity >= 1:
             sys.stderr.write("{}. {}\n".format(n, scenario.name))
         if scenario.goal is None:
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = Generator(randomness, ast, scenario, debug=options.debug, verbose=options.verbose)
+        g = Generator(randomness, ast, scenario, verbosity=verbosity)
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 
