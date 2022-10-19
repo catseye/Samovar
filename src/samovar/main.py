@@ -4,7 +4,7 @@ import json
 import sys
 
 from samovar.parser import Parser
-from samovar.generator import Generator
+from samovar.generators import RandomGenerator
 from samovar.randomness import CannedRandomness
 
 
@@ -92,7 +92,7 @@ def main(args):
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = Generator(randomness, ast, scenario, verbosity=verbosity, sorted_search=(not options.unsorted_search))
+        g = RandomGenerator(randomness, ast, scenario, verbosity=verbosity, sorted_search=(not options.unsorted_search))
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 

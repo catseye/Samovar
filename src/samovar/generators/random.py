@@ -32,7 +32,7 @@ class Event(object):
         return self.rule.format(self.unifier)
 
 
-class Generator(object):
+class RandomGenerator(object):
     def __init__(self, random, world, scenario, verbosity=0, sorted_search=True):
         self.random = random
         self.world = world
