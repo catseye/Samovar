@@ -3,7 +3,7 @@
 import sys
 
 from samovar.ast import Assert, Retract
-from samovar.query import match_all
+from samovar.database import Database
 
 
 # Python 2/3
@@ -41,9 +41,7 @@ class Generator(object):
         self.reset_state()
 
     def reset_state(self):
-        self.state = set()  # set of things currently true about the world
-        for term in self.scenario.propositions:
-            self.state.add(term)
+        self.state = Database(self.scenario.propositions)
 
     def generate_events(self, count, max_count, lengthen_factor):
         acceptable = False
@@ -69,7 +67,7 @@ class Generator(object):
         return events
 
     def events_meet_goal(self, moves):
-        matches = match_all(self.state, self.scenario.goal.exprs, self.scenario.goal.bindings)
+        matches = self.state.match_all(self.scenario.goal.exprs, self.scenario.goal.bindings)
         return len(matches) > 0
 
     def generate_event(self):
@@ -83,7 +81,7 @@ class Generator(object):
     def get_candidate_rules(self):
         candidates = []
         for rule in self.scenario.rules:
-            for unifier in match_all(self.state, rule.pre.exprs, rule.pre.bindings):
+            for unifier in self.state.match_all(rule.pre.exprs, rule.pre.bindings):
                 candidates.append((rule, unifier))
 
         if self.verbosity >= 3:
@@ -107,6 +105,6 @@ class Generator(object):
 
     def debug_state(self, label):
         sys.stderr.write(":::: {} State [\n".format(label))
-        for term in sorted(self.state):
+        for term in sorted(self.state.contents):
             sys.stderr.write("::::   {}\n".format(term))
         sys.stderr.write(":::: ]\n")
