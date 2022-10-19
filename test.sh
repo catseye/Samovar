@@ -25,4 +25,4 @@ else
     fi
 fi
 
-falderal --verbose doc/Samovar.md || exit 1
+falderal doc/Samovar.md || exit 1
