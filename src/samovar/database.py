@@ -4,7 +4,17 @@ from samovar.ast import Assert, Retract
 class Database(object):
     """A database is a set of things true at some point in time in a world."""
 
-    def __init__(self, propositions):
+    def __init__(self, propositions, sorted_search=True):
+        """Create a new Database object with the given propositions.
+
+        While the construction and iteration of the underlying set in Python 2 seems to be
+        stable, when running under Python 3, we get an unpredictable order when iterating
+        over the set.  The `sorted_search` option controls whether we sort the iterable
+        before making matches, so that we can accumulate them in a predictable order.
+        This is valuable for tests, but can be turned off to improve performance.
+
+        """
+        self.sorted_search = sorted_search
         self.contents = set()
         for term in propositions:
             self.contents.add(term)
@@ -29,12 +39,7 @@ class Database(object):
         pattern = patterns[0]
 
         if isinstance(pattern, Assert):
-            # While the construction and iteration of the database set in Python 2 seems to be
-            # stable, when running under Python 3, we get an unpredictable order when iterating
-            # here.  So we sort the iterable before making matches, so that we can accumulate
-            # them in a predictable order (for tests).  TODO: if this hurts performance, provide
-            # a command-line option to turn it off.
-            for proposition in sorted(self.contents):
+            for proposition in (sorted(self.contents) if self.sorted_search else self.contents):
                 try:
                     unifier = pattern.term.match(proposition, env, unique_binding=True)
                 except ValueError:

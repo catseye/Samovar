@@ -192,7 +192,7 @@ class TestMatchAll(DatabaseTestCase):
             [a(t('actor', t('?C'))), r(t('actor', t('alice')))],
             []
         )
-        # ... but what this is saying is "Find all actors if Alice doesn't exist."
+        # ... but what this is saying is "Find all actors if Alice isn't an actor."
 
         # For a one-off case, we can do something like this:
         self.database.add(t('is_alice', t('alice')))
