@@ -46,9 +46,13 @@ def main(args):
                          choices=('python', 'canned',),
                          default='python',
                          help="Specify what provides random values to the generator")
-    argparser.add_argument("--seed",
-                         type=int, default=None,
-                         help="Set random seed (to select moves deterministically, when randomness-type=python)")
+    argparser.add_argument("--unsorted-search", action="store_true",
+        help="Turn off sorting the database before searching it, to improve performance at "
+             "the cost of having less deterministic behaviour"
+    )
+    argparser.add_argument("--seed", type=int, default=None,
+        help="Set random seed (to select moves deterministically, when randomness-type=python)"
+    )
     argparser.add_argument('--version', action='version', version="%(prog)s 0.5")
 
     options = argparser.parse_args(args)
@@ -88,7 +92,7 @@ def main(args):
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = Generator(randomness, ast, scenario, verbosity=verbosity)
+        g = Generator(randomness, ast, scenario, verbosity=verbosity, sorted_search=(not options.unsorted_search))
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 

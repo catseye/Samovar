@@ -33,15 +33,16 @@ class Event(object):
 
 
 class Generator(object):
-    def __init__(self, random, world, scenario, verbosity=0):
+    def __init__(self, random, world, scenario, verbosity=0, sorted_search=True):
         self.random = random
         self.world = world
         self.verbosity = verbosity
+        self.sorted_search = sorted_search
         self.scenario = scenario
         self.reset_state()
 
     def reset_state(self):
-        self.state = Database(self.scenario.propositions)
+        self.state = Database(self.scenario.propositions, sorted_search=self.sorted_search)
 
     def generate_events(self, count, max_count, lengthen_factor):
         acceptable = False

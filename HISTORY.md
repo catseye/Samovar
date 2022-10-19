@@ -4,11 +4,13 @@ History of Samovar
 ### Version 0.5
 
 *   No changes to language, only implementation.
-*   `bin/samovar` script runs under `python3` by default.
+*   Add `--unsorted-search` command-line option, which improves
+    performance at the cost of having less deterministic behaviour.
 *   Add `--verbosity` command-line option.  There are now 4 levels
     of verbosity, from 0 to 3.  `--verbose` is an alias for level 1,
     and `--debug` is an alias for level 2.
 *   Add `--version` command-line option.
+*   `bin/samovar` script runs under `python3` by default.
 *   Simplify test driver by upgrading test doc to Falderal 0.14.
 
 ### Version 0.4
