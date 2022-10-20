@@ -4,9 +4,6 @@
 shortest path of events that leads to the goal state
 (if any such path exists).
 """
-#
-# NOTE, this is only a rough sketch at the moment!
-#
 
 import sys
 
@@ -28,19 +25,22 @@ class CompleteGenerator(BaseGenerator):
         situations = [
             ([], Database(self.scenario.propositions, sorted_search=self.sorted_search))
         ]
-        goal_has_been_met = False
 
-        while not goal_has_been_met:
+        while True:
             new_situations = []
+            if self.verbosity >= 2:
+                sys.stderr.write("Considering {} situations\n".format(len(situations)))
             for (events, state) in situations:
                 for rule, unifier in self.get_candidate_rules(state):
                     new_event = Event(rule, unifier)
                     new_state = state.clone()
-                    self.update_state(state, unifier, rule)
+                    self.update_state(new_state, unifier, rule)
                     new_events = events + [new_event]
                     if self.goal_is_met(new_state):
                         return new_events
                     new_situations.append(
                         (new_events, new_state)
                     )
+            if self.verbosity >= 2:
+                sys.stderr.write("Installing {} new situations\n".format(len(new_situations)))
             situations = new_situations

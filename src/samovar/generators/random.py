@@ -27,7 +27,7 @@ class RandomGenerator(BaseGenerator):
                 sys.stderr.write("Generating {} events\n".format(count))
             self.reset_state()
             if self.verbosity >= 2:
-                self.debug_state("Initial")
+                self.debug_state(self.state, "Initial")
             events = []
             for i in xrange(0, count):
                 event = self.generate_event()
@@ -35,7 +35,7 @@ class RandomGenerator(BaseGenerator):
                     break
                 events.append(event)
             if self.verbosity >= 2:
-                self.debug_state("Final")
+                self.debug_state(self.state, "Final")
             acceptable = self.goal_is_met(self.state)
             if not acceptable:
                 count = int(float(count) * lengthen_factor)
