@@ -23,9 +23,8 @@ class CompleteGenerator(BaseGenerator):
         self.verbosity = verbosity
         self.sorted_search = sorted_search
         self.random = randomness
-        self.reset_state()
 
-    def generate_events(self):
+    def generate_events(self, **kwargs):
         current_crop_of_states = [Database(self.scenario.propositions, sorted_search=self.sorted_search)]
         goal_has_been_met = False
 
@@ -37,10 +36,6 @@ class CompleteGenerator(BaseGenerator):
                     next_crop_of_states.append(new_state)
                     # TODO also record Event(rule, unifier) in there somewhere
                     # TODO if self.goal_is_met(new_state): goal_has_been_met = True (and indicate which one)
-
-    def goal_is_met(self, state):
-        matches = state.match_all(self.scenario.goal.exprs, self.scenario.goal.bindings)
-        return len(matches) > 0
 
     def generate_event(self):
         candidates = self.get_candidate_rules()

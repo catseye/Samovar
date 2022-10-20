@@ -30,3 +30,7 @@ class BaseGenerator(object):
     def __init__(self, world, scenario, **kwargs):
         self.world = world
         self.scenario = scenario
+
+    def goal_is_met(self, state):
+        matches = state.match_all(self.scenario.goal.exprs, self.scenario.goal.bindings)
+        return len(matches) > 0

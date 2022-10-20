@@ -20,8 +20,9 @@ class RandomGenerator(BaseGenerator):
     def reset_state(self):
         self.state = Database(self.scenario.propositions, sorted_search=self.sorted_search)
 
-    def generate_events(self, count, max_count, lengthen_factor):
+    def generate_events(self, min_count=0, max_count=100, lengthen_factor=1.5):
         acceptable = False
+        count = min_count
         while not acceptable:
             if self.verbosity >= 1:
                 sys.stderr.write("Generating {} events\n".format(count))
@@ -36,16 +37,12 @@ class RandomGenerator(BaseGenerator):
                 events.append(event)
             if self.verbosity >= 2:
                 self.debug_state("Final")
-            acceptable = self.events_meet_goal(events)
+            acceptable = self.goal_is_met(self.state)
             if not acceptable:
                 count = int(float(count) * lengthen_factor)
             if count > max_count:
                 raise ValueError("{}: count exceeds maximum".format(self.scenario.name))
         return events
-
-    def events_meet_goal(self, moves):
-        matches = self.state.match_all(self.scenario.goal.exprs, self.scenario.goal.bindings)
-        return len(matches) > 0
 
     def generate_event(self):
         candidates = self.get_candidate_rules()

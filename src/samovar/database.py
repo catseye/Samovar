@@ -19,6 +19,9 @@ class Database(object):
         for term in propositions:
             self.contents.add(term)
 
+    def clone(self):
+        return Database(self.contents, sorted_search=self.sorted_search)
+
     def add(self, term):
         self.contents.add(term)
 

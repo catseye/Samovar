@@ -116,7 +116,9 @@ def main(args):
             ast, scenario,
             verbosity=verbosity, sorted_search=(not options.unsorted_search), randomness=randomness
         )
-        events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
+        events = g.generate_events(
+            min_count=options.min_events, max_count=options.max_events, lengthen_factor=options.lengthen_factor
+        )
         event_buckets.append(events)
 
     if options.output_type == 'naive-text':
