@@ -2,7 +2,6 @@
 
 import sys
 
-from samovar.ast import Assert, Retract
 from samovar.database import Database
 
 from .base import xrange, Event, BaseGenerator
@@ -45,40 +44,11 @@ class RandomGenerator(BaseGenerator):
         return events
 
     def generate_event(self):
-        candidates = self.get_candidate_rules()
+        candidates = self.get_candidate_rules(self.state)
         if not candidates:
             return None
         rule, unifier = self.random.choice(candidates)
-        self.update_state(unifier, rule)
+        self.update_state(self.state, unifier, rule)
+        if self.verbosity >= 3:
+            self.debug_state(self.state, "Intermediate")
         return Event(rule, unifier)
-
-    def get_candidate_rules(self):
-        candidates = []
-        for rule in self.scenario.rules:
-            for unifier in self.state.match_all(rule.pre.exprs, rule.pre.bindings):
-                candidates.append((rule, unifier))
-
-        if self.verbosity >= 3:
-            sys.stderr.write("Candidate rules:\n")
-            for rule, unifiers in candidates:
-                sys.stderr.write("-> " + rule.to_json() + "\n")
-                sys.stderr.write("---> {}\n".format(unifiers))
-            sys.stderr.write("")
-
-        return candidates
-
-    def update_state(self, env, rule):
-        for expr in rule.post.exprs:
-            term = expr.term.subst(env)
-            if isinstance(expr, Assert):
-                self.state.add(term)
-            elif isinstance(expr, Retract):
-                self.state.remove(term)
-        if self.verbosity >= 3:
-            self.debug_state("Intermediate")
-
-    def debug_state(self, label):
-        sys.stderr.write(":::: {} State [\n".format(label))
-        for term in sorted(self.state.contents):
-            sys.stderr.write("::::   {}\n".format(term))
-        sys.stderr.write(":::: ]\n")

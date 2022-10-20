@@ -1,5 +1,10 @@
 # encoding: UTF-8
 
+import sys
+
+from samovar.ast import Assert, Retract
+
+
 # Python 2/3
 try:
     xrange = xrange
@@ -34,3 +39,32 @@ class BaseGenerator(object):
     def goal_is_met(self, state):
         matches = state.match_all(self.scenario.goal.exprs, self.scenario.goal.bindings)
         return len(matches) > 0
+
+    def get_candidate_rules(self, state):
+        candidates = []
+        for rule in self.scenario.rules:
+            for unifier in state.match_all(rule.pre.exprs, rule.pre.bindings):
+                candidates.append((rule, unifier))
+
+        if self.verbosity >= 3:
+            sys.stderr.write("Candidate rules:\n")
+            for rule, unifiers in candidates:
+                sys.stderr.write("-> " + rule.to_json() + "\n")
+                sys.stderr.write("---> {}\n".format(unifiers))
+            sys.stderr.write("")
+
+        return candidates
+
+    def update_state(self, state, env, rule):
+        for expr in rule.post.exprs:
+            term = expr.term.subst(env)
+            if isinstance(expr, Assert):
+                state.add(term)
+            elif isinstance(expr, Retract):
+                state.remove(term)
+
+    def debug_state(self, state, label):
+        sys.stderr.write(":::: {} State [\n".format(label))
+        for term in sorted(state.contents):
+            sys.stderr.write("::::   {}\n".format(term))
+        sys.stderr.write(":::: ]\n")
