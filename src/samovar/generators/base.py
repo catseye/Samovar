@@ -27,4 +27,6 @@ class Event(object):
 
 
 class BaseGenerator(object):
-    pass
+    def __init__(self, world, scenario, **kwargs):
+        self.world = world
+        self.scenario = scenario

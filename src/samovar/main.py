@@ -4,7 +4,7 @@ import json
 import sys
 
 from samovar.parser import Parser
-from samovar.generators import RandomGenerator
+from samovar.generators import RandomGenerator, CompleteGenerator
 from samovar.randomness import CannedRandomness
 
 
@@ -30,6 +30,10 @@ def main(args):
     argparser.add_argument(
         "--dump-ast", action="store_true",
         help="Just show the AST and stop"
+    )
+    argparser.add_argument(
+        "--generator", choices=('random', 'complete',), default='random',
+        help="Specify which generator engine to use"
     )
     argparser.add_argument(
         "--generate-scenarios", type=str, default=None,
@@ -74,6 +78,11 @@ def main(args):
     if options.debug:
         verbosity = max(verbosity, 2)
 
+    generator_cls = {
+        'random': RandomGenerator,
+        'complete': CompleteGenerator,
+    }[options.generator]
+
     text = ''
     for arg in options.input_files:
         with codecs.open(arg, 'r', encoding='UTF-8') as f:
@@ -103,7 +112,10 @@ def main(args):
             continue
         if options.generate_scenarios is not None and scenario.name not in options.generate_scenarios:
             continue
-        g = RandomGenerator(randomness, ast, scenario, verbosity=verbosity, sorted_search=(not options.unsorted_search))
+        g = generator_cls(
+            ast, scenario,
+            verbosity=verbosity, sorted_search=(not options.unsorted_search), randomness=randomness
+        )
         events = g.generate_events(options.min_events, options.max_events, options.lengthen_factor)
         event_buckets.append(events)
 

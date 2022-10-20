@@ -9,12 +9,12 @@ from .base import xrange, Event, BaseGenerator
 
 
 class RandomGenerator(BaseGenerator):
-    def __init__(self, random, world, scenario, verbosity=0, sorted_search=True):
-        self.random = random
+    def __init__(self, world, scenario, verbosity=0, sorted_search=True, randomness=None):
         self.world = world
+        self.scenario = scenario
         self.verbosity = verbosity
         self.sorted_search = sorted_search
-        self.scenario = scenario
+        self.random = randomness
         self.reset_state()
 
     def reset_state(self):

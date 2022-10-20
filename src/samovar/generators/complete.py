@@ -17,12 +17,13 @@ from .base import Event, BaseGenerator
 
 
 class CompleteGenerator(BaseGenerator):
-    def __init__(self, random, world, scenario, verbosity=0, sorted_search=True):
-        self.random = random
+    def __init__(self, world, scenario, verbosity=0, sorted_search=True, randomness=None):
         self.world = world
+        self.scenario = scenario
         self.verbosity = verbosity
         self.sorted_search = sorted_search
-        self.scenario = scenario
+        self.random = randomness
+        self.reset_state()
 
     def generate_events(self):
         current_crop_of_states = [Database(self.scenario.propositions, sorted_search=self.sorted_search)]
