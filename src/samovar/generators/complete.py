@@ -25,14 +25,22 @@ class CompleteGenerator(BaseGenerator):
         self.random = randomness
 
     def generate_events(self, **kwargs):
-        current_crop_of_states = [Database(self.scenario.propositions, sorted_search=self.sorted_search)]
+        situations = [
+            ([], Database(self.scenario.propositions, sorted_search=self.sorted_search))
+        ]
         goal_has_been_met = False
 
         while not goal_has_been_met:
-            next_crop_of_states = []
-            for state in current_crop_of_states:
+            new_situations = []
+            for (events, state) in situations:
                 for rule, unifier in self.get_candidate_rules(state):
-                    new_state = self.update_state(state, unifier, rule)
-                    next_crop_of_states.append(new_state)
-                    # TODO also record Event(rule, unifier) in there somewhere
-                    # TODO if self.goal_is_met(new_state): goal_has_been_met = True (and indicate which one)
+                    new_event = Event(rule, unifier)
+                    new_state = state.clone()
+                    self.update_state(state, unifier, rule)
+                    new_events = events + [new_event]
+                    if self.goal_is_met(new_state):
+                        return new_events
+                    new_situations.append(
+                        (new_events, new_state)
+                    )
+            situations = new_situations
