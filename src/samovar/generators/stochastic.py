@@ -7,7 +7,7 @@ from samovar.database import Database
 from .base import xrange, Event, BaseGenerator
 
 
-class RandomGenerator(BaseGenerator):
+class StochasticGenerator(BaseGenerator):
     def __init__(self, world, scenario, verbosity=0, sorted_search=True, randomness=None):
         self.world = world
         self.scenario = scenario

@@ -4,7 +4,8 @@ import json
 import sys
 
 from samovar.parser import Parser
-from samovar.generators import RandomGenerator, CompleteGenerator
+from samovar.generators.stochastic import StochasticGenerator
+from samovar.generators.complete import CompleteGenerator
 from samovar.randomness import CannedRandomness
 
 
@@ -32,7 +33,7 @@ def main(args):
         help="Just show the AST and stop"
     )
     argparser.add_argument(
-        "--generator", choices=('random', 'complete',), default='random',
+        "--generator", choices=('stochastic', 'complete',), default='stochastic',
         help="Specify which generator engine to use"
     )
     argparser.add_argument(
@@ -79,7 +80,7 @@ def main(args):
         verbosity = max(verbosity, 2)
 
     generator_cls = {
-        'random': RandomGenerator,
+        'stochastic': StochasticGenerator,
         'complete': CompleteGenerator,
     }[options.generator]
 
