@@ -4,8 +4,15 @@ History of Samovar
 ### Version 0.5
 
 *   No changes to language, only implementation.
-*   Add `--unsorted-search` command-line option, which improves
-    performance at the cost of having less deterministic behaviour.
+*   Add a complete (breadth-first search-based) generator
+    alongside the existing stochastic generator.  The complete
+    generator will always find the shortest series of events
+    that leads to the goal (as long as such a series exists). The
+    generator to be used can be specified with `--generator`.
+*   Replace `--randomness-type` command-line option with
+    `--deterministic` option, which replaces `canned` randomness.
+    Searching for facts in database is not done in sorted fashion
+    when `--deterministic` is not given, improving performance.
 *   Add `--verbosity` command-line option.  There are now 4 levels
     of verbosity, from 0 to 3.  `--verbose` is an alias for level 1,
     and `--debug` is an alias for level 2.

@@ -57,17 +57,13 @@ def main(args):
         help="Specify what to output and in what format"
     )
     argparser.add_argument(
-        "--randomness-type", choices=('python', 'canned',), default='python',
-        help="Specify what provides random values to the generator"
-    )
-    argparser.add_argument(
-        "--unsorted-search", action="store_true",
-        help="Turn off sorting the database before searching it, to improve performance at "
-             "the cost of having less deterministic behaviour"
+        "--deterministic", action="store_true",
+        help="Make the output deterministic, at the cost of performance. "
+             "Primarily useful for reproducibility during testing."
     )
     argparser.add_argument(
         "--seed", type=int, default=None,
-        help="Set random seed (to select moves deterministically, when randomness-type=python)"
+        help="Set random seed of the Python random number generator, when it is in use."
     )
     argparser.add_argument('--version', action='version', version="%(prog)s 0.5")
 
@@ -95,15 +91,13 @@ def main(args):
         print(ast)
         sys.exit(0)
 
-    if options.randomness_type == 'python':
+    if options.deterministic:
+        randomness = CannedRandomness()
+    else:
         import random
         if options.seed is not None:
             random.seed(options.seed)
         randomness = random
-    elif options.randomness_type == 'canned':
-        randomness = CannedRandomness()
-    else:
-        raise NotImplementedError('Not a valid randomness-type: {}'.format(options.randomness_type))
 
     event_buckets = []
     for n, scenario in enumerate(ast.scenarios):
@@ -115,7 +109,7 @@ def main(args):
             continue
         g = generator_cls(
             ast, scenario,
-            verbosity=verbosity, sorted_search=(not options.unsorted_search), randomness=randomness
+            verbosity=verbosity, sorted_search=options.deterministic, randomness=randomness
         )
         events = g.generate_events(
             min_count=options.min_events, max_count=options.max_events, lengthen_factor=options.lengthen_factor
