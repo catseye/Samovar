@@ -13,7 +13,7 @@ import sys
 from samovar.ast import Assert, Retract
 from samovar.database import Database
 
-from .base import xrange, unicode, Event, BaseGenerator
+from .base import Event, BaseGenerator
 
 
 class CompleteGenerator(BaseGenerator):

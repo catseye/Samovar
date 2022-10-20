@@ -11,46 +11,57 @@ from samovar.randomness import CannedRandomness
 def main(args):
     argparser = ArgumentParser()
 
-    argparser.add_argument('input_files', nargs='+', metavar='FILENAME', type=str,
+    argparser.add_argument(
+        'input_files', nargs='+', metavar='FILENAME', type=str,
         help='Source files containing the scenario descriptions'
     )
-    argparser.add_argument("--verbosity", type=int, default=0,
+    argparser.add_argument(
+        "--verbosity", type=int, default=0,
         help="Show some information about the world as generation takes place"
     )
-    argparser.add_argument("--verbose", action="store_true",
+    argparser.add_argument(
+        "--verbose", action="store_true",
         help="Show some progress information (alias for --verbosity=1)"
     )
-    argparser.add_argument("--debug", action="store_true",
+    argparser.add_argument(
+        "--debug", action="store_true",
         help="Show state before and after each move (alias for --verbosity=2)"
     )
-    argparser.add_argument("--dump-ast",
-                         action="store_true",
-                         help="Just show the AST and stop")
-    argparser.add_argument("--generate-scenarios",
-                         type=str, default=None,
-                         help="If given, generate only these scenarios")
-    argparser.add_argument("--lengthen-factor",
-                         type=float, default=2.0,
-                         help="When scenario goal was not met, multiply number of events to generate by this")
-    argparser.add_argument("--min-events",
-                         type=int, default=1,
-                         help="Generate at least this many events for each scenario")
-    argparser.add_argument("--max-events",
-                         type=int, default=1000000,
-                         help="Conclude that something has gone wrong and abort if more than this many events are generated")
-    argparser.add_argument("--output-type",
-                         choices=('naive-text', 'events-json', 'scenarios-json',),
-                         default='naive-text',
-                         help="Specify what to output and in what format")
-    argparser.add_argument("--randomness-type",
-                         choices=('python', 'canned',),
-                         default='python',
-                         help="Specify what provides random values to the generator")
-    argparser.add_argument("--unsorted-search", action="store_true",
+    argparser.add_argument(
+        "--dump-ast", action="store_true",
+        help="Just show the AST and stop"
+    )
+    argparser.add_argument(
+        "--generate-scenarios", type=str, default=None,
+        help="If given, generate only these scenarios"
+    )
+    argparser.add_argument(
+        "--lengthen-factor", type=float, default=2.0,
+        help="When scenario goal was not met, multiply number of events to generate by this"
+    )
+    argparser.add_argument(
+        "--min-events", type=int, default=1,
+        help="Generate at least this many events for each scenario"
+    )
+    argparser.add_argument(
+        "--max-events", type=int, default=1000000,
+        help="Conclude that something has gone wrong and abort if more than this many events are generated"
+    )
+    argparser.add_argument(
+        "--output-type", choices=('naive-text', 'events-json', 'scenarios-json',), default='naive-text',
+        help="Specify what to output and in what format"
+    )
+    argparser.add_argument(
+        "--randomness-type", choices=('python', 'canned',), default='python',
+        help="Specify what provides random values to the generator"
+    )
+    argparser.add_argument(
+        "--unsorted-search", action="store_true",
         help="Turn off sorting the database before searching it, to improve performance at "
              "the cost of having less deterministic behaviour"
     )
-    argparser.add_argument("--seed", type=int, default=None,
+    argparser.add_argument(
+        "--seed", type=int, default=None,
         help="Set random seed (to select moves deterministically, when randomness-type=python)"
     )
     argparser.add_argument('--version', action='version', version="%(prog)s 0.5")

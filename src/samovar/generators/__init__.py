@@ -1,2 +1,2 @@
-from .random import RandomGenerator
-from .complete import CompleteGenerator
+from .random import RandomGenerator       # noqa
+from .complete import CompleteGenerator   # noqa

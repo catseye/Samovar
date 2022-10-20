@@ -1,11 +1,5 @@
 # encoding: UTF-8
 
-import sys
-
-from samovar.ast import Assert, Retract
-from samovar.database import Database
-
-
 # Python 2/3
 try:
     xrange = xrange
