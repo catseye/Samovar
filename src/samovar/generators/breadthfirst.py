@@ -14,7 +14,7 @@ from samovar.database import Database
 from .base import Event, BaseGenerator
 
 
-class CompleteGenerator(BaseGenerator):
+class BreadthFirstGenerator(BaseGenerator):
     def __init__(self, world, scenario, verbosity=0, sorted_search=True, randomness=None):
         self.world = world
         self.scenario = scenario
