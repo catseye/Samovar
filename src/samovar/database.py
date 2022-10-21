@@ -50,15 +50,18 @@ class Database(object):
                 envs.extend(self.match_all(patterns[1:], unifier))
 
         elif isinstance(pattern, Retract):
-            # to test a negative match, we require first that there are
-            # no free variables in our pattern.
-
             expanded_pattern = pattern.term.subst(env)
-            free_vars = set()
-            expanded_pattern.collect_variables(free_vars)
-            if free_vars:
-                # TODO: better exception than this
-                raise NotImplementedError
+
+            # To test a negative match, we require that there are
+            # no free variables remaining in our pattern.  If there are,
+            # it will simply not match.  TODO add a flag to turn this
+            # check on to support better debugging.
+
+            # free_vars = set()
+            # expanded_pattern.collect_variables(free_vars)
+            # if free_vars:
+            #     # TODO: better exception than this
+            #     raise NotImplementedError
 
             # now we simply check if the term exists in the database.
             # if it does not, we recurse down to the next clause in the pattern.
