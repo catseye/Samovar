@@ -49,8 +49,7 @@ class TermTestCase(TestCase):
     def test_term_no_match_ground(self):
         t1 = Term('actor', Term('alice'))
         p1 = Term('actor', Term('bob'))
-        with self.assertRaises(ValueError):
-            p1.match(t1, {})
+        self.assertIsNone(p1.match(t1, {}))
 
     def test_term_match_bind_var(self):
         t1 = Term('actor', Term('alice'))
@@ -70,9 +69,7 @@ class TermTestCase(TestCase):
         t1 = Term('actor', Term('alice'))
         p1 = Term('actor', Var('?A'))
         u = {u'?A': Term('bob')}
-        with self.assertRaises(ValueError):
-            p1.match(t1, u)
-        self.assertEqual(u, {u'?A': Term('bob')})
+        self.assertIsNone(p1.match(t1, u))
 
     def test_term_subst(self):
         t = Term('actor', Var('?A'))

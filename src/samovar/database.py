@@ -43,9 +43,8 @@ class Database(object):
 
         if isinstance(pattern, Assert):
             for proposition in (sorted(self.contents) if self.sorted_search else self.contents):
-                try:
-                    unifier = pattern.term.match(proposition, env, unique_binding=True)
-                except ValueError:
+                unifier = pattern.term.match(proposition, env, unique_binding=True)
+                if unifier is None:
                     continue
                 envs.extend(self.match_all(patterns[1:], unifier))
 
