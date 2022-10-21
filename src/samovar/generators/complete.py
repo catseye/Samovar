@@ -31,10 +31,7 @@ class CompleteGenerator(BaseGenerator):
             if self.verbosity >= 2:
                 sys.stderr.write("Considering {} situations\n".format(len(situations)))
             for (events, state) in situations:
-                for rule, unifier in self.get_candidate_rules(state):
-                    if not rule.post.exprs:
-                        # Rules that don't change the state of the world are not worth considering.
-                        continue
+                for rule, unifier in self.candidate_rules(state, require_change=True):
                     new_event = Event(rule, unifier)
                     new_state = state.clone()
                     self.update_state(new_state, unifier, rule)

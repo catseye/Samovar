@@ -44,7 +44,15 @@ class StochasticGenerator(BaseGenerator):
         return events
 
     def generate_event(self):
-        candidates = self.get_candidate_rules(self.state)
+        candidates = list(self.candidate_rules(self.state))
+
+        if self.verbosity >= 3:
+            sys.stderr.write("Candidate rules:\n")
+            for rule, unifiers in candidates:
+                sys.stderr.write("-> " + rule.to_json() + "\n")
+                sys.stderr.write("---> {}\n".format(unifiers))
+            sys.stderr.write("")
+
         if not candidates:
             return None
         rule, unifier = self.random.choice(candidates)
