@@ -6,6 +6,7 @@ shortest path of events that leads to the goal state
 """
 
 import sys
+import time
 
 from samovar.ast import Assert, Retract
 from samovar.database import Database
@@ -26,15 +27,22 @@ class CompleteGenerator(BaseGenerator):
             ([], Database(self.scenario.propositions, sorted_search=self.sorted_search))
         ]
 
+        seen_states = set()
+
         while True:
             new_situations = []
             if self.verbosity >= 2:
                 sys.stderr.write("Considering {} situations\n".format(len(situations)))
+                start_time = time.time()
             for (events, state) in situations:
                 for rule, unifier in self.candidate_rules(state, require_change=True):
                     new_event = Event(rule, unifier)
                     new_state = state.clone()
                     self.update_state(new_state, unifier, rule)
+                    froz = frozenset(new_state.contents)
+                    if froz in seen_states:
+                        continue
+                    seen_states.add(froz)
                     new_events = events + [new_event]
                     if self.goal_is_met(new_state):
                         return new_events
@@ -42,5 +50,8 @@ class CompleteGenerator(BaseGenerator):
                         (new_events, new_state)
                     )
             if self.verbosity >= 2:
+                end_time = time.time()
+                duration = end_time - start_time
+                sys.stderr.write("Considered {} situations in {} seconds ({} situations / second)\n".format(len(situations), duration, float(len(situations))/duration))
                 sys.stderr.write("Installing {} new situations\n".format(len(new_situations)))
             situations = new_situations
