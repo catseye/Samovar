@@ -31,7 +31,7 @@ class CompleteGenerator(BaseGenerator):
 
         while True:
             new_situations = []
-            if self.verbosity >= 2:
+            if self.verbosity >= 1:
                 sys.stderr.write("Considering {} situations\n".format(len(situations)))
                 start_time = time.time()
             for (events, state) in situations:
@@ -49,7 +49,7 @@ class CompleteGenerator(BaseGenerator):
                     new_situations.append(
                         (new_events, new_state)
                     )
-            if self.verbosity >= 2:
+            if self.verbosity >= 1:
                 end_time = time.time()
                 duration = end_time - start_time
                 sys.stderr.write("Considered {} situations in {} seconds ({} situations / second)\n".format(len(situations), duration, float(len(situations))/duration))
