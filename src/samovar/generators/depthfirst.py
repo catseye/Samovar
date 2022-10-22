@@ -33,10 +33,18 @@ class DepthFirstGenerator(BaseGenerator):
 
         # Loop, doing work at the top of the stack.
         done = False
+        counter = 0
         while not done:
+            counter += 1
             [events, state, candidate_rules, cr_index] = stack[-1]
+            if self.verbosity >= 1 and counter % 1000 == 0:
+                sys.stderr.write("Stack level {}, event count {}, candidate count {}, index {}\n".format(
+                    len(stack), len(events), len(candidate_rules), cr_index
+                ))
             if cr_index > (len(candidate_rules) - 1):
                 # we've exhausted all the candidates on this level.  backtrack.
+                if self.verbosity >= 1:
+                    sys.stderr.write("*** Backtracking")
                 stack.pop()
                 continue
 
@@ -46,6 +54,8 @@ class DepthFirstGenerator(BaseGenerator):
             new_event = Event(rule, unifier)
             new_state = state.clone()
             self.update_state(new_state, unifier, rule)
+            if self.verbosity >= 2:
+                self.debug_state(new_state, "Intermediate")
             if self.goal_is_met(new_state):
                 return new_events
 
