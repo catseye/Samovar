@@ -21,30 +21,45 @@ class DepthFirstGenerator(BaseGenerator):
         self.seen_states = set()
 
     def generate_events(self, **kwargs):
-        events = []
-        state = Database(self.scenario.propositions, sorted_search=self.sorted_search)
-
         self.seen_states = set()
 
-        return self._generate_events(events, state)
+        # Create initial stack.
+        events = []
+        state = Database(self.scenario.propositions, sorted_search=self.sorted_search)
+        candidate_rules = list(self.candidate_rules(state, require_change=True))
+        stack = [
+            [events, state, candidate_rules, 0]
+        ]
 
-    def _generate_events(self, events, state):
+        # Loop, doing work at the top of the stack.
+        done = False
+        while not done:
+            [events, state, candidate_rules, cr_index] = stack[-1]
+            if cr_index > (len(candidate_rules) - 1):
+                # we've exhausted all the candidates on this level.  backtrack.
+                stack.pop()
+                continue
 
-        for rule, unifier in self.candidate_rules(state, require_change=True):
+            # otherwise, try to make a match.
+            rule, unifier = candidate_rules[cr_index]
+
             new_event = Event(rule, unifier)
             new_state = state.clone()
             self.update_state(new_state, unifier, rule)
-            froz = frozenset(new_state.contents)
-            if froz in self.seen_states:
-                continue
-            self.seen_states.add(froz)
-            new_events = events + [new_event]
             if self.goal_is_met(new_state):
                 return new_events
-            # TODO: replace recursion with explicit stack!
-            # Because Python often can't handle this.
-            result_events = self._generate_events(new_events, new_state)
-            if result_events:
-                return result_events
+
+            froz = frozenset(new_state.contents)
+            if froz in self.seen_states:
+                stack[-1][3] += 1   # inc cr_index. TODO this is so ugly
+                continue
+            self.seen_states.add(froz)
+
+            # otherwise, try to extend the events we've got.
+            new_events = events + [new_event]
+            new_candidate_rules = list(self.candidate_rules(new_state, require_change=True))
+            stack.append(
+                [new_events, new_state, new_candidate_rules, 0]
+            )
 
         return None
