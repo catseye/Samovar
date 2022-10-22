@@ -41,6 +41,8 @@ class DepthFirstGenerator(BaseGenerator):
             new_events = events + [new_event]
             if self.goal_is_met(new_state):
                 return new_events
+            # TODO: replace recursion with explicit stack!
+            # Because Python often can't handle this.
             result_events = self._generate_events(new_events, new_state)
             if result_events:
                 return result_events

@@ -72,7 +72,6 @@ structure of a production system.
 
 ### TODO
 
-*   Implement an actual solver.
 *   Maybe allow variables to be notated so that they can bind reflexively,
     e.g. `?*A looks at ?*B` can bind both variables to Alice.
 *   Make `?_` work such that you can say `¬holding(?_, club)` to mean

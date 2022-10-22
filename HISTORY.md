@@ -7,8 +7,14 @@ History of Samovar
 *   Add a complete (breadth-first search-based) generator
     alongside the existing stochastic generator.  The complete
     generator will always find the shortest series of events
-    that leads to the goal (as long as such a series exists). The
-    generator to be used can be specified with `--generator`.
+    that leads to the goal, as long as such a series exists.
+*   Add a depth-first search based generator as well.  If
+    the space of world-configurations is finite (I'm not sure
+    if Samovar guarantees this, but it's often the case), this
+    also is a complete generator, and more efficient than the
+    breadth-first one.
+*   Allow the generator to be used to be specified with the
+    command-line option `--generator`.
 *   Replace `--randomness-type` command-line option with
     `--deterministic` option, which replaces `canned` randomness.
     Searching for facts in database is not done in sorted fashion
