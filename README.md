@@ -4,12 +4,13 @@ Samovar
 Version 0.5 | _Entry_ [@ catseye.tc](https://catseye.tc/node/Samovar)
 | _See also:_ [The League of Extraordinarily Dull Gentlemen](https://github.com/catseye/NaNoGenMo-Entries-2018/tree/master/league#readme)
 ∘ [The Swallows](https://github.com/catseye/The-Swallows#readme)
-∘ [Maxixe](https://github.com/catseye/Maxixe#readme)
+∘ [Cardboard Prolog](https://github.com/catseye/Cardboard-Prolog#readme)
 
 - - - -
 
-Samovar is a DSL for modelling a world using propositions (facts), and possible
-events that can occur based on those facts, changing them.
+**Samovar** is a domain-specific language (DSL) for modelling a world using
+propositions (facts), and possible events that can occur based on those facts,
+changing them.
 
 Here is a short example of a Samovar description:
 
