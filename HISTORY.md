@@ -1,6 +1,31 @@
 History of Samovar
 ==================
 
+### Version 0.5
+
+*   No changes to language, only implementation.
+*   Add a complete (breadth-first search-based) generator
+    alongside the existing stochastic generator.  The complete
+    generator will always find the shortest series of events
+    that leads to the goal, as long as such a series exists.
+*   Add a depth-first search based generator as well.  If
+    the space of world-configurations is finite (I'm not sure
+    if Samovar guarantees this, but it's often the case), this
+    also is a complete generator, and more efficient than the
+    breadth-first one.
+*   Allow the generator to be used to be specified with the
+    command-line option `--generator`.
+*   Replace `--randomness-type` command-line option with
+    `--deterministic` option, which replaces `canned` randomness.
+    Searching for facts in database is not done in sorted fashion
+    when `--deterministic` is not given, improving performance.
+*   Add `--verbosity` command-line option.  There are now 4 levels
+    of verbosity, from 0 to 3.  `--verbose` is an alias for level 1,
+    and `--debug` is an alias for level 2.
+*   Add `--version` command-line option.
+*   `bin/samovar` script runs under `python3` by default.
+*   Simplify test driver by upgrading test doc to Falderal 0.14.
+
 ### Version 0.4
 
 *   No changes to language, only implementation.

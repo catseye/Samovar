@@ -19,6 +19,14 @@ will illustrate.
 
 [Falderal]: http://catseye.tc/node/Falderal
 
+    -> Functionality "Run Samovar Simulation" is implemented by shell command
+    -> "python2 bin/samovar %(test-body-file) --min-events 4 --deterministic"
+    -> but only if shell command "command -v python2" succeeds
+
+    -> Functionality "Run Samovar Simulation" is implemented by shell command
+    -> "python3 bin/samovar %(test-body-file) --min-events 4 --deterministic"
+    -> but only if shell command "command -v python3" succeeds
+
     -> Tests for functionality "Run Samovar Simulation"
 
 Basic Syntax

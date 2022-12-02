@@ -61,10 +61,9 @@ class Term(AbstractTerm):
         return True
 
     def match(self, term, env, **kwargs):
-        if self.constructor != term.constructor:
-            raise ValueError("`%s` != `%s`" % (self.constructor, term.constructor))
-        if len(self.subterms) != len(term.subterms):
-            raise ValueError("`%s` != `%s`" % (len(self.subterms), len(term.subterms)))
+        """Returns None if no match."""
+        if env is None or self.constructor != term.constructor or len(self.subterms) != len(term.subterms):
+            return None
         for (subpat, subterm) in zip(self.subterms, term.subterms):
             env = subpat.match(subterm, env, **kwargs)
         return env
@@ -107,14 +106,15 @@ class Var(AbstractTerm):
         return False
 
     def match(self, term, env, **kwargs):
-        if self.name == '?_':
+        if env is None or self.name == '?_':
             return env
         if self.name in env:
             bound_to = env[self.name]
             return bound_to.match(term, env, **kwargs)
         if kwargs.get('unique_binding'):
             if term in env.values():
-                raise ValueError("Not unique")
+                # raise ValueError("Not unique")
+                return None
         return dict(list(env.items()) + [(self.name, term)])
 
     def subst(self, env):
