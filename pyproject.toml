@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Samovar"
+version = "0.6"
+authors = [
+    { name="Chris Pressey", email="packages@catseye.tc" },
+]
+urls = { website="https://catseye.tc/node/Samovar" }
+description = "Samovar: model worlds using propositions and run simulations in them"
+readme = "README.md"
+license = { file="UNLICENSE" }
+classifiers = [
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Topic :: Artistic Software",
+    "Topic :: Games/Entertainment :: Simulation",
+]
+requires-python = ">=2.7, >=3.5"
+
+[project.scripts]
+samovar = "samovar.main:sys_main"

@@ -10,6 +10,10 @@ from samovar.generators.stochastic import StochasticGenerator
 from samovar.randomness import CannedRandomness
 
 
+def sys_main():
+    return main(sys.argv[1:])
+
+
 def main(args):
     argparser = ArgumentParser()
 
@@ -66,7 +70,7 @@ def main(args):
         "--seed", type=int, default=None,
         help="Set random seed of the Python random number generator, when it is in use."
     )
-    argparser.add_argument('--version', action='version', version="%(prog)s 0.5")
+    argparser.add_argument('--version', action='version', version="%(prog)s 0.6")
 
     options = argparser.parse_args(args)
 

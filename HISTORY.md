@@ -1,6 +1,13 @@
 History of Samovar
 ==================
 
+### Version 0.6
+
+*   No changes to language and no significant changes to
+    implementation.
+*   Added configuration to allow `samovar` to be built and
+    installed as a Python package if the user so wishes.
+
 ### Version 0.5
 
 *   No changes to language, only implementation.

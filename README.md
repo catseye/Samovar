@@ -1,10 +1,9 @@
 Samovar
 =======
 
-Version 0.5 | _Entry_ [@ catseye.tc](https://catseye.tc/node/Samovar)
+Version 0.6 | _Entry_ [@ catseye.tc](https://catseye.tc/node/Samovar)
 | _See also:_ [The League of Extraordinarily Dull Gentlemen](https://github.com/catseye/NaNoGenMo-Entries-2018/tree/master/league#readme)
 ∘ [The Swallows](https://github.com/catseye/The-Swallows#readme)
-∘ [Cardboard Prolog](https://github.com/catseye/Cardboard-Prolog#readme)
 
 - - - -
 
@@ -34,6 +33,11 @@ Of course, this is a very simple example.  (It doesn't even prevent two
 actors from picking up the same item at the same time!)  For more complex
 examples, and a fuller description of the language, see
 [doc/Samovar.md](doc/Samovar.md), which also serves as a test suite.
+
+### Implementation
+
+The reference implementation of Samovar, `samovar`, is written in Python.
+It can run under either Python 2.7 or Python 3.x (tested with 3.5 or higher.)
 
 ### Discussion
 
