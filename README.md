@@ -2,8 +2,8 @@ Samovar
 =======
 
 Version 0.6 | _Entry_ [@ catseye.tc](https://catseye.tc/node/Samovar)
-| _See also:_ [The League of Extraordinarily Dull Gentlemen](https://github.com/catseye/NaNoGenMo-Entries-2018/tree/master/league#readme)
-∘ [The Swallows](https://github.com/catseye/The-Swallows#readme)
+| _See also:_ [The League of Extraordinarily Dull Gentlemen](https://git.catseye.tc/NaNoGenMo-Entries-2018/blob/master/league/README.md)
+∘ [The Swallows](https://git.catseye.tc/The-Swallows/)
 
 - - - -
 
